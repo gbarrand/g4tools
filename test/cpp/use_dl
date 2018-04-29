@@ -1,0 +1,12 @@
+
+if [ "${use_dl}" = "yes" ] ; then
+
+  if [ ${build_cl_exe} = "yes" ] ; then
+    echo dummy > /dev/null
+  else
+
+    libs="${libs} -ldl"
+
+  fi
+
+fi

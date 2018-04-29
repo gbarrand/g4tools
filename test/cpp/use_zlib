@@ -1,0 +1,41 @@
+
+if [ "${use_zlib}" = "yes" ] ; then
+  if [ ${build_cl_exe} = "yes" ] ; then
+    use_sys_zlib=no
+    use_our_zlib=yes
+  else
+    if [ "${use_sys_zlib}" = "" -a "${use_our_zlib}" = "" ] ; then  #use_hdf5 may enforce use_our_zlib.
+      use_sys_zlib=yes
+      use_our_zlib=no
+    fi
+  fi
+fi
+
+if [ "${use_sys_zlib}" = "yes" ] ; then
+  if [ ! -e /usr/include/zlib.h ] ; then
+    echo "use_zlib : /usr/include/zlib.h not found."
+    exit
+  fi
+  libs="${libs} -lz"
+fi
+
+if [ "${use_our_zlib}" = "yes" ] ; then
+
+  zlib_home=../../../../inexlib/ourex/zlib
+  if [ ! -d "${zlib_home}" ] ; then
+    echo "use_zlib : can't build the program, zlib not found at ${zlib_home}."
+    exit
+  fi
+
+  if [ ${build_cl_exe} = "yes" ] ; then
+    ccflags="${ccflags} /DTOOLS_DONT_HAVE_ZLIB"  
+    cppflags="${cppflags} /DTOOLS_DONT_HAVE_ZLIB"
+  else
+    ccflags="${ccflags} -DTOOLS_DONT_HAVE_ZLIB"  
+    cppflags="${cppflags} -DTOOLS_DONT_HAVE_ZLIB"
+  fi
+  
+  libs="${libs} ${zlib_home}/${bin_dir}/libourex_zlib.a"
+
+fi
+

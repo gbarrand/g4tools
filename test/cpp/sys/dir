@@ -1,0 +1,652 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_sys_dir
+#define tools_sys_dir
+
+#include <string>
+#include <vector>
+#include <cstdlib> //getenv
+#include <cstdio> //::remove
+
+#ifdef _MSC_VER
+#include <direct.h>
+#else
+#include <dirent.h>
+#endif
+
+#ifdef _WIN32
+#include <windows.h>
+#else //UNIX
+#include <unistd.h>
+#endif
+
+#include <sys/stat.h>
+
+namespace tools {
+namespace dir {
+
+inline bool pwd(std::string& a_pwd) {
+  // Return current directory.
+  unsigned int mx_path_len = 2048;
+  char* cwd = new char[mx_path_len];
+#ifdef _MSC_VER
+  //  driveletter = 0 means return the working directory for the default drive.
+  if(::_getdcwd(0,cwd,mx_path_len)==NULL) {
+    delete [] cwd;
+    a_pwd.clear();
+    return false;
+  }
+#else
+  if(::getcwd(cwd,mx_path_len)==NULL) {
+    delete [] cwd;
+    a_pwd.clear();
+    return false;
+  }
+#endif
+  a_pwd = cwd;
+  delete [] cwd;
+  return true;
+}
+
+inline bool cd(const std::string& a_path){
+  if(::chdir(a_path.c_str())!=0) return false;
+  return true;
+}
+
+inline bool create(const std::string& a_name){
+  // a_name should be a single directory name, and not a file system path.
+  // Then it must not contain : ., .., /, \ etc...
+#ifdef _MSC_VER
+  return (::mkdir(a_name.c_str())==0 ? true : false); 
+#else
+  return (::mkdir(a_name.c_str(), 0755)==0 ? true : false); 
+#endif
+}
+
+inline void home(std::string& a_s) {
+#ifdef _WIN32
+  const char* env = ::getenv("USERPROFILE");
+  a_s = (env?env:"");
+#else
+  const char* env = ::getenv("HOME");
+  a_s = (env?env:"");
+#endif
+}
+
+inline bool cd_home() {
+  std::string s;
+  home(s);
+  if(s.empty()) return false;
+  return cd(s);
+}
+
+//NOTE : SWIG : exists is also a method in file
+//       (can be fix with a %rename(directory_exists))
+inline bool in_fs(const std::string& a_path){
+  struct stat finfo;
+  if (::stat(a_path.c_str(),&finfo) < 0) return false;
+  return true;
+}
+
+//NOTE : SWIG : "is" is a Python keyword.
+inline bool is_a(const std::string& a_path,bool& a_value) {
+  a_value = false;
+  struct stat finfo;
+  if (::stat(a_path.c_str(),&finfo) < 0) return false;
+  a_value = ( ((finfo.st_mode & S_IFMT) == S_IFDIR) ? true : false);
+  return true;
+}
+
+inline bool is_dot(const std::string& a_path) {
+#ifdef _WIN32
+  char sep = '\\';
+#else
+  char sep = '/';
+#endif
+  size_t l = a_path.size();
+  if((l==1) && (a_path[0]=='.') ) return true;
+  if((l==2) && (a_path[0]=='.') && (a_path[l]=='.') ) return true;
+  if((l>=2) && (a_path[l-1]=='.') && (a_path[l-2]==sep) ) return true;
+  if((l>=3) && (a_path[l-1]=='.') && (a_path[l-2]=='.') && (a_path[l-3]==sep) )
+    return true;
+  return false;
+}
+
+inline bool mkcd(const std::string& a_name) {
+  // a_name should be a single directory name, and not a file system path.
+  // Then it must not contain : ., .., /, \ etc...
+  bool is;
+  if(!is_a(a_name,is)) { //a_name does not exist as a file or dir.
+    if(!create(a_name)) return false;
+  } else {
+    if(!is) return false; //a_name exists but is not a directory.
+  }
+  return cd(a_name);
+}
+
+#ifdef _WIN32
+#ifdef _UNICODE
+inline bool ansi_to_unicode(const std::string& a_ansi,BSTR& a_unicode) {
+  int la = lstrlenA(a_ansi.c_str());
+  int lu = ::MultiByteToWideChar(CP_ACP,0,a_ansi.c_str(),la,0,0);
+  if(lu<=0) {
+    a_unicode = NULL;
+    return false;
+  }
+  a_unicode = SysAllocStringLen(NULL,lu);
+  if(::MultiByteToWideChar(CP_ACP,0,a_ansi.c_str(),la,a_unicode,lu)==0) {
+    ::SysFreeString(a_unicode);
+    a_unicode = NULL;
+    return false;
+  }
+  return true;
+}
+inline bool unicode_to_ansi(BSTR a_unicode,std::string& a_ansi) {
+  a_ansi.clear();
+  //int lu = ::SysStringLen(a_unicode); //does not work.
+  int lu = wcslen(a_unicode);
+  int la = ::WideCharToMultiByte(CP_ACP,0,a_unicode,lu,0,0,NULL,NULL);
+  if(la<=0) return false;
+  char* _ansi = new char[la+1];
+  if(::WideCharToMultiByte(CP_ACP,0,a_unicode,lu,_ansi,la,NULL,NULL)==0) {delete [] _ansi;return false;}
+  _ansi[la] = 0;
+  a_ansi = _ansi;
+  delete [] _ansi;
+  return true;
+}
+#endif //_UNICODE
+
+inline bool find_first_file(const std::string& a_entry,HANDLE& a_dir,WIN32_FIND_DATA& a_findFileData) {  
+#ifdef _UNICODE
+  BSTR wentry;
+  if(!ansi_to_unicode(a_entry,wentry)) {
+    a_dir = INVALID_HANDLE_VALUE;
+    return false;
+  }
+  a_dir = ::FindFirstFile(wentry,&a_findFileData);
+  ::SysFreeString(wentry);
+#else
+  a_dir = ::FindFirstFile(a_entry.c_str(),&a_findFileData);
+#endif
+  if(a_dir == INVALID_HANDLE_VALUE) return false;
+  return true;
+}
+#endif //_WIN32
+
+inline bool is_empty(const std::string& a_path,bool& a_is_empty){
+  a_is_empty = true;
+  struct stat finfo;
+  if (::stat(a_path.c_str(),&finfo) < 0)  return false;
+#ifdef _WIN32
+  if (!(finfo.st_mode & S_IFDIR)) return false;
+  std::string entry = a_path;
+  if (!(entry[entry.size()] == '/' || entry[entry.size()] == '\\' )) entry += "\\";
+  entry += "*";
+  WIN32_FIND_DATA findFileData;
+  HANDLE dir;
+  if(!find_first_file(entry,dir,findFileData)) return false;
+  for (;;) {
+    if(!::FindNextFile(dir,&findFileData)) break;
+#ifdef _UNICODE
+    std::string name;
+    if(!unicode_to_ansi(findFileData.cFileName,name)) {
+      ::FindClose(dir);
+      return false;
+    }
+#else
+    std::string name = (const char*)findFileData.cFileName;
+#endif
+    if(name==".") continue;
+    if(name=="..") continue;
+    a_is_empty = false;
+    ::FindClose(dir);
+    return true;  
+  }
+  ::FindClose(dir);
+#else
+  if (!S_ISDIR(finfo.st_mode)) return false;
+  DIR* dir = ::opendir(a_path.c_str());
+  if(!dir) return false;
+  for (;;) {
+    struct dirent* dp = ::readdir(dir);
+    //struct direct* dp;
+    if (dp==NULL) break;
+#if defined(_POSIX_SOURCE)
+    if(true) {
+#else
+    if(dp->d_ino!=0) {
+#endif
+      std::string name = dp->d_name;
+      if(name==".") continue;
+      if(name=="..") continue;
+      a_is_empty = false;
+      ::closedir(dir);
+      return true;  
+    }
+  }
+  ::closedir(dir);
+#endif
+  return true;
+}
+
+inline bool entries(const std::string& a_path,
+                    std::vector<std::string>& a_v,
+                    bool a_full_path = true){
+  a_v.clear();
+  struct stat finfo;
+  if (::stat(a_path.c_str(),&finfo) < 0)  return false;
+#ifdef _WIN32
+  if (!(finfo.st_mode & S_IFDIR)) return false;
+  std::string entry = a_path;
+  if (!(entry[entry.size()] == '/' || entry[entry.size()] == '\\' )) entry += "\\";
+  entry += "*";
+  WIN32_FIND_DATA findFileData;
+  HANDLE dir;
+  if(!find_first_file(entry,dir,findFileData)) return false;
+  // Get file names :
+  for (;;) {
+    if(!::FindNextFile(dir,&findFileData)) break;
+#ifdef _UNICODE
+    //_tprintf (TEXT("FindNextFile : %s\n"),findFileData.cFileName);
+    std::string name;
+    if(!unicode_to_ansi(findFileData.cFileName,name)) {
+      ::FindClose(dir);
+      return false;
+    }
+#else
+    std::string name = (const char*)findFileData.cFileName;
+#endif
+    // Be sure we can work on the file :
+    std::string fname = a_path+"\\"+name;
+    if (::stat(fname.c_str(),&finfo) < 0)  continue;
+    if(a_full_path)
+      a_v.push_back(fname);
+    else
+      a_v.push_back(name);
+  }
+  ::FindClose(dir);
+#else
+  if (!S_ISDIR(finfo.st_mode)) return false;
+  DIR* dir = ::opendir(a_path.c_str());
+  if(!dir) return false;
+  // Get file names :
+  for (;;) {
+    struct dirent* dp = ::readdir(dir);
+    //struct direct* dp;
+    if (dp==NULL) break;
+#if defined(_POSIX_SOURCE)
+    if(true) {
+#else
+    if(dp->d_ino!=0) {
+#endif
+      std::string name = dp->d_name;
+      // Be sure we can work on the file :
+      std::string fname = a_path+"/"+name;
+      if (::stat(fname.c_str(),&finfo) < 0)  continue;
+      if(a_full_path)
+        a_v.push_back(fname);
+      else
+        a_v.push_back(name);
+    }
+  }
+  ::closedir(dir);
+#endif
+  return true;
+}
+
+inline bool is_an_entry(const std::string& a_path,
+                        const std::string& a_name,
+                        bool& a_found){
+  a_found = false;
+  struct stat finfo;
+  if (::stat(a_path.c_str(),&finfo) < 0)  return false;
+#ifdef _WIN32
+  if (!(finfo.st_mode & S_IFDIR)) return false;
+  std::string entry = a_path;
+  if (!(entry[entry.size()] == '/' || entry[entry.size()] == '\\' )) entry += "\\";
+  entry += "*";
+  WIN32_FIND_DATA findFileData;
+  HANDLE dir;
+  if(!find_first_file(entry,dir,findFileData)) return false;
+  // Get file names :
+  for (;;) {
+    if(!::FindNextFile(dir,&findFileData)) break;
+#ifdef _UNICODE
+    std::string name;
+    if(!unicode_to_ansi(findFileData.cFileName,name)) {
+      ::FindClose(dir);
+      return false;
+    }
+#else
+    std::string name = (const char*)findFileData.cFileName;
+#endif
+    if(name==a_name) {
+      a_found = true;
+      ::FindClose(dir);
+      return true;
+    }
+  }
+  ::FindClose(dir);
+#else
+  if (!S_ISDIR(finfo.st_mode)) return false;
+  DIR* dir = ::opendir(a_path.c_str());
+  if(!dir) return false;
+  // Get file names :
+  for (;;) {
+    struct dirent* dp = ::readdir(dir);
+    //struct direct* dp;
+    if (dp==NULL) break;
+#if defined(_POSIX_SOURCE)
+    if(true) {
+#else
+    if(dp->d_ino!=0) {
+#endif
+      std::string name = dp->d_name;
+      if(name==a_name) {
+        a_found = true;
+        ::closedir(dir);
+        return true;
+      }
+    }
+  }
+  ::closedir(dir);
+#endif
+  return true;
+}
+
+//duplicate from smanip to avoid including smanip :
+//NOTE : SWIG : have to change the name.
+inline void path_base_name(const std::string& a_path,std::string& a_s) {
+  std::string::size_type pos_slash = a_path.rfind('/');
+  std::string::size_type pos_bslash = a_path.rfind('\\');
+  std::string::size_type pos = 0;
+  if(pos_slash==std::string::npos) {
+    if(pos_bslash==std::string::npos) {
+      pos = std::string::npos;
+    } else {
+      pos = pos_bslash;
+    }
+  } else {
+    if(pos_bslash==std::string::npos) {
+      pos = pos_slash;
+    } else {
+      if(pos_slash<=pos_bslash) {
+        pos = pos_bslash;
+      } else {
+        pos = pos_slash;
+      }
+    }
+  }
+  if(pos==std::string::npos) {a_s = a_path;return;}
+  pos++;
+  a_s = a_path.substr(pos,a_path.size()-pos);
+}
+
+//NOTE : SWIG : "remove" exists in smanip. Have to change the name.
+inline bool rmdir(const std::string& a_path){
+  struct stat finfo;
+  if(::stat(a_path.c_str(),&finfo) < 0) return true;
+#ifdef _MSC_VER
+  if(!(finfo.st_mode & S_IFDIR)) return false;
+#else
+  if(!S_ISDIR(finfo.st_mode)) return false;
+#endif
+  // Empty the directory :
+  std::vector<std::string> files;
+  entries(a_path,files);
+  size_t filen = files.size();
+  for(size_t count=0;count<filen;count++) {
+    const std::string& entry = files[count];     
+
+   {std::string name;
+    path_base_name(entry,name);
+    if((name==".")||(name=="..")) continue;}
+
+    bool is_dir;
+    if(!is_a(entry,is_dir)) return false;
+    if(is_dir) {
+      if(!dir::rmdir(entry)) {
+        //::printf("debug : rm dir %s failed.\n",entry.c_str());
+        return false;
+      }
+      //::printf("debug : rm dir %s.\n",entry.c_str());
+    } else {
+      if(::remove(entry.c_str())!=0) {
+        //::printf("debug : rm file %s failed.\n",entry.c_str());
+        return false;
+      }
+      //::printf("debug : rm file %s.\n",entry.c_str());
+    }
+  }
+  // Remove the directory :
+  return (::rmdir(a_path.c_str())==0?true:false);
+}
+
+inline bool dirs(const std::string& a_path,
+                 std::vector<std::string>& a_dirs,
+                 bool a_full_path = true){
+  a_dirs.clear();
+  struct stat finfo;
+  if(::stat(a_path.c_str(),&finfo) < 0) return false;
+#ifdef _MSC_VER
+  if(!(finfo.st_mode & S_IFDIR)) return false;
+#else
+  if(!S_ISDIR(finfo.st_mode)) return false;
+#endif
+  std::vector<std::string> files;
+  entries(a_path,files,false);
+  size_t filen = files.size();
+  for(size_t count=0;count<filen;count++) {
+    const std::string& name = files[count];     
+    if((name==".")||(name=="..")) continue;
+#ifdef _WIN32
+    std::string fname = a_path+"\\"+name;
+#else
+    std::string fname = a_path+"/"+name;
+#endif
+    bool is_dir;
+    if(!is_a(fname,is_dir)) return false;
+    if(is_dir) a_dirs.push_back(a_full_path?fname:name);
+  }
+  return true;
+}
+
+inline bool files(const std::string& a_path,
+                  std::vector<std::string>& a_files,
+                  bool a_full_path = true){
+  a_files.clear();
+  struct stat finfo;
+  if(::stat(a_path.c_str(),&finfo) < 0) return false;
+#ifdef _MSC_VER
+  if(!(finfo.st_mode & S_IFDIR)) return false;
+#else
+  if(!S_ISDIR(finfo.st_mode)) return false;
+#endif
+  std::vector<std::string> files;
+  entries(a_path,files,false);
+  size_t filen = files.size();
+  for(size_t count=0;count<filen;count++) {
+    const std::string& name = files[count];     
+    if((name==".")||(name=="..")) continue;
+#ifdef _WIN32
+    std::string fname = a_path+"\\"+name;
+#else
+    std::string fname = a_path+"/"+name;
+#endif
+    bool is_dir;
+    if(!is_a(fname,is_dir)) return false;
+    if(!is_dir) a_files.push_back(a_full_path?fname:name);
+  }
+  return true;
+}
+
+}}
+
+#include <ostream>
+
+namespace tools {
+namespace dir {
+
+inline bool ls(std::ostream& a_out,const std::string& a_path,bool a_full_path = true) {
+  bool is_dir;
+  if(!dir::is_a(a_path,is_dir)) {
+    a_out << "tools::dir::ls :"
+          << " tools::dir::is_a() failed for path \"" << a_path << "\"."
+          << std::endl;
+    return false;
+  }
+  if(!is_dir) {
+    a_out << "tools::dir::ls :"
+          << " path \"" << a_path << "\" is not a directory."
+          << std::endl;
+    return false;
+  }
+  std::vector<std::string> _ls;
+  if(!dir::entries(a_path,_ls,a_full_path)){
+    a_out << "tools::dir::ls :"
+          << " can't get entries"
+          << " of directory \"" << a_path << "\"."
+          << std::endl;
+    return false;
+  }
+  std::vector<std::string>::const_iterator it;
+  for(it=_ls.begin();it!=_ls.end();++it) {
+    if((*it)==".") continue;
+    if((*it)=="..") continue;
+    a_out << *it << std::endl;
+  }
+  return true;
+}
+
+// two classes to build applications working
+// on a hierarchy of files.
+
+class visitor {
+public:
+  virtual ~visitor() {}
+public:
+  virtual bool directory(const std::string&,bool&) = 0;
+  virtual bool file(const std::string&) = 0;
+};
+
+class tree {
+public:
+  typedef bool(*match_func)(const std::string&,const std::string&);
+public:
+  tree(std::ostream& a_out):m_out(a_out),m_match_func(0){}
+  virtual ~tree() {
+   {std::vector<tree*>::iterator it;
+    for(it=m_dirs.begin();it!=m_dirs.end();++it) delete *it;
+    m_dirs.clear();}
+  }
+public:
+  tree(const tree& a_from):m_out(a_from.m_out) {    
+    m_path = a_from.m_path;
+    m_files = a_from.m_files;
+   {std::vector<tree*>::const_iterator it;
+    for(it=a_from.m_dirs.begin();it!=a_from.m_dirs.end();++it) {
+      m_dirs.push_back(new tree(*(*it)));
+    }}
+  }
+  tree& operator=(const tree& a_from) {    
+    if(&a_from==this) return *this;
+
+    m_path = a_from.m_path;
+    m_files = a_from.m_files;
+
+   {std::vector<tree*>::iterator it;
+    for(it=m_dirs.begin();it!=m_dirs.end();++it) delete *it;
+    m_dirs.clear();}
+    
+   {std::vector<tree*>::const_iterator it;
+    for(it=a_from.m_dirs.begin();it!=a_from.m_dirs.end();++it) {
+      m_dirs.push_back(new tree(*(*it)));
+    }}
+
+    return *this;
+  }
+public:
+  void set_path(const std::string& a_path) {m_path = a_path;}
+  void set_match_func(match_func a_func) {m_match_func = a_func;}
+
+  bool build(const std::string& a_pattern = "") {
+    if(m_path.empty()) {
+      m_out << "tree::build :"
+            << " empty path."
+            << std::endl;
+      return false;
+    }
+    std::vector<std::string> files;
+    if(!entries(m_path,files)) {
+      m_out << "tree::build :"
+            << " dir::entries failed for \"" << m_path << "\"."
+            << std::endl;
+      return false;
+    }
+    std::vector<std::string>::iterator it;
+    for(it=files.begin();it!=files.end();++it) {
+      const std::string& name = *it;
+      bool is;
+      if(!is_a(name,is)) {
+        m_out << "tree::build :"
+              << " is_a failed for \"" << name << "\"."
+              << std::endl;
+        return false;
+      }
+      if(is) {
+        if(is_dot(name)) {
+          //bypass dot directories.
+        } else {
+          tree* dir = new tree(m_out);
+          m_dirs.push_back(dir);
+          dir->set_path(name);
+          dir->set_match_func(m_match_func);
+          if(!dir->build(a_pattern)) return false;
+        }
+      } else {
+        if( (a_pattern.empty()) || (a_pattern=="*") ) {
+          m_files.push_back(name);
+        } else {
+          if(!m_match_func) {
+            m_out << "tree::build :"
+                  << " pattern given but no match function given."
+                  << std::endl;
+            return false;
+          }
+          bool ok = m_match_func(name,a_pattern);
+          //printf("debug : build : \"%s\" match \"%s\" ? %d\n",
+          //       name.c_str(),a_pattern.c_str(),ok);
+          if(ok) m_files.push_back(name);
+        }
+      }
+    }
+    return true;
+  }
+
+  bool visit(visitor& a_visitor) {
+    if(m_path.empty()) return true;
+    bool process;
+    if(!a_visitor.directory(m_path,process)) return false;
+    if(!process) return true;
+   {std::vector<std::string>::iterator it;
+    for(it=m_files.begin();it!=m_files.end();++it) {
+      if(!a_visitor.file(*it)) return false;
+    }}
+   {std::vector<tree*>::iterator it;
+    for(it=m_dirs.begin();it!=m_dirs.end();++it) {
+      if(!(*it)->visit(a_visitor)) return false;
+    }}
+    return true;
+  }
+protected:
+  std::ostream& m_out;
+  std::string m_path;
+  std::vector<tree*> m_dirs;
+  std::vector<std::string> m_files;
+  match_func m_match_func;
+};
+
+}}
+
+#endif

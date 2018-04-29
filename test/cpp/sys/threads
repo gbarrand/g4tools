@@ -1,0 +1,265 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_threads
+#define tools_threads
+
+#ifdef TOOLS_MEM
+#include <tools/mem>
+#endif
+
+#include "sys/sleep"
+#include "sys/thread"
+#include "sys/mutex"
+
+#include <tools/forit>
+
+#include <vector>
+#include <ostream>
+
+namespace tools {
+
+template <class ARGS>
+class threads {
+#ifdef TOOLS_MEM
+  TOOLS_T_SCLASS(ARGS,tools::threads)
+#endif
+public:
+  virtual ARGS* create_args(mutex&,size_t,size_t) = 0;
+public:
+  threads(std::ostream& a_out,bool a_verbose = false)
+  :m_out(a_out)
+  ,m_mutex()
+  ,m_threads()
+  ,m_verbose(a_verbose)
+  { 
+#ifdef TOOLS_MEM
+    mem::increment(s_class().c_str());
+#endif
+    m_mutex.initialize();
+  }
+  virtual ~threads(){
+    stop();
+#ifdef TOOLS_MEM
+    mem::decrement(s_class().c_str());
+#endif
+  }
+protected:
+  threads(const threads& a_from)
+  :m_out(a_from.m_out)
+  ,m_mutex()
+  ,m_threads()
+  ,m_verbose(a_from.m_verbose)
+  {
+#ifdef TOOLS_MEM
+    mem::increment(s_class().c_str());
+#endif
+    m_mutex.initialize();
+  }
+  threads& operator=(const threads&){return *this;}
+public:
+  bool start(size_t a_num_threads) { 
+    for(size_t count=0;count<a_num_threads;count++) {
+      pthread_t* id = new pthread_t;
+      ARGS* args = create_args(m_mutex,count,a_num_threads);
+      args->m_verbose = m_verbose;
+      if(::pthread_create(id,0,thread_main,args)) {
+        m_out << "threads::threads : can't create thread number " << count << "." << std::endl;
+        delete id;
+        delete args;
+        return false;
+      }
+      m_threads.push_back(idargs(id,args));
+    }
+    return true;
+  }
+
+  void stop() {
+    if(m_verbose) m_out << "threads::stop : ask to stop threads ..." << std::endl;
+
+    tools_typename_vforit(idargs,m_threads,it) {
+      ARGS* _args = (*it).second;
+
+      _args->m_mutex.lock();
+      _args->m_continue = false;
+      _args->m_mutex.unlock();
+
+      while(!_args->m_exit){sleep_milli_secs(100);}
+
+#ifdef _WIN32
+      (*it).first->close();
+#endif
+      delete (*it).first;
+      delete (*it).second;
+    }
+    if(m_verbose) m_out << "threads::stop : end threads." << std::endl;
+    m_threads.clear();
+  }
+
+  bool ended() {
+    tools_typename_vforit(idargs,m_threads,it) {
+      ARGS* _args = (*it).second;
+      //_args->m_mutex.lock();
+      bool _exit = _args->m_exit;
+      //_args->m_mutex.unlock();
+      if(!_exit) return false;
+    }
+    return true;
+  }
+protected:
+  typedef std::pair<pthread_t*,ARGS*> idargs;
+
+  static void* thread_main(void* a_tag) {
+    ARGS* args = (ARGS*)a_tag;
+    while(args->m_continue) {
+      args->_main();
+      //sleep_milli_secs(1);
+    }
+    args->m_mutex.lock();
+    args->m_exit = true;  
+    args->m_mutex.unlock();
+    //if(args->m_verbose) args->m_out << "thread_main : exit" << std::endl;  
+    return 0;
+  }
+
+protected:
+  std::ostream& m_out;
+  mutex m_mutex;
+  std::vector<idargs> m_threads;
+  bool m_verbose;
+};
+
+}
+
+#include <cstdio> //printf
+
+namespace tools {
+
+class thread_streambuf : public std::streambuf {
+#ifdef TOOLS_MEM
+  TOOLS_SCLASS(tools::thread_streambuf)
+#endif
+public:
+  thread_streambuf(mutex& a_mutex,const std::string& a_prefix)
+  :m_mutex(a_mutex)
+  ,m_prefix(a_prefix)
+  ,m_buffer(0)
+  ,m_size(4095)
+  ,m_count(0)
+  {
+#ifdef TOOLS_MEM
+    mem::increment(s_class().c_str());
+#endif
+    m_buffer = new char[m_size+1];
+  }
+
+  virtual ~thread_streambuf(){
+    delete [] m_buffer;
+#ifdef TOOLS_MEM
+    mem::decrement(s_class().c_str());
+#endif
+  }
+private:
+  thread_streambuf(const thread_streambuf& a_from):m_mutex(a_from.m_mutex){}
+  thread_streambuf& operator=(const thread_streambuf&){return *this;}
+public:
+  int overflow(int aChar) {
+    int result = 0;
+    if(m_count>=m_size) {
+      m_buffer[m_count] = '\0';
+      m_count = 0;
+      result = receiveString();
+    }
+    m_buffer[m_count] = aChar;
+    m_count++;
+    if(aChar=='\n') {
+      m_buffer[m_count] = '\0';
+      m_count = 0;
+      result = receiveString();
+    }
+    return result;
+  }
+
+  int sync() {
+    m_buffer[m_count] = '\0';
+    m_count = 0;
+    return receiveString ();
+  }
+
+  const std::string& prefix() const {return m_prefix;}
+private:
+  int receiveString() {
+    m_mutex.lock(); //threads::m_main_mutex
+    ::printf("%s%s",m_prefix.c_str(),m_buffer); //a priori not thread safe.
+    m_mutex.unlock();
+    return 0;
+  }
+
+private:
+  mutex& m_mutex;
+  std::string m_prefix;
+  char* m_buffer;
+  unsigned int m_size;
+  unsigned int m_count;
+};
+
+class thread_args {
+#ifdef TOOLS_MEM
+  TOOLS_SCLASS(tools::thread_args)
+#endif
+public:
+  thread_args(mutex& a_main_mutex,const std::string& a_pref)
+  :m_main_mutex(a_main_mutex)
+  ,m_buf(m_main_mutex,a_pref)
+  ,m_out(&m_buf)
+  ,m_continue(true)
+  ,m_exit(false)
+  ,m_verbose(false)
+  ,m_mutex()
+  {
+#ifdef TOOLS_MEM
+    mem::increment(s_class().c_str());
+#endif
+    m_mutex.initialize();
+  }
+  virtual~ thread_args() {
+#ifdef TOOLS_MEM
+    mem::decrement(s_class().c_str());
+#endif
+  }
+protected:
+  thread_args(const thread_args& a_from)
+  :m_main_mutex(a_from.m_main_mutex)
+  ,m_buf(a_from.m_main_mutex,a_from.m_buf.prefix())
+  ,m_out(&m_buf)
+  ,m_continue(a_from.m_continue)
+  ,m_exit(a_from.m_exit)
+  ,m_verbose(a_from.m_verbose)
+  ,m_mutex()
+  {
+#ifdef TOOLS_MEM
+    mem::increment(s_class().c_str());
+#endif
+    m_mutex.initialize();
+  }
+  thread_args& operator=(const thread_args& a_from){
+    m_continue = a_from.m_continue;
+    m_exit = a_from.m_exit;
+    m_verbose = a_from.m_verbose;
+    //m_mutex = a_from.m_mutex;
+    return *this;
+  }
+protected:
+  mutex& m_main_mutex;
+  thread_streambuf m_buf;
+  std::ostream m_out;
+public:
+  bool m_continue;
+  bool m_exit;
+  bool m_verbose;
+  mutex m_mutex;  
+};
+
+}
+  
+#endif

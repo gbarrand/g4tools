@@ -1,0 +1,157 @@
+
+// code common to mt_ntuple.cpp, mt_ntuple_seq.cpp and exlib mpi_ntuple.cpp.
+
+ {bool read_verbose = false;
+  tools::rroot::file rfile(std::cout,file,read_verbose);
+#ifdef TOOLS_DONT_HAVE_ZLIB
+#else
+  rfile.add_unziper('Z',tools::decompress_buffer);
+#endif
+   
+  tools::rroot::key* key = rfile.dir().find_key("rg_rbw");
+  if(!key) {
+    std::cout << "can't get data buffer for ntuple." << std::endl;
+    return EXIT_FAILURE;
+  }
+  unsigned int sz;
+  char* buf = key->get_object_buffer(rfile,sz);
+  if(!buf) {
+    std::cout << "can't get data buffer for ntuple." << std::endl;
+    return EXIT_FAILURE;
+  }
+  
+  tools::rroot::buffer b(std::cout,rfile.byte_swap(),sz,buf,key->key_length(),read_verbose);
+  b.set_map_objs(true);
+  tools::rroot::fac fac(std::cout);
+  tools::rroot::tree tree(rfile,fac);
+  if(!tree.stream(b)) {
+    std::cout << "TTree streaming failed." << std::endl;
+    return EXIT_FAILURE;
+  }
+  if(verbose)
+ {tools::uint64 entries = tree.entries();  
+  std::cout << "read entries : " << entries << std::endl;}
+  
+ // {for(tools::uint32 i=0;i<5;i++){
+ //    if(!tree.show(std::cout,i)) {
+ //      std::cout << "show failed for entry " << i << std::endl;
+ //      return EXIT_FAILURE;
+ //    }
+ //  }}
+   
+  // read with the flat ntuple API :
+  tools::rroot::ntuple ntu(tree); //use the flat ntuple API.
+  
+  double read_user_rgauss;
+  float read_user_rbw;
+  std::string read_user_string;
+  int read_user_count;
+  std::vector<double> read_user_vec_d;
+  std::vector<std::string> read_user_vec_s;
+
+  tools::ntuple_binding nbd;
+  nbd.add_column("rgauss",read_user_rgauss);
+  nbd.add_column("rbw",read_user_rbw);
+  nbd.add_column("string",read_user_string);
+  nbd.add_column("count",read_user_count);
+  nbd.add_column("vec_d",read_user_vec_d);
+  nbd.add_column("vec_s",read_user_vec_s);
+  
+  if(!ntu.initialize(std::cout,nbd)) {
+    std::cout << "can't initialize ntuple with ntuple_binding." << std::endl;
+    return EXIT_FAILURE;
+  }
+  
+  double user_rgauss_Sw = 0;
+  double user_rgauss_Sxw = 0;
+  double user_rgauss_Sx2w = 0;
+  
+  double user_vec_d_Sw = 0;
+  double user_vec_d_Sxw = 0;
+  double user_vec_d_Sx2w = 0;
+  
+  size_t S_user_vec_d_size = 0;
+  
+  unsigned int row = 0;
+  int user_string_count = 0;
+  std::string stmp;
+  
+  ntu.start();
+  while(ntu.next()){
+    if(!ntu.get_row()) {
+      std::cout << "get_row() failed." << std::endl;
+      return EXIT_FAILURE;
+    }
+    user_rgauss_Sw += 1;
+    user_rgauss_Sxw += read_user_rgauss;
+    user_rgauss_Sx2w += read_user_rgauss*read_user_rgauss;
+
+    stmp = read_user_string.substr(4,read_user_string.size()-4);
+    if(!tools::to<int>(stmp,user_string_count)) {
+      std::cout << "string " << stmp << " not an integer." << std::endl;
+      break;
+    }
+
+   {for(size_t index=0;index<read_user_vec_d.size();index++){
+      user_vec_d_Sw += 1;
+      double& value = read_user_vec_d[index];
+      user_vec_d_Sxw += value;
+      user_vec_d_Sx2w += value*value;
+    }}
+    S_user_vec_d_size += read_user_vec_d.size();
+ //{std::cout << "user_vec_s :" << std::endl;
+ // tools_vforcit(std::string,read_user_vec_s,it) {
+ //  std::cout << " " << tools::sout(*it) << std::endl;
+ // }}
+   
+    if(row_wise) {
+      if(user_string_count!=read_user_count)  {
+        std::cout << "found an inconsistent row at row : "<< row
+                  << ", user_string_count " << user_string_count
+                  << ", read_user_count " << read_user_count
+                  << std::endl;
+      }
+      if(read_user_vec_d.size()!=size_t(read_user_count%100))  {
+        std::cout << "found an inconsistent row at row : "<< row
+                  << ", read_user_vec_d.size() " << read_user_vec_d.size()
+                  << ", read_user_count%100 " << (read_user_count%100)
+                  << std::endl;
+      }
+      if(read_user_vec_s.size()!=size_t(read_user_count%5))  {
+        std::cout << "found an inconsistent row at row : "<< row
+                  << ", read_user_vec_s.size() " << read_user_vec_s.size()
+                  << ", read_user_count%5 " << (read_user_count%5)
+                  << std::endl;
+      }
+    }
+    
+    row++;
+  }
+  if(user_rgauss_Sw) {
+    double mean = user_rgauss_Sxw/user_rgauss_Sw;
+    double rms = ::sqrt(::fabs(user_rgauss_Sx2w/user_rgauss_Sw-mean*mean));
+    double depsilon = 1e-2;
+    if(!tools::numbers_are_equal(mean,1.0,depsilon,tools::dfabs)) {
+      std::cout << "rgauss mean : " << mean << ". Expected 1.0." << std::endl;
+    }
+    if(!tools::numbers_are_equal(rms,2.0,depsilon,tools::dfabs)) {
+      std::cout << "rgauss rms : " << rms << ". Expected 2.0." << std::endl;
+    }
+  }
+
+  if(user_vec_d_Sw) {
+    double mean = user_vec_d_Sxw/user_vec_d_Sw;
+    double rms = ::sqrt(::fabs(user_vec_d_Sx2w/user_vec_d_Sw-mean*mean));
+    double depsilon = 1e-2;
+    if(!tools::numbers_are_equal(mean,1.0,depsilon,tools::dfabs)) {
+      std::cout << "vec_d mean : " << mean << ". Expected 1.0." << std::endl;
+    }
+    if(!tools::numbers_are_equal(rms,2.0,depsilon,tools::dfabs)) {
+      std::cout << "vec_d rms : " << rms << ". Expected 2.0." << std::endl;
+    }
+  }
+  
+  if(verbose) std::cout << "S_user_vec_d_size " << S_user_vec_d_size << std::endl;
+
+  rfile.close();}
+  

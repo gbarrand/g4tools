@@ -1,0 +1,39 @@
+
+build_use_not_our_mpi=yes
+
+if [ "${use_mpi}" = "yes" ] ; then
+if [ "${build_use_not_our_mpi}" = "yes" ] ; then
+  use_sys_mpi=yes
+  use_our_mpi=no
+else
+  use_sys_mpi=no
+  use_our_mpi=yes
+fi
+fi
+
+if [ "${use_sys_mpi}" = "yes" ] ; then
+
+  if [ "`uname -n | grep ccage`" != "" ] ; then
+
+    cppflags="${cppflags} -I/usr/include/openmpi-x86_64"
+    cppflags="${cppflags} -DTOOLS_USE_NATIVE_MPI"
+    libs="${libs} -L/usr/lib64/openmpi/lib -lmpi_cxx -lmpi"
+
+  elif [ `uname` = Darwin ] ; then
+    mpi_home=/opt/local
+
+    if [ ! -d ${mpi_home}/include/openmpi-mp ] ; then
+      echo 'use_mpi : MPI not found. Use tools/mpi/dummy/mpi.h.'
+      #cppflags="${cppflags} -DTOOLS_USE_MPI_PACK_NOT_CONST"
+    else
+      cppflags="${cppflags} -I${mpi_home}/include/openmpi-mp"
+      cppflags="${cppflags} -DTOOLS_USE_NATIVE_MPI"
+      libs="${libs} -L${mpi_home}/lib/openmpi-mp -lmpi_cxx -lmpi"
+    fi
+
+  else
+    echo 'use_mpi : MPI not found. Use tools/mpi/dummy_mpi.h.'
+  fi
+
+fi
+

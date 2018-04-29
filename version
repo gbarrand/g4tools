@@ -1,0 +1,17 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_version
+#define tools_version
+
+#define G4TOOLS_MAJOR_VERSION 4
+#define G4TOOLS_MINOR_VERSION 2
+#define G4TOOLS_PATCH_VERSION 1
+#define G4TOOLS_VERSION "4.2.1"
+#define G4TOOLS_VERSION_VRP "v4r2p1"
+
+namespace tools {
+inline unsigned int version() {return 40201;}
+}
+
+#endif

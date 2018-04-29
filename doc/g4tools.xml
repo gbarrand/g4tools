@@ -1,0 +1,295 @@
+<!-- ******************************************************** -->
+<!--                                                          -->
+<!--  [History]                                               -->
+<!--    Created by G. Barrand,    Nov-2011                    -->
+<!--                                                          -->
+<!--                                                          -->
+<!-- ******************************************************** -->
+
+
+<!-- ******************* Section (Level#1) ****************** -->
+<sect1 id="sect.g4tools">
+<title>
+g4tools
+</title>
+
+<para>
+<literal>g4tools</literal> is a "namespace protected" part of 
+<literal>inlib</literal> and <literal>exlib</literal> which
+is of some interest for Geant4, mainly the histograms, the ntuples
+and the code to write them at the ROOT, AIDA XML, CSV and HBOOK
+file formats. The idea of <literal>g4tools</literal> is to cover, with a very 
+light and easy to install package, what is needed to do analysis in
+a "Geant4 batch program". 
+</para>
+
+<para>
+As <literal>g4tools </literal>is distributed through Geant4 and 
+in order to avoid potential namespace clashes with other codes
+that use the <literal>inlib/exlib</literal> to do Geant4 visualization 
+(as for the <literal>g4view</literal> application or some of the exlib examples), 
+the <emphasis>inlib</emphasis> and <emphasis>exlib</emphasis> namespaces had 
+been automatically changed to <emphasis>tools</emphasis> in the 
+<literal>g4tools </literal> distribution. Since in principle Geant4 users
+will not have to deal directly with the <literal>g4tools</literal> classes, 
+but will manipulate histograms and ntuples through the 
+<literal>G4AnalysisManager</literal>,  we are not going
+to extensively document the <literal>g4tools</literal> classes here. Interested
+people are encouraged to go at the <literal>inlib/exlib </literal>web pages 
+for that (see 
+<ulink url="http://inexlib.lal.in2p3.fr"> inlib/exlib site </ulink>).
+</para>
+
+<sect2 id="sect.g4toolsIntroduction">
+<title>
+g4tools package
+</title>
+
+<sect3 id="sect.g4toolsPureHeader">
+<title>
+g4tools code is pure header
+</title>
+
+<para>
+As explained in <literal>inlib/exlib</literal>, the code found in 
+<literal>g4tools </literal> is "pure header".
+This comes from the need to have an easy way to build applications, as
+the <literal>ioda</literal> one, from smartphone, passing by tablets and 
+up to various desktops (UNIX and Windows). For example, if building an 
+application targeted to the Apple AppStore and GooglePlay, the simplest way 
+is to pass through <literal>Xcode</literal> and the Android <literal>make</literal>
+system (or <literal>Eclipse</literal>), and having not to build libraries simplifies a lot the handling 
+of all these IDEs for the same application. A fallback of that is that the 
+installation of <literal>g4tools </literal> (if not using the one coming with 
+Geant4) is straightforward, you simply unzip the file containing the source 
+code! To build an application using <literal>g4tools</literal>, as for 
+<literal>inlib/exlib</literal>, you simply have to declare to your build system
+the "-I" toward the unfolded directory and do "Build and Run".
+</para>
+
+<para>
+Note that there is no need to have CLHEP and Geant4 installed to use 
+<literal>g4tools</literal>, but you may have to install
+CERNLIB (and a FORTRAN77 compiler!)
+if wanting to use the classes dealing with HBOOK.
+</para>
+</sect3>
+
+<sect3 id="sect.g4toolsTest">
+<title>
+g4tools test
+</title>
+
+<para>
+<literal>g4tools</literal> comes with test programs of its own that may be 
+useful in case of problems (for example porting on a not yet covered platform).
+You can build and run them with :
+
+<informalexample>
+<programlisting>
+     UNIX> &lt;get g4tools.zip&gt;
+     UNIX> &lt;unzip g4tools.zip&gt;
+     UNIX> cd g4tools/test/cpp
+     UNIX> ./build
+     UNIX> ./tools_test_histo
+     UNIX> ./tools_test_wroot
+     UNIX> etc...
+</programlisting>
+ and on Windows :
+<programlisting>
+      DOS> &lt;setup VisualC++ so that CL.exe is in your PATH&gt;
+      DOS> &lt;get g4tools.zip&gt;
+      DOS> &lt;unzip g4tools.zip&gt; (you can use the unzip.exe of CYGWIN)
+      DOS> cd g4tools\test\cpp
+      DOS> .\build.bat
+      DOS> .\tools_test_histo.exe
+      DOS> .\tools_test_wroot.exe
+      DOS> etc...
+</programlisting>
+</informalexample>
+</para>
+
+<para>
+Note that there is no need to have CLHEP and Geant4 installed to build and run 
+the  <literal>g4tools</literal> test programs, but you may have to install the
+CERNLIB (and a FORTRAN77 compiler!) if wanting to use the classes related to 
+HBOOK.
+</para>
+
+</sect3>
+
+<sect3 id="sect.g4toolsInGeant4">
+<title>
+g4tools in Geant4
+</title>
+
+<para>
+The <literal>g4tools</literal> header files are distributed in the Geant4 source
+in the <literal>source/analysis/include/tools</literal> directory and in 
+the Geant4 installation, they are installed in <literal>include/tools</literal>
+directory. The <literal>g4tools</literal> test programs, included only
+in Geant4 development versions, can be downloaded with the  
+<literal>g4tools-[version].zip</literal> file from the <literal>inexlib</literal>
+<ulink url="http://softinex.lal.in2p3.fr/download/g4tools/">download page</ulink>).
+</para>
+
+<para>
+While the Geant4 analysis manager provides the methods for booking and
+filling the g4tools objects, it does not interface all public
+functions. Users can access the g4tools objects (see <xref
+linkend="sect.AccessingHistograms"/>) and use the g4tools API
+described in the next section to get the needed informations.
+</para>
+
+</sect3>
+
+</sect2>
+
+<!--  This file had been produced automatically
+      by the inlib/h2docbook program from the file :
+       user_api.h
+-->
+
+
+<sect2 id="sect.g4tools_user_api">
+<title>
+ User API
+</title>
+  We describe here some of the public methods potentially seen by a user doing analysis.
+
+<sect3 id="sect.g4tools_user_api_booking">
+<title>
+ Booking and filling
+</title>
+<informalexample><programlisting>
+    h1d(const std::string&amp; title,unsigned int Xnumber,double Xmin,double Xmax);
+    h1d(const std::string&amp; title,const std::vector&lt;double&gt;&amp; edges);
+
+    bool fill(double X,double Weight = 1);
+</programlisting></informalexample>
+example :
+<informalexample><programlisting>
+    #include &lt;tools/histo/h1d&gt;
+    #include &lt;tools/randd&gt;
+    ...
+    tools::histo::h1d h(&quot;Gauss&quot;,100,-5,5);
+    tools::rgaussd rg(1,2);
+    for(unsigned int count=0;count&lt;entries;count++) h.fill(rg.shoot(),1.4);
+</programlisting></informalexample>
+
+</sect3>
+<sect3 id="sect.g4tools_user_api_mean_rms">
+<title>
+ Mean and rms
+</title>
+<informalexample><programlisting>
+    tools::histo::h1d h(&quot;Gauss&quot;,100,-5,5);
+    ...
+    std::cout &lt;&lt; &quot; mean &quot; &lt;&lt; h.mean() &lt;&lt; &quot;, rms &quot; &lt;&lt; h.rms() &lt;&lt; std::endl;
+</programlisting></informalexample>
+
+</sect3>
+<sect3 id="sect.g4tools_user_api_bin_infos">
+<title>
+ Bin infos
+</title>
+ When doing a :
+<informalexample><programlisting>
+    bool fill(double X,double Weight = 1);
+</programlisting></informalexample>
+the histogram class maintains, for each bin, the number of entries, the sum of weights that
+we can note &quot;Sw&quot;, the sum of W by W &quot;Sw2&quot;, the sum of X by Weight &quot;Sxw&quot;,
+the sum of X by X by W &quot;Sx2w&quot;. Then bin method names reflect these notations, for example
+to get the 50 bin sum of X*X*W :
+<informalexample><programlisting>
+    double Sx2w = h.bin_Sx2w(50);
+</programlisting></informalexample>
+and the same for the other sums :
+<informalexample><programlisting>
+    double Sw = h.bin_Sw(50);
+    double Sw2 = h.bin_Sw2(50);
+    double Sxw = h.bin_Sxw(50);
+    unsigned int n = h.bin_entries(50);
+</programlisting></informalexample>
+
+ You can have also all infos on all bins with:
+<informalexample><programlisting>
+    tools::histo::h1d h(...);
+    ...
+    const std::vector&lt;unsigned int&gt;&amp; _entries = h.bins_entries();
+    const std::vector&lt;double&gt;&amp; _bins_sum_w = h.bins_sum_w();
+    const std::vector&lt;double&gt;&amp; _bins_sum_w2 = h.bins_sum_w2();
+    const std::vector&lt; std::vector&lt;double&gt; &gt;&amp; _bins_sum_xw = h.bins_sum_xw();
+    const std::vector&lt; std::vector&lt;double&gt; &gt;&amp; _bins_sum_x2w = h.bins_sum_x2w();
+</programlisting></informalexample>
+ for example to dump bin 50 of an histo booked with 100 bins:
+<informalexample><programlisting>
+    std::cout &lt;&lt; &quot;entries[50] = &quot; &lt;&lt; _entries[50] &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;  sum_w[50] = &quot; &lt;&lt; _bins_sum_w[50] &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot; sum_w2[50] = &quot; &lt;&lt; _bins_sum_w2[50] &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot; sum_xw[50] = &quot; &lt;&lt; _bins_sum_xw[50][0] &lt;&lt; std::endl;   //0 = xaxis
+    std::cout &lt;&lt; &quot;sum_x2w[50] = &quot; &lt;&lt; _bins_sum_x2w[50][0] &lt;&lt; std::endl;  //0 = xaxis
+</programlisting></informalexample>
+ (Take care that the [0] entries in the upper vectors are for the &quot;underflow bin&quot; and
+the last one is for the &quot;overflow bin&quot;).
+
+</sect3>
+<sect3 id="sect.g4tools_user_api_all_data">
+<title>
+ All data
+</title>
+ You can get all internal data of an histo through the histo_data class:
+<informalexample><programlisting>
+    const tools::histo::h1d::hd_t&amp; hdata = h.dac();  //dac=data access.
+</programlisting></informalexample>
+and then, for example, find back the bins infos with:
+<informalexample><programlisting>
+    const std::vector&lt;unsigned int&gt;&amp; _entries = hdata.m_bin_entries;
+    const std::vector&lt;double&gt;&amp; _bins_sum_w = hdata.m_bin_Sw;
+    const std::vector&lt;double&gt;&amp; _bins_sum_w2 = hdata.m_bin_Sw2;
+    const std::vector&lt; std::vector&lt;double&gt; &gt;&amp; _bins_sum_xw = hdata.m_bin_Sxw;
+    const std::vector&lt; std::vector&lt;double&gt; &gt;&amp; _bins_sum_x2w = hdata.m_bin_Sx2w;
+    // dump bin 50 :
+    std::cout &lt;&lt; &quot;entries[50] = &quot; &lt;&lt; _entries[50] &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;  sum_w[50] = &quot; &lt;&lt; _bins_sum_w[50] &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot; sum_w2[50] = &quot; &lt;&lt; _bins_sum_w2[50] &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot; sum_xw[50] = &quot; &lt;&lt; _bins_sum_xw[50][0] &lt;&lt; std::endl;   //0 = xaxis
+    std::cout &lt;&lt; &quot;sum_x2w[50] = &quot; &lt;&lt; _bins_sum_x2w[50][0] &lt;&lt; std::endl;  //0 = xaxis
+</programlisting></informalexample>
+ See the tools/histo/histo_data class for all internal fields.
+
+</sect3>
+<sect3 id="sect.g4tools_user_api_projection">
+<title>
+ Projections
+</title>
+  From a 2D histo, you can get the x projection with:
+<informalexample><programlisting>
+    tools::histo::h1d* projection = tools::histo::projection_x(h2d,&quot;ProjX&quot;);
+    ...
+    delete projection;
+</programlisting></informalexample>
+ See test/cpp/histo.cpp for example code. Other slicing and projection methods are:
+<informalexample><programlisting>
+  // h2d -&gt; h1d. (User gets ownership of the returned object).
+  h1d* slice_x(const h2d&amp;,int y_beg_ibin,int y_end_ibin,const std::string&amp; title);
+  h1d* projection_x(const h2d&amp;,const std::string&amp; title);
+  h1d* slice_y(const h2d&amp;,int x_beg_ibin,int x_end_ibin,const std::string&amp; title);
+  h1d* projection_y(const h2d&amp;,const std::string&amp; title);
+  // h2d -&gt; p1d. (User gets ownership of the returned object).
+  p1d* profile_x(const h2d&amp;,int y_beg_ibin,int y_end_ibin,const std::string&amp; title);
+  p1d* profile_x(const h2d&amp;,const std::string&amp;);
+  p1d* profile_y(const h2d&amp;,int x_beg_ibin,int x_end_ibin,const std::string&amp; title);
+  p1d* profile_y(const h2d&amp;,const std::string&amp; title);
+  // h3d -&gt; h2d. (User gets ownership of the returned object).
+  h2d* slice_xy(const h3d&amp;,int z_beg_ibin,int z_end_ibin,const std::string&amp; title);
+  h2d* projection_xy(const h3d&amp;,const std::string&amp; title);
+  h2d* slice_yz(const h3d&amp;,int x_beg_ibin,int x_end_ibin,const std::string&amp; title);
+  h2d* projection_yz(const h3d&amp;,const std::string&amp; title);
+  h2d* slice_xz(const h3d&amp;,int y_beg_ibin,int y_end_ibin,const std::string&amp; title);
+  h2d* projection_xz(const h3d&amp;,const std::string&amp; title);
+</programlisting></informalexample>
+
+</sect3>
+</sect2>
+</sect1>

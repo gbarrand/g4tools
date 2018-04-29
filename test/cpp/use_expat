@@ -1,0 +1,48 @@
+
+if [ "${use_expat}" = "yes" ] ; then
+  if [ ${build_cl_exe} = "yes" ] ; then
+    use_sys_expat=no
+    use_our_expat=yes
+  else
+    use_sys_expat=yes
+    use_our_expat=no
+  fi
+  
+  cppflags="${cppflags} -DTOOLS_USE_EXPAT"
+
+fi
+
+if [ "${use_sys_expat}" = "yes" ] ; then
+
+  if [ `uname` = Darwin ] ; then  
+    libs="${libs} -lexpat"
+    
+  elif [ `uname` = Linux ] ; then  
+    if [ -f /usr/include/expat.h ] ; then
+      libs="${libs} -lexpat"
+    else
+      use_our_expat=yes
+    fi
+  fi
+
+fi
+
+if [ "${use_our_expat}" = "yes" ] ; then
+
+  expat_home=../../../../inexlib/ourex/expat
+  if [ ! -d "${expat_home}" ] ; then
+    echo "use_expat : can't build the program, expat not found at ${expat_home}."
+    exit
+  fi
+  
+  if [ ${build_cl_exe} = "yes" ] ; then
+    cflags="${cflags} /DTOOLS_USE_OUREX_EXPAT /I${expat_home}/include"
+    cppflags="${cppflags} /DTOOLS_USE_OUREX_EXPAT /I${expat_home}/include"
+  else
+    cflags="${cflags} -DTOOLS_USE_OUREX_EXPAT -I${expat_home}/include"
+    cppflags="${cppflags} -DTOOLS_USE_OUREX_EXPAT -I${expat_home}/include"
+  fi
+  
+  libs="${libs} ${expat_home}/${bin_dir}/libourex_expat.a"
+
+fi

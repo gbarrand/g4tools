@@ -1,0 +1,17 @@
+#!/bin/sh -f
+
+c++ -o ./wrap_exe -I../.. ./wrap.cpp
+use_status=$?;if [ ${use_status} != 0 ] ; then exit ${use_status};fi
+
+find ./test -name 'wrap_*' -exec /bin/rm -f {} \;
+
+find ./test -name '*.ps' -print > tmp_0
+for file in $(cat tmp_0) ; do
+  name=`basename ${file}`
+  name=`echo ${name} | sed -e 's:\.:\_:g' | sed -e 's:\-:\_:g'`
+  #echo "${name}"
+  ./wrap_exe ${file} ./test/wrap_${name}
+done
+/bin/rm -f tmp_0
+
+/bin/rm -f wrap_exe

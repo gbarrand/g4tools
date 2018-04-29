@@ -1,0 +1,14 @@
+
+if [ "${use_thread}" = "yes" ] ; then
+
+  if [ ${build_cl_exe} = "yes" ] ; then
+    libs="${libs} kernel32.lib"
+
+  else
+    if [ ${build_clang} = "no" ] ; then
+      cppflags="${cppflags} -pthread"
+    fi
+    libs="${libs} -lpthread"
+  fi
+
+fi

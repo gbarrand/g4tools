@@ -1,0 +1,8 @@
+
+if [ `uname` = Darwin ] ; then
+  bin_dir=bin_clang  
+elif [ ${build_cl_exe} = "yes" ] ; then
+  bin_dir=bin_visual    
+else    
+  bin_dir=bin_gnu
+fi

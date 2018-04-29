@@ -1,0 +1,66 @@
+
+if [ "${use_hdf5}" = "yes" ] ; then
+  if [ ${build_cl_exe} = "yes" ] ; then
+    use_sys_hdf5=no
+    use_our_hdf5=yes
+  else
+    use_sys_hdf5=yes
+    use_our_hdf5=no
+  fi
+fi
+
+if [ "${use_sys_hdf5}" = "yes" ] ; then
+  cppflags="${cppflags} -DTOOLS_USE_HDF5"
+  
+  hdf5_sys_home=/usr/local/hdf5/1.6.6
+  hdf5_sys_home=/usr/local/hdf5/1.8.15
+  if [ ! -d ${hdf5_sys_home} ] ; then
+    echo "use_hdf5 : ${hdf5_sys_home} not found. Use our hdf5."
+    use_our_hdf5=yes
+  else
+    ccflags="${ccflags} -I${hdf5_sys_home}/include"
+    cppflags="${cppflags} -I${hdf5_sys_home}/include"
+
+   #ccflags="${ccflags} -DH5_USE_16_API"
+   #cppflags="${cppflags} -DH5_USE_16_API"
+
+    if [ "${use_archive}" = "yes" ] ; then
+      if [ -f ${hdf5_sys_home}/lib/libhdf5.a ] ; then
+        libs="${libs} ${hdf5_sys_home}/lib/libhdf5.a"
+      else
+        echo "use_hdf5 : use_archive requested but ${hdf5_sys_home}/libhdf5.a not found, try with -lhdf5."
+        libs="${libs} -L${hdf5_sys_home}/lib -lhdf5"
+      fi
+    else     
+      libs="${libs} -L${hdf5_sys_home}/lib -lhdf5"
+    fi
+  fi
+fi
+
+if [ "${use_our_hdf5}" = "yes" ] ; then
+
+  cppflags="${cppflags} -DTOOLS_USE_HDF5"
+
+  ccflags="${ccflags} -DTOOLS_USE_OUREX_HDF5"
+  cppflags="${cppflags} -DTOOLS_USE_OUREX_HDF5"
+
+  hdf5_home=../../../../inexlib/ourex/hdf5
+  if [ ! -d "${hdf5_home}" ] ; then
+    echo "use_hdf5 : can't build the program, hdf5 not found at ${hdf5_home}."
+    exit
+  fi
+  
+  if [ ${build_cl_exe} = "yes" ] ; then
+    cflags="${cflags} /DTOOLS_USE_OUREX_HDF5 /I${hdf5_home}/include"
+    cppflags="${cppflags} /DTOOLS_USE_OUREX_HDF5 /I${hdf5_home}/include"
+  else
+    cflags="${cflags} -DTOOLS_USE_OUREX_HDF5 -I${hdf5_home}/include"
+    cppflags="${cppflags} -DTOOLS_USE_OUREX_HDF5 -I${hdf5_home}/include"
+  fi
+
+  libs="${libs} ${hdf5_home}/${bin_dir}/libourex_hdf5.a"
+
+  use_our_zlib=yes
+
+fi
+

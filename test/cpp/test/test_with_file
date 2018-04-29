@@ -1,0 +1,130 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_test_with_file
+#define tools_test_with_file
+
+#include "../sys/process"
+#include <tools/file>
+#include <tools/srep>
+#include <tools/num2s>
+#include <tools/test>
+#include <tools/vmanip>
+
+namespace tools {
+
+typedef const char** (*inc_func)(unsigned int& a_linen);
+
+typedef bool (*filter_func)(const std::string&);
+
+typedef bool (*test_func)(std::ostream& a_out,bool a_verbose,const std::string& a_file);
+inline bool test_with_file(std::ostream& a_out,bool a_verbose,
+                           const std::string& a_prefix,const std::string& a_suffix,bool a_remove,
+                           inc_func a_inc_func,test_func a_test_func,filter_func a_filter_func = 0) {
+  std::string file;
+  TOOLS_TEST_FUNC(num2s(process_id(),file))
+  file = a_prefix+file+a_suffix;
+  if(a_verbose) a_out << "file : " << file << std::endl;
+  if(!a_test_func(a_out,a_verbose,file)) return false;
+
+  if(false) {
+  std::string to_compare;
+ {unsigned int linen = 0;
+  const char** lines = a_inc_func(linen);
+  for(unsigned int index=0;index<linen;index++) {
+    std::string s = lines[index];
+    replace(s,"@@double_quote@@","\"");
+    replace(s,"@@back_slash@@","\\");
+    to_compare += s;
+    to_compare += "\n";
+  }}
+ 
+  char* buffer;
+  long length;
+  TOOLS_TEST_FUNC(file::read_bytes(file,buffer,length))
+#ifdef TOOLS_MEM
+  mem::decrement(s_new().c_str());
+#endif
+  bool status = equal(a_out,__FILE__,__LINE__,buffer,to_compare);
+  delete [] buffer;
+  return status;}
+
+  if(true) {
+  std::vector<std::string> to_compare;
+ {unsigned int linen = 0;
+  const char** lines = a_inc_func(linen);
+  for(unsigned int index=0;index<linen;index++) {
+    std::string s = lines[index];
+    replace(s,"@@double_quote@@","\"");
+    replace(s,"@@back_slash@@","\\");
+    to_compare.push_back(s);
+  }}
+  if(a_filter_func) vfilter(to_compare,a_filter_func);
+  std::vector<std::string> _lines;
+  TOOLS_TEST_FUNC(file::read(file,_lines))
+  if(a_filter_func) vfilter(_lines,a_filter_func);
+  bool status = equal(a_out,__FILE__,__LINE__,_lines,to_compare);
+  if(status && a_remove) TOOLS_TEST_FUNC(file::std_remove(file))
+  return status;}
+  
+}
+
+typedef bool (*test_plot_func)(std::ostream& a_out,bool a_verbose,const std::string& a_file,
+                         unsigned int a_cols, unsigned int a_rows,float a_plotter_scale,const std::string& a_style);
+
+inline bool test_with_file(std::ostream& a_out,bool a_verbose,
+                           const std::string& a_prefix,const std::string& a_suffix,bool a_remove,
+                           inc_func a_inc_func,test_plot_func a_test_func,
+                           unsigned int a_cols, unsigned int a_rows,float a_plotter_scale,const std::string& a_style,
+			   filter_func a_filter_func = 0) {
+  std::string file;
+  TOOLS_TEST_FUNC(num2s(process_id(),file))
+  file = a_prefix+file+a_suffix;
+  if(a_verbose) a_out << "file : " << file << std::endl;
+  if(!a_test_func(a_out,a_verbose,file,a_cols,a_rows,a_plotter_scale,a_style)) return false;
+
+  if(false) {
+  std::string to_compare;
+ {unsigned int linen = 0;
+  const char** lines = a_inc_func(linen);
+  for(unsigned int index=0;index<linen;index++) {
+    std::string s = lines[index];
+    replace(s,"@@double_quote@@","\"");
+    replace(s,"@@back_slash@@","\\");
+    to_compare += s;
+    to_compare += "\n";
+  }} 
+  char* buffer;
+  long length;
+  TOOLS_TEST_FUNC(file::read_bytes(file,buffer,length))
+#ifdef TOOLS_MEM
+  mem::decrement(s_new().c_str());
+#endif
+  bool status = equal(a_out,__FILE__,__LINE__,buffer,to_compare);
+  delete [] buffer;
+  if(status && a_remove) TOOLS_TEST_FUNC(file::std_remove(file))
+  return status;}
+
+  if(true) {
+  std::vector<std::string> to_compare;
+ {unsigned int linen = 0;
+  const char** lines = a_inc_func(linen);
+  for(unsigned int index=0;index<linen;index++) {
+    std::string s = lines[index];
+    replace(s,"@@double_quote@@","\"");
+    replace(s,"@@back_slash@@","\\");
+    to_compare.push_back(s);
+  }}
+  if(a_filter_func) vfilter(to_compare,a_filter_func);
+  std::vector<std::string> _lines;
+  TOOLS_TEST_FUNC(file::read(file,_lines))
+  if(a_filter_func) vfilter(_lines,a_filter_func);
+  bool status = equal(a_out,__FILE__,__LINE__,_lines,to_compare);
+  if(status && a_remove) TOOLS_TEST_FUNC(file::std_remove(file))
+  return status;}
+  
+}
+
+}
+
+#endif

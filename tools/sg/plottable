@@ -1,0 +1,50 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_sg_plottable
+#define tools_sg_plottable
+
+#include <string>
+
+#include "../scast"
+#include "../S_STRING"
+
+namespace tools {
+namespace sg {
+
+class plottable {
+public:
+  TOOLS_SCLASS(tools::sg::plottable)
+public:
+  virtual void* cast(const std::string& a_class) const {
+    if(void* p = cmp_cast<plottable>(this,a_class)) {return p;}
+    return 0;
+  }
+public:
+  virtual ~plottable() {}
+public:
+  virtual plottable* copy() const = 0;
+  virtual bool is_valid() const = 0;
+  virtual void infos(const std::string&,std::string&) const = 0;
+
+  virtual const std::string& name() const = 0;
+  virtual void set_name(const std::string&) = 0;
+
+  virtual const std::string& title() const = 0;
+  virtual const std::string& legend() const = 0;
+  virtual void set_legend(const std::string&) = 0;
+
+  //virtual unsigned int dimension() const = 0;
+};
+
+class plotprim {
+public:
+  virtual ~plotprim(){}
+public:
+  virtual void* cast(const std::string&) const = 0;
+  virtual plotprim* copy() const = 0;
+};
+
+}}
+
+#endif

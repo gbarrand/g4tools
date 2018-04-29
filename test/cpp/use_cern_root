@@ -1,0 +1,14 @@
+
+if [ "${use_cern_root}" = "yes" ] ; then
+  # :-(. Do you really want to use that ?
+
+  ./check_app root-config 'root-config program not found. You have to <source setup> CERN-ROOT.'
+  use_status=$?;if [ ${use_status} != 0 ] ; then exit ${use_status};fi
+
+  cppflags="${cppflags} `root-config --cflags`"
+  libs="${libs} `root-config --libs`"
+
+  #cppflags="${cppflags} -I${inlib_mgr}/../inlib/gT"
+
+fi
+

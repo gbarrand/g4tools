@@ -1,0 +1,74 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_tests_test_lego_offscreen_sg
+#define tools_tests_test_lego_offscreen_sg
+
+#include <tools/mem>
+
+#include <tools/random>
+#include <tools/sg/h2plot>
+
+#include <tools/sg/ortho>
+#include <tools/sg/plotter>
+#include <tools/sg/set_plotter_camera>
+#include <tools/sg/holder>
+
+#include <tools/sg/text_freetype>
+
+inline tools::sg::separator* lego_offscreen_sg(unsigned int a_width,unsigned int a_height) {
+
+  //////////////////////////////////////////////////////////
+  /// create and fill histogram : //////////////////////////
+  //////////////////////////////////////////////////////////
+  unsigned int entries = 10000;
+
+  tools::random::gauss rg(1,2);
+  tools::random::bw rbw(0,1);
+  //tools::histo::h2d h("Gauss_BW",100,-5,5,100,-2,2);
+  tools::histo::h2d* h = new tools::histo::h2d("Gauss_BW",20,-5,5,20,-2,2);
+  for(unsigned int count=0;count<entries;count++) h->fill(rg.shoot(),rbw.shoot(),0.8);
+  
+  //////////////////////////////////////////////////////////
+  /// create scene graph ///////////////////////////////////
+  /// create the plotter ///////////////////////////////////
+  /// declare the histo to the plotter /////////////////////
+  //////////////////////////////////////////////////////////
+  tools::sg::separator* sep = new tools::sg::separator;
+
+  tools::sg::ortho* camera = new tools::sg::ortho;
+  // camera set below.
+  sep->add(camera);
+
+  tools::sg::text_freetype* ttf = new tools::sg::text_freetype;
+  tools::sg::plotter* plotter = new tools::sg::plotter(*ttf);
+
+  //WARNING : we give ownership of h1d2plot to the plotter,
+  //          but we still have ownership of the h histo.
+  plotter->add_plottable(new tools::sg::h2d2plot(*h));
+
+  plotter->bins_style(0).color = tools::colorf_grey();
+  plotter->bins_style(0).modeling = tools::sg::modeling_boxes();
+  plotter->bins_style(0).painting = tools::sg::painting_violet_to_red;
+
+  plotter->infos_style().font = tools::sg::font_arialbd_ttf();
+  plotter->infos_style().front_face = tools::sg::winding_cw;
+  plotter->infos_x_margin = 0.01f; //percent of plotter width.
+  plotter->infos_y_margin = 0.01f; //percent of plotter height.
+
+  plotter->shape = tools::sg::plotter::xyz;
+  plotter->shape_automated = false;
+  plotter->data_light_on_automated = false;
+  plotter->data_light().on = false;
+
+  sep->add(plotter);
+
+  sep->add(new tools::sg::holder<tools::sg::text_freetype>(ttf));
+  sep->add(new tools::sg::holder<tools::histo::h2d>(h));
+  
+  tools::sg::set_plotter_camera(*plotter,*camera,a_width,a_height);
+
+  return sep;
+}
+
+#endif

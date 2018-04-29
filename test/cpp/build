@@ -1,0 +1,234 @@
+#!/bin/sh -f
+
+what=""
+
+build_debug=no
+build_verbose=no
+build_icc=no
+build_clang=no
+build_mem=no
+
+build_expat=no
+build_freetype=no
+build_hdf5=no
+
+build_cl_exe=no
+if [ "`uname | grep CYGWIN`" != "" ] ; then build_cl_exe=yes; fi
+
+args=""
+while test $# -ge 1 ; do
+  case $1 in
+    -g) build_debug=yes;      args="${args} $1";;
+    -v) build_verbose=yes;    args="${args} $1";;
+    -x) build_verbose=yes;    args="${args} $1";;
+    -icc) build_icc=yes;      args="${args} $1";;
+    -clang) build_clang=yes;  args="${args} $1";;
+    -mem) build_mem=yes;      args="${args} $1";;
+
+    -expat)    build_expat=yes;    args="${args} $1";;
+    -ttf)      build_freetype=yes; args="${args} $1";;
+    -freetype) build_freetype=yes; args="${args} $1";;
+    -hdf5)     build_hdf5=yes;     args="${args} $1";;
+    
+    -*) echo "unknown option : $1" ; exit ;;
+     *) if [ $# = 1 ] ; then
+          what=$1
+        else         
+          echo "unknown option : $1"
+        fi
+        ;;
+  esac
+  shift
+done
+
+#////////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////
+
+if [ "${what}" = "" ] ; then
+  find . -maxdepth 1 -name '*.cpp' -exec ./build ${args} {} \;
+  exit
+fi
+
+if [ ${build_verbose} = "yes" ] ; then set -x;fi
+
+exa=`basename ${what}`
+
+exa=`echo ${exa} | sed -e 's:.cpp::g'`
+exa=`echo ${exa} | sed -e 's:./::g'`
+
+echo "build ${exa}..."
+
+. ./use_cpp
+. ./use_cc
+
+. ./build_bin_dir
+
+use_archive=yes
+
+if [ ${build_expat}    = yes ] ; then use_expat=yes;fi
+if [ ${build_freetype} = yes ] ; then use_freetype=yes;fi
+if [ ${build_hdf5}     = yes ] ; then use_hdf5=yes;fi
+
+if [ ${build_cl_exe} = "yes" ] ; then
+  # rm painfull warnings about API strcpy, etc... deprecated.
+  cppflags="${cppflags} /wd4996"
+  ccflags0="${ccflags0} /wd4996"
+  # 64 bits machines : size_t to unsigned int : rm these warnings for the moment :
+  cppflags="${cppflags} /wd4267"
+  ccflags0="${ccflags0} /wd4267"
+fi
+
+if [ ${build_cl_exe} = "yes" ] ; then
+  cppflags="${cppflags} /I../.."
+  cppflags="${cppflags} /I../g4tools/include" # if within G4.
+else
+  cppflags="${cppflags} -I../.."
+  cppflags="${cppflags} -I../g4tools/include" # if within G4.
+fi
+
+cppflags="${cppflags} -DNDEBUG"
+
+#////////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////
+if [ ${exa} = "raxml" ] ; then use_expat=yes; fi
+if [ ${exa} = "wroot" ] ; then use_zlib=yes; fi
+if [ ${exa} = "wroot_ntu_1000_cols" ] ; then use_zlib=yes; fi
+if [ ${exa} = "mt_ntuple" ] ; then use_thread=yes; fi
+if [ ${exa} = "mpi_histos" ] ; then use_mpi=yes; fi
+if [ ${exa} = "mpi_ntuple" ] ; then
+  use_zlib=yes
+  use_mpi=yes
+fi
+
+if [ ${exa} = "rroot" -o ${exa} = "rxrayfluo" ] ; then
+  use_zlib=yes
+  if [ -f ../g4tools/src/csz_inflate.cc ] ; then
+    cfiles="${cfiles} ../g4tools/src/csz_inflate.cc"
+  else
+    cfiles="${cfiles} ../../src/csz_inflate.cc"
+  fi
+fi
+if [ ${exa} = "viewplot" ] ; then
+  use_expat=yes
+  use_freetype=yes
+fi
+
+if [ ${exa} = "hdf5_histos" ] ; then
+  use_hdf5=yes
+  use_zlib=yes   
+  use_thread=yes   
+  use_dl=yes
+fi
+if [ ${exa} = "hdf5_ntuple" ] ; then
+  use_hdf5=yes
+  use_zlib=yes   
+  use_thread=yes   
+  use_dl=yes
+fi
+if [ ${exa} = "hdf5_threads" ] ; then
+  use_hdf5=yes
+  use_zlib=yes   
+  use_thread=yes
+  use_dl=yes
+fi
+if [ ${exa} = "cern_root_hdf5_ntuple" ] ; then
+  use_cern_root=yes    
+  use_hdf5=yes
+  use_zlib=yes    
+  use_thread=yes    
+  use_dl=yes
+fi
+if [ ${exa} = "cern_root_read_rg_rbw" ] ; then
+  use_cern_root=yes    
+fi
+if [ ${exa} = "utest" ] ; then    
+  if [ ${build_cl_exe} = "yes" ] ; then
+    cppflags="${cppflags} /bigobj"
+    ccflags0="${ccflags0} /bigobj"
+  fi
+  
+  cppfiles="${cppfiles} ./test/histo.cpp"
+  cppfiles="${cppfiles} ./test/root_histo.cpp"
+  cppfiles="${cppfiles} ./test/root_ntuple.cpp"
+  cppfiles="${cppfiles} ./test/csv_histo.cpp"
+  cppfiles="${cppfiles} ./test/csv_ntuple.cpp"
+  cppfiles="${cppfiles} ./test/columns.cpp"
+  cppfiles="${cppfiles} ./test/viewplot.cpp"
+
+  #use_expat=yes
+  if [ "${use_expat}" = yes ] ; then    
+    cppfiles="${cppfiles} ./test/axml.cpp"
+  fi
+  
+  #use_hdf5=yes
+  if [ "${use_hdf5}" = yes ] ; then    
+    cppfiles="${cppfiles} ./test/hdf5.cpp"
+    cppfiles="${cppfiles} ./test/hdf5_histo.cpp"
+    cppfiles="${cppfiles} ./test/hdf5_ntuple.cpp"
+    use_zlib=yes    
+    use_thread=yes    
+    use_freetype=yes
+    use_dl=yes
+  fi
+
+  if [ "${use_freetype}" = yes ] ; then
+    # WARNING : below tests do not pass on my Mac with a freetype/2.7.0 (whils ok with a 2.8.0).  
+    cppfiles="${cppfiles} ./test/lego_offscreen_zb.cpp"
+    if [ "${use_expat}" = yes ] ; then    
+      cppfiles="${cppfiles} ./test/viewplot_ttf.cpp"
+    fi    
+  fi    
+    
+fi
+
+. ./use_cern_root
+
+. ./use_freetype
+. ./use_expat
+. ./use_mpi
+. ./use_hdf5
+. ./use_zlib
+. ./use_thread
+. ./use_dl
+
+#////////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////
+# let the freedom to some application to not use G4_cppflags.
+cppflags="${G4_cppflags} ${cppflags}"
+
+for file in ${cfiles} ; do
+  oname=`basename ${file}`
+  obj="./${oname}.o"
+  if [ ${build_cl_exe} = "yes" ] ; then
+    eval ${cc_compiler} /c ${ccflags} /Fo${obj} ${file}
+  else
+    eval ${cc_compiler} -c ${ccflags} -o ${obj} ${file}
+    use_status=$?;if [ ${use_status} != 0 ] ; then exit ${use_status};fi
+  fi
+  objs="${objs} ${obj}"
+done
+
+for file in ${cppfiles} ; do
+  oname=`basename ${file}`
+  obj="./${oname}.o"
+  if [ ${build_cl_exe} = "yes" ] ; then
+    eval ${cpp_compiler} /c ${cppflags} /Fo${obj} ${file}
+  else
+    eval ${cpp_compiler} -c ${cppflags} -o ${obj} ${file}
+    use_status=$?;if [ ${use_status} != 0 ] ; then exit ${use_status};fi
+  fi
+  objs="${objs} ${obj}"
+done
+
+if [ ${build_cl_exe} = "yes" ] ; then
+  eval ${cpp_compiler} /c ${cppflags} /Fomain.o ${exa}.cpp
+  eval ${cpp_linker} /nologo /OPT:NOREF /out:tools_test_${exa}.exe main.o ${objs} ${libs}
+else
+  eval ${cpp_linker} -o tools_test_${exa} ${cppflags} ${exa}.cpp ${objs} ${libs}
+fi
+
+/bin/rm -f ${objs}
+

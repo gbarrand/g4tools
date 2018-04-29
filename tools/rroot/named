@@ -1,0 +1,161 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_rroot_named
+#define tools_rroot_named
+
+#include "object"
+#include "../scast"
+#include "../vdata"
+#include "cids"
+
+namespace tools {
+namespace rroot {
+
+inline bool Named_stream(buffer& a_buffer,std::string& a_name,std::string& a_title) {
+  short v;
+  unsigned int s, c;
+  if(!a_buffer.read_version(v,s,c)) return false;
+ {uint32 id,bits;
+  if(!Object_stream(a_buffer,id,bits)) return false;}
+  if(!a_buffer.read(a_name)) return false;
+  if(!a_buffer.read(a_title)) return false;
+  if(!a_buffer.check_byte_count(s,c,"TNamed")) return false;
+  return true;
+}
+
+inline bool AttLine_stream(buffer& a_buffer,short& a_color,short& a_style,short& a_width){
+  short v;
+  unsigned int s, c;
+  if(!a_buffer.read_version(v,s,c)) return false;
+  if(!a_buffer.read(a_color)) return false;
+  if(!a_buffer.read(a_style)) return false;
+  if(!a_buffer.read(a_width)) return false;
+  if(!a_buffer.check_byte_count(s,c,"TAttLine")) return false;
+  return true;
+}
+
+inline bool AttFill_stream(buffer& a_buffer,short& a_color,short& a_style){
+  short v;
+  unsigned int s, c;
+  if(!a_buffer.read_version(v,s,c)) return false;
+  if(!a_buffer.read(a_color)) return false;
+  if(!a_buffer.read(a_style)) return false;
+  if(!a_buffer.check_byte_count(s,c,"TAttFill")) return false;
+  return true;
+}
+
+inline bool AttMarker_stream(buffer& a_buffer) {
+  short fMarkerColor;
+  short fMarkerStyle;
+  float fMarkerWidth;
+  short v;
+  unsigned int s, c;
+  if(!a_buffer.read_version(v,s,c)) return false;
+  if(!a_buffer.read(fMarkerColor)) return false;
+  if(!a_buffer.read(fMarkerStyle)) return false;
+  if(!a_buffer.read(fMarkerWidth)) return false;
+  if(!a_buffer.check_byte_count(s,c,"TAttMarker")) return false;
+  return true;
+}
+
+inline bool GeoAtt_stream(buffer& a_buffer) {
+  unsigned int fGeoAtt;            // option flags
+  short v;
+  unsigned int s, c;
+  if(!a_buffer.read_version(v,s,c)) return false;
+  if(!a_buffer.read(fGeoAtt)) return false;
+  if(!a_buffer.check_byte_count(s,c,"TGeoAtt")) return false;
+  return true;
+}
+
+inline bool Att3D_stream(buffer& a_buffer) {
+  short v;
+  unsigned int s, c;
+  if(!a_buffer.read_version(v,s,c)) return false;
+  if(!a_buffer.check_byte_count(s,c,"TAtt3D")) return false;
+  return true;
+}
+
+template <class T>
+inline bool Array_stream(buffer& a_buffer,std::vector<T>& a_v) {
+  a_v.clear();
+  int sz;
+  if(!a_buffer.read(sz)) return false;
+  //check sz is not crazy :
+  if(!a_buffer.check_eob(sz)) return false;
+  a_v.resize(sz);
+  if(!a_buffer.read_fast_array<T>(vec_data(a_v),sz)) return false;
+  return true;
+}
+
+template <class T>
+inline bool dummy_array_stream(buffer& a_buffer,int a_n){
+  char is_array;
+  if(!a_buffer.read(is_array)) return false;
+  if(!is_array) return true;
+  if(!a_n) return true;
+  T* v = new T[a_n];
+  bool status = a_buffer.read_fast_array<T>(v,a_n);
+  delete [] v;
+  return status;
+}
+
+class named : public virtual iro {
+  static const std::string& s_store_class() {
+    static const std::string s_v("TNamed");
+    return s_v;
+  }
+public:
+  static const std::string& s_class() {
+    static const std::string s_v("tools::rroot::named");
+    return s_v;
+  }
+public: //iro
+  virtual void* cast(const std::string& a_class) const {
+    if(void* p = cmp_cast<named>(this,a_class)) return p;
+    return 0;
+  }
+  virtual const std::string& s_cls() const {return s_class();}
+public:
+  static cid id_class() {return named_cid();}
+  virtual void* cast(cid a_class) const {
+    if(void* p = cmp_cast<named>(this,a_class)) {return p;}
+    else return 0;
+  }
+  //virtual void* cast(cid) const {return named_cid();}
+public:
+  virtual iro* copy() const {return new named(*this);}
+  virtual bool stream(buffer& a_buffer) {
+    return Named_stream(a_buffer,m_name,m_title);
+  }
+public:
+  named() {
+#ifdef TOOLS_MEM
+    mem::increment(s_class().c_str());
+#endif
+  }
+  virtual ~named() {
+#ifdef TOOLS_MEM
+    mem::decrement(s_class().c_str());
+#endif
+  }
+protected:
+  named(const named& a_from):iro(a_from),m_name(a_from.m_name),m_title(a_from.m_title) {
+#ifdef TOOLS_MEM
+    mem::increment(s_class().c_str());
+#endif
+  }
+  named& operator=(const named& a_from){
+    m_name = a_from.m_name;
+    m_title = a_from.m_title;
+    return *this;
+  }
+protected:
+  std::string m_name;
+  std::string m_title;
+};
+
+}}
+
+#endif

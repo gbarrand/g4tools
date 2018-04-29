@@ -1,0 +1,61 @@
+
+if [ "${use_freetype}" = "yes" ] ; then
+  if [ ${build_cl_exe} = "yes" ] ; then
+    use_sys_freetype=no
+    use_our_freetype=yes
+  else
+    use_sys_freetype=yes
+    use_our_freetype=no
+  fi
+  
+  cppflags="${cppflags} -DTOOLS_USE_FREETYPE"
+
+fi
+
+if [ "${use_sys_freetype}" = "yes" ] ; then
+
+  if [ `uname` = Darwin ] ; then  
+    if [ -d /opt/local/include/freetype2  ] ; then
+      # the one here is a 2.8.0 that is ok for utest/freetype tests.
+      cppflags="${cppflags} -I/opt/local/include/freetype2"
+      libs="${libs} -L/opt/local/lib -lfreetype"
+    elif [ -d /usr/X11/include/freetype2  ] ; then
+      # WARNING : the one here is a 2.7.0 that does not permit to pass utest/freetype tests.
+      cppflags="${cppflags} -I/usr/X11/include/freetype2"
+      libs="${libs} -L/usr/X11/lib -lfreetype"
+    else
+      echo "use_freetype : /usr/X11/include/freetype2 not found."
+      exit
+    fi
+
+  elif [ `uname` = Linux ] ; then  
+    if [ -d /usr/include/freetype2  ] ; then
+      cppflags="${cppflags} -I/usr/include/freetype2"
+      libs="${libs} -L/usr/${lib} -lfreetype"
+    else
+      echo "use_freetype : /usr/include/freetype2 not found."
+      exit
+    fi
+  fi
+
+fi
+
+if [ "${use_our_freetype}" = "yes" ] ; then
+
+  freetype_home=../../../../inexlib/ourex/freetype
+  if [ ! -d "${freetype_home}" ] ; then
+    echo "use_freetype : can't build the program, freetype not found at ${freetype_home}."
+    exit
+  fi
+  
+  if [ ${build_cl_exe} = "yes" ] ; then
+    cflags="${cflags} /DTOOLS_USE_OUREX_FREETYPE /I${freetype_home}/include"
+    cppflags="${cppflags} /DTOOLS_USE_OUREX_FREETYPE /I${freetype_home}/include"
+  else
+    cflags="${cflags} -DDTOOLS_USE_OUREX_FREETYPE -I${freetype_home}/include"
+    cppflags="${cppflags} -DDTOOLS_USE_OUREX_FREETYPE -I${freetype_home}/include"
+  fi
+  
+  libs="${libs} ${freetype_home}/${bin_dir}/libourex_freetype.a"
+  
+fi
