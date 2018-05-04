@@ -1,15 +1,13 @@
 
-  The code of g4/tools is an automatic extraction of part
- of the inlib/exlib that is used, among other things,
- to build the ioda application. The namespace "inlib"
- and "exlib" had been automatically changed to "tools"
- by the procedure. Modifications or corrections must be done
- in the original inlib/exlib code and not in the
- g4/tools packing. If wanting to do some, please contact
- the author.
+  g4tools is part of the softinex inlib/exlib code used as the
+ technical backend of the Geant4 analysis category. (The namespaces
+ "inlib" and "exlib" had been automatically changed to "tools"
+ to keep some naming consistency within Geant4 and avoid clashes
+ when building our Geant4 apps (g4exa, g4view, MEMPHYS_vis) that
+ uses too inlib/exlib).
 
   For web pages, see the section g4tools under the softinex portal at :
-     https://gbarrand.github.io
+    https://gbarrand.github.io
 
  (It is a new place, the old http://softinex.lal.in2p3.fr is anyway
  valid up to the final migration on git pages)
