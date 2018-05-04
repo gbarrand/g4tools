@@ -6,13 +6,17 @@
  by the procedure. Modifications or corrections must be done
  in the original inlib/exlib code and not in the
  g4/tools packing. If wanting to do some, please contact
- the author. The web pages of inlib/exlib can be
- accessed from the softinex portal :
-     http://softinex.lal.in2p3.fr
+ the author.
+
+  For web pages, see the section g4tools under the softinex portal at :
+     https://gbarrand.github.io
+
+ (It is a new place, the old http://softinex.lal.in2p3.fr is anyway
+ valid up to the final migration on git pages)
 
   See also the tools.license file for terms.
 
-   May 2011
+   May 2018
 
     Guy Barrand   
 
