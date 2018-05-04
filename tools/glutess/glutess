@@ -190,6 +190,7 @@ gluTessProperty( GLUtesselator *tess, GLUenum which, GLUdouble value )
     default:
       break;
     }
+    return; //G.Barrand : add : seen with g++-8.1.0.
 
   case GLU_TESS_BOUNDARY_ONLY:
     tess->boundaryOnly = (value != 0);

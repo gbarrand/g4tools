@@ -96,6 +96,7 @@ if [ ${exa} = "raxml" ] ; then use_expat=yes; fi
 if [ ${exa} = "wroot" ] ; then use_zlib=yes; fi
 if [ ${exa} = "wroot_ntu_1000_cols" ] ; then use_zlib=yes; fi
 if [ ${exa} = "mt_ntuple" ] ; then use_thread=yes; fi
+if [ ${exa} = "mt_ntuple_ref" ] ; then use_thread=yes; fi
 if [ ${exa} = "mpi_histos" ] ; then use_mpi=yes; fi
 if [ ${exa} = "mpi_ntuple" ] ; then
   use_zlib=yes
@@ -174,7 +175,7 @@ if [ ${exa} = "utest" ] ; then
   fi
 
   if [ "${use_freetype}" = yes ] ; then
-    # WARNING : below tests do not pass on my Mac with a freetype/2.7.0 (whils ok with a 2.8.0).  
+    # WARNING : below tests do not pass on my Mac with a freetype/2.7.0 (whilst ok with a 2.8.0).  
     cppfiles="${cppfiles} ./test/lego_offscreen_zb.cpp"
     if [ "${use_expat}" = yes ] ; then    
       cppfiles="${cppfiles} ./test/viewplot_ttf.cpp"
