@@ -258,6 +258,7 @@ int main(int argc,char** argv) {
     std::cout << (row_wise?"row_wise":"column_wise") << std::endl;
     std::cout << "num threads " << num_threads << std::endl;
     std::cout << "num megas (per thread) " << num_megas << std::endl;
+    std::cout << "basket_size " << basket_size << std::endl;
   }
   
   tools::wroot::file rfile(std::cout,file);

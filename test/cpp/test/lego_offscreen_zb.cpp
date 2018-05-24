@@ -69,7 +69,13 @@ bool test_lego_offscreen_zb(std::ostream& a_out,bool a_verbose) {
   bool _remove = true;
 
   if(!tools::test_with_file(a_out,a_verbose,"out_lego_offscreen_zb",".ps",_remove,utest_lego_offscreen_out_zb_ps,
-			    lego_offscreen_zb,filter_CreationDate)) return false;
-  
+			    lego_offscreen_zb,filter_CreationDate)) {
+    a_out << "test_lego_offscreen_zb :"
+          << " failed. It may come from a version of freetype producing not the same results as the one"
+          << " used to produce the reference file."
+          << std::endl;
+    return false;
+  }
+ 
   return true;
 }

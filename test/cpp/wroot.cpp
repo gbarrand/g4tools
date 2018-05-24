@@ -253,13 +253,13 @@ int main(int argc,char** argv) {
     }}
 
    {user_vec_d.clear();
-    unsigned int number = row_wise ? count%100 : 10*rflat.shoot();
+    unsigned int number = row_wise ? count%100 : (unsigned int)(10*rflat.shoot());
     for(unsigned int i=0;i<number;i++) {
       user_vec_d.push_back(rg.shoot());
     }}
 
    {user_vec_s.clear();
-    unsigned int number = row_wise ? count%5 : 5*rflat.shoot();
+    unsigned int number = row_wise ? count%5 : (unsigned int)(5*rflat.shoot());
     for(unsigned int i=0;i<number;i++) {
       if(!tools::num2s(i,stmp)){}
       user_vec_s.push_back(stmp);
