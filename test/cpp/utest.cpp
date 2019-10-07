@@ -58,13 +58,10 @@ int main(int argc,char* argv[]) {
   if(args.is_arg("-verbose")) verbose = true;
   args.remove("-verbose");
 
-#ifdef TOOLS_MEM
-#else
   bool verb_exit = false;
   if(args.is_arg("-verb_exit")) verb_exit= true;
-#endif
   args.remove("-verb_exit");
-  
+
   unsigned int prec;
   if(args.find("-prec",prec)) std::cout.precision(prec);
   args.remove("-prec");
@@ -104,16 +101,15 @@ int main(int argc,char* argv[]) {
   } else {  
     args.remove_first();
     if(!utest.exec(args,verbose,argc,argv)) {
-      std::cout << "tools::utest : failed : exit ..." << std::endl;
+      if(verbose||verb_exit) std::cout << "tools::utest : exit ..." << std::endl;
       return EXIT_FAILURE;
     }
   }
 
+  if(verbose||verb_exit) std::cout << "tools::utest : exit ..." << std::endl;
+  
 #ifdef TOOLS_MEM
   }tools::mem::balance(std::cout);
-  std::cout << "tools::utest : exit(mem) ..." << std::endl;
-#else  
-  if(verbose||verb_exit) std::cout << "tools::utest : exit ..." << std::endl;
 #endif //TOOLS_MEM
 
   return EXIT_SUCCESS;

@@ -37,6 +37,8 @@ int main(int argc,char** argv) {
 
   bool verbose = args.is_arg("-verbose");
 
+  bool have_header = args.is_arg("-no_header")?false:true;
+  
   //////////////////////////////////////////////////////////
   /// create some histos : /////////////////////////////////
   //////////////////////////////////////////////////////////
@@ -65,7 +67,7 @@ int main(int argc,char** argv) {
               << std::endl;
   }
   // write :
-  if(!tools::wcsv::hto(writer,h.s_cls(),h,sep,hc)) return EXIT_FAILURE;
+  if(!tools::wcsv::hto(writer,h.s_cls(),h,sep,hc,have_header)) return EXIT_FAILURE;
   writer.close();}
 
  {std::ofstream writer("out_h1df.csv");
@@ -84,7 +86,7 @@ int main(int argc,char** argv) {
               << std::endl;
   }
   // write :
-  if(!tools::wcsv::hto(writer,h.s_cls(),h,sep,hc)) return EXIT_FAILURE;
+  if(!tools::wcsv::hto(writer,h.s_cls(),h,sep,hc,have_header)) return EXIT_FAILURE;
   writer.close();}
 
  {std::ofstream writer("out_p1d.csv");
@@ -98,7 +100,7 @@ int main(int argc,char** argv) {
               << ", mean " << h.mean() << ", rms " << h.rms()
               << std::endl;
   }
-  if(!tools::wcsv::pto(writer,h.s_cls(),h,sep,hc)) return EXIT_FAILURE;
+  if(!tools::wcsv::pto(writer,h.s_cls(),h,sep,hc,have_header)) return EXIT_FAILURE;
   writer.close();}
 
  {std::ofstream writer("out_h2d.csv");
@@ -117,7 +119,7 @@ int main(int argc,char** argv) {
               << ", mean_y " << h.mean_y() << ", rms_y " << h.rms_y()
               << std::endl;
   }
-  if(!tools::wcsv::hto(writer,h.s_cls(),h,sep,hc)) return EXIT_FAILURE;
+  if(!tools::wcsv::hto(writer,h.s_cls(),h,sep,hc,have_header)) return EXIT_FAILURE;
   writer.close();}
 
  {std::ofstream writer("out_p2d.csv");
@@ -132,7 +134,7 @@ int main(int argc,char** argv) {
               << ", mean_y " << h.mean_y() << ", rms_y " << h.rms_y()
               << std::endl;
   }
-  if(!tools::wcsv::pto(writer,h.s_cls(),h,sep,hc)) return EXIT_FAILURE;
+  if(!tools::wcsv::pto(writer,h.s_cls(),h,sep,hc,have_header)) return EXIT_FAILURE;
   writer.close();}
 
  {std::ofstream writer("out_h3d.csv");
@@ -152,7 +154,7 @@ int main(int argc,char** argv) {
               << ", mean_z " << h.mean_z() << ", rms_z " << h.rms_z()
               << std::endl;
   }
-  if(!tools::wcsv::hto(writer,h.s_cls(),h,sep,hc)) return EXIT_FAILURE;
+  if(!tools::wcsv::hto(writer,h.s_cls(),h,sep,hc,have_header)) return EXIT_FAILURE;
   writer.close();}
 
  {std::ofstream writer("out_h1d_edges.csv");
@@ -173,7 +175,7 @@ int main(int argc,char** argv) {
               << std::endl;
   }
   // write :
-  if(!tools::wcsv::hto(writer,h.s_cls(),h,sep,hc)) return EXIT_FAILURE;
+  if(!tools::wcsv::hto(writer,h.s_cls(),h,sep,hc,have_header)) return EXIT_FAILURE;
   writer.close();}
 
 #ifdef TOOLS_MEM

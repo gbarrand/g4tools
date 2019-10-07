@@ -185,7 +185,7 @@ void root_read_rg_rbw(const std::string& a_file,bool verbose) {
         char* _event_user_vec_s = event_vec_s_leaf->GetValueString();
         std::vector<std::string> user_vec_s;
         tools::get_lines(_event_user_vec_s,user_vec_s);
-        if(int(user_vec_s.size())!=(_event.user_count%5))  {
+        if(user_vec_s.size()!=(size_t)(_event.user_count%5))  {
           std::cout << "found an inconsistent row at row : "<< row
                     << ", user_vec_s.size() " << user_vec_s.size()
                     << ", user_count%5 " << (_event.user_count%5)

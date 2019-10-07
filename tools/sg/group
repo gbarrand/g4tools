@@ -49,6 +49,8 @@ public:
     }
   }
   virtual void search(search_action& a_action) {
+    parent::search(a_action);
+    if(a_action.done()) return;
     if(a_action.do_path()) a_action.path_push(this);
     tools_vforcit(node*,m_children,it) {
       (*it)->search(a_action);
@@ -229,7 +231,8 @@ public:
     //touch();
   }
 
-  void clear() {safe_clear<node>(m_children);}
+//void clear() {safe_clear<node>(m_children);}
+  void clear() {safe_reverse_clear<node>(m_children);}
 
   void raw_clear(){ //used for sg coming from exlib/rroot/vis_volume.
     tools::raw_clear<node>(m_children); //inlib:: is needed.

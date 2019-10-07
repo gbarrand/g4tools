@@ -1055,6 +1055,9 @@ inline bool value::multiply(value& aThis,const value& aV,std::string& aError){
     case value::INT:
       aThis.u.m_int *= aV.u.m_int;
       return true;
+    case value::UNSIGNED_INT:
+      aThis.u.m_int *= aV.u.m_unsigned_int;
+      return true;
     case value::DOUBLE:
       aThis.u.m_int *= (int)aV.u.m_double;
       return true;
@@ -1080,7 +1083,6 @@ inline bool value::multiply(value& aThis,const value& aV,std::string& aError){
     case value::DOUBLE_STAR:
     case value::FLOAT_STAR:
     case value::INT_STAR:
-    case value::UNSIGNED_INT:
     case value::STRING:
     //case value::ARRAY_UNSIGNED_CHAR:
     //case value::ARRAY_CHAR:
@@ -1352,6 +1354,16 @@ inline bool value::divide(value& aThis,const value& aV,std::string& aError){
   switch(aThis.m_type) {
   case value::INT:
     switch(aV.m_type) {
+    case value::INT:
+      if(aV.u.m_int==0) {
+        aError = value::error_div_zero();
+        aThis.set_none();
+        return false;
+      } else {
+        int tmp = aThis.u.m_int/aV.u.m_int;
+        aThis.set(tmp);
+        return true;
+      }
     case value::FLOAT:
       if(aV.u.m_float==0.0F) {
         aError = value::error_div_zero();
@@ -1385,7 +1397,6 @@ inline bool value::divide(value& aThis,const value& aV,std::string& aError){
       aThis.u.m_array_double->multiply((double)tmp);
       return true;}
     case value::NONE:
-    case value::INT:
     case value::VOID_STAR:
     case value::BOOL:
     case value::SHORT:
@@ -1582,29 +1593,16 @@ inline bool value::divide(value& aThis,const value& aV,std::string& aError){
     break;
   case value::UNSIGNED_INT:
     switch(aV.m_type) {
-    //case value::UNSIGNED_INT:
-    //  if(aV.u.m_unsigned_int==0) {
-    //    aError = value::error_div_zero();
-    //    aThis.set_none();
-    //    return false;
-    //  } else {
-    //    //FIXME : ???
-    //    aThis.set((double)(aThis.u.m_unsigned_int  / aV.u.m_unsigned_int ));
-    //    return true;
-    //  }
-    case value::ARRAY_DOUBLE:{
-      unsigned int tmp = aThis.u.m_unsigned_int;
-      //In the below, this becomes a value::ARRAY_DOUBLE.
-      aThis.set(aV.u.m_array_double->orders(),
-                aV.u.m_array_double->vector());
-      if(!aThis.u.m_array_double->invert()) {
+    case value::UNSIGNED_INT:
+      if(aV.u.m_unsigned_int==0) {
         aError = value::error_div_zero();
         aThis.set_none();
         return false;
+      } else {
+        unsigned int tmp = aThis.u.m_unsigned_int/aV.u.m_unsigned_int;
+        aThis.set(tmp);
+        return true;
       }
-      aThis.u.m_array_double->multiply(double(tmp));
-      return true;}
-
     case value::FLOAT:
       if(aV.u.m_float==0) {
         aError = value::error_div_zero();
@@ -1625,6 +1623,19 @@ inline bool value::divide(value& aThis,const value& aV,std::string& aError){
         aThis.set(d); //this becomes a value::DOUBLE.
         return true;
       }
+    case value::ARRAY_DOUBLE:{
+      unsigned int tmp = aThis.u.m_unsigned_int;
+      //In the below, this becomes a value::ARRAY_DOUBLE.
+      aThis.set(aV.u.m_array_double->orders(),
+                aV.u.m_array_double->vector());
+      if(!aThis.u.m_array_double->invert()) {
+        aError = value::error_div_zero();
+        aThis.set_none();
+        return false;
+      }
+      aThis.u.m_array_double->multiply(double(tmp));
+      return true;}
+
     case value::NONE:
     case value::INT:
     case value::VOID_STAR:
@@ -1634,7 +1645,6 @@ inline bool value::divide(value& aThis,const value& aV,std::string& aError){
     //case value::UNSIGNED_CHAR:
     //case value::CHAR:
     case value::UNSIGNED_SHORT :
-    case value::UNSIGNED_INT:
     case value::UNSIGNED_INT64 :
     case value::DOUBLE_STAR:
     case value::FLOAT_STAR:
@@ -1998,13 +2008,17 @@ inline bool value::if_gt(value& aThis,const value& aV,std::string& aError){
     case value::INT:
       aThis.set((bool)((int)aThis.u.m_unsigned_int >aV.u.m_int?true:false));
       return true;
+    case value::DOUBLE:
+      aThis.set((bool)(double(aThis.u.m_unsigned_int)>aV.u.m_double?true:false));
+      return true;
+    case value::FLOAT:
+      aThis.set((bool)(float(aThis.u.m_unsigned_int)>aV.u.m_float?true:false));
+      return true;
     case value::NONE:
     case value::VOID_STAR:
-    case value::DOUBLE:
     case value::BOOL:
     case value::SHORT:
     case value::INT64:
-    case value::FLOAT:
     //case value::UNSIGNED_CHAR:
     //case value::CHAR:
     case value::UNSIGNED_SHORT :

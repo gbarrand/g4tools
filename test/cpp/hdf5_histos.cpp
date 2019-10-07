@@ -1,8 +1,13 @@
 // Copyright (C) 2010, Guy Barrand. All rights reserved.
 // See the file tools.license for terms.
 
+// To build by using a system hdf5 installation :
+//   OS> ./build -sys_hdf5 -sys_zlib hdf5_histos.cpp
+// See bush/use/hdf5 for the access paths to the hdf5 installation.
+
 #include <tools/hdf5/header>
 #include <tools/hdf5/h2file>
+#include <tools/hdf5/group_exists>
 
 #include <tools/histo/h1d>
 #include <tools/histo/h2d>
@@ -29,10 +34,13 @@ int main(int argc,char** argv) {
   //////////////////////////////////////////////////////////
   /// create and fill histograms : //////////////////////////
   //////////////////////////////////////////////////////////
-  tools::histo::h1d h1("Random Gauss",100,-5.0,5.0);
-
+  tools::histo::h1d h1_0("Random Gauss",100,-5.0,5.0);
  {tools::random::gauss rg(0,1);
-  for(unsigned int index=0;index<10000;index++) h1.fill(rg.shoot(),1);}
+  for(unsigned int index=0;index<10000;index++) h1_0.fill(rg.shoot(),1);}
+
+  tools::histo::h1d h1("Random Gauss",100,-4.0,6.0);
+ {tools::random::gauss rg(1,1);
+  for(unsigned int index=0;index<20000;index++) h1.fill(rg.shoot(),1);}
 
   tools::random::gauss rg(1,2);
   tools::random::bw rbw(0,1);
@@ -46,6 +54,10 @@ int main(int argc,char** argv) {
   tools::histo::p2d p2("Profile2D",100,-5,5,100,-5,5,-2,2);
  {for(unsigned int count=0;count<40000;count++) p2.fill(rg.shoot(),rg.shoot(),rbw.shoot(),1);}
 
+  tools::histo::h1d h1_1("Random Gauss",100,-6.0,4.0);
+ {tools::random::gauss _rg(-1,1.5);
+  for(unsigned int index=0;index<20000;index++) h1_1.fill(_rg.shoot(),1);}
+ 
   ///////////////////////////////////////////////////////////////////
   /// write : ///////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////
@@ -64,7 +76,23 @@ int main(int argc,char** argv) {
     return EXIT_FAILURE;
   }
 
-  // create a directory :
+  ///////////////////////////////////////////////////////////////////
+  /// histos not in a directory : ///////////////////////////////////
+  ///////////////////////////////////////////////////////////////////
+  if(!tools::hdf5::write_histo(std::cout,file,"h1_0",h1_0)) {
+    std::cout << "tools::hdf5::write(h1_0) failed." << std::endl;
+    ::H5Fclose(file);
+    return EXIT_FAILURE;
+  }
+  if(!tools::hdf5::write_histo(std::cout,file,"h2_0",h2)) {
+    std::cout << "tools::hdf5::write(h2_0) failed." << std::endl;
+    ::H5Fclose(file);
+    return EXIT_FAILURE;
+  }
+
+  ///////////////////////////////////////////////////////////////////
+  /// create a directory : //////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////
   hid_t histos = tools_H5Gcreate(file,"histos",0);
   if(histos<0) {
     std::cout << "can't create group." << std::endl;
@@ -106,6 +134,35 @@ int main(int argc,char** argv) {
     return EXIT_FAILURE;
   }
 
+  ///////////////////////////////////////////////////////////////////
+  /// create a sub directory : //////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////
+ {hid_t sub_histos = tools_H5Gcreate(histos,"sub_histos",0);
+  if(sub_histos<0) {
+    std::cout << "can't create group." << std::endl;
+    ::H5Gclose(histos);
+    ::H5Fclose(file);
+    return EXIT_FAILURE;
+  }
+  if(!tools::hdf5::write_atb(sub_histos,"type","directory")) {
+    std::cout << "write_atb() class failed." << std::endl;
+    ::H5Gclose(sub_histos);
+    ::H5Gclose(histos);
+    ::H5Fclose(file);
+    return EXIT_FAILURE;
+  }
+
+  if(!tools::hdf5::write_histo(std::cout,sub_histos,"h1_1",h1_1)) {
+    std::cout << "tools::hdf5::write(h1) failed." << std::endl;
+    ::H5Gclose(sub_histos);
+    ::H5Gclose(histos);
+    ::H5Fclose(file);
+    return EXIT_FAILURE;
+  }
+  ::H5Gclose(sub_histos);}
+  //////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////
+  
   ::H5Gclose(histos);
   ::H5Fclose(file);}
 
@@ -120,6 +177,15 @@ int main(int argc,char** argv) {
     return EXIT_FAILURE;
   }
 
+  if(!tools::hdf5::group_exists(file,"histos")) {
+    std::cout << "histos group does not exist." << std::endl;
+    return EXIT_FAILURE;
+  }
+  if(tools::hdf5::group_exists(file,"xxxx")) {
+    std::cout << "group xxxx found !" << std::endl;
+    return EXIT_FAILURE;
+  }
+  
  {std::string swriter;
   int data_schema_version;
   if(!tools::hdf5::read_header(file,swriter,data_schema_version)) {
@@ -184,7 +250,36 @@ int main(int argc,char** argv) {
     std::cout << "read p2d != write histo." << std::endl;
   }
   delete rp2;}
+
+  //////////////////////////////////////////////////////////
+  /// read sub directory : /////////////////////////////////
+  //////////////////////////////////////////////////////////
+  //{hid_t sub_histos = tools_H5Gopen(histos,"sub_histos");
+ {hid_t sub_histos = tools_H5Gopen(file,"histos/sub_histos");
+  if(sub_histos<0) {
+    std::cout << "can't open group." << std::endl;
+    ::H5Gclose(histos); 
+    ::H5Fclose(file);
+    return EXIT_FAILURE;
+  }
  
+ {tools::histo::h1d* rh1_1;
+  if(!tools::hdf5::read_histo(std::cout,sub_histos,"h1_1",rh1_1)) {
+    ::H5Gclose(sub_histos); 
+    ::H5Gclose(histos);
+    ::H5Fclose(file);
+    return EXIT_FAILURE;
+  }
+  double prec = 1e-8;
+  if(!rh1_1->equals(h1_1,prec,::fabs)) {
+    std::cout << "read h1d h1_1 != write histo." << std::endl;
+  }
+  delete rh1_1;}
+  ::H5Gclose(sub_histos);}
+
+ 
+  //////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////
   ::H5Gclose(histos); 
   ::H5Fclose(file);}
   

@@ -42,12 +42,16 @@ public:
               const std::string& a_prefix,
               const tools::ntuple_booking& a_nbk,
               tools::wroot::ntuple& a_main_ntuple,
+              bool a_row_wise,bool a_row_mode,unsigned int a_nev,
               unsigned int a_megas)
   :parent(a_main_mutex,a_prefix)
   ,m_index(a_index)
    //,m_num_threads(a_num_threads)
   ,m_nbk(a_nbk)
   ,m_main_ntuple(a_main_ntuple)
+  ,m_row_wise(a_row_wise)
+  ,m_row_mode(a_row_mode)
+  ,m_nev(a_nev)
   ,m_megas(a_megas)
   {}
   virtual~ thread_args() {}
@@ -68,15 +72,13 @@ public:
 
     tools::wroot::ifile& main_file = m_main_ntuple.dir().file();
 
-    tools::wroot::branch* main_branch = m_main_ntuple.get_row_wise_branch();
-    bool row_wise = main_branch?true:false;
-    
     tools::wroot::imt_ntuple* _imt_ntuple = 0;     //for add_row, end_fill
     tools::wroot::base_pntuple* _base_pntuple = 0; //to find columns.
     
     std::vector<tools::wroot::branch*> main_branches; //for column wise.
     
-    if(row_wise) {
+    if(m_row_wise) {
+      tools::wroot::branch* main_branch = m_main_ntuple.get_row_wise_branch();
       tools::wroot::mt_ntuple_row_wise* mt_ntuple =
         new tools::wroot::mt_ntuple_row_wise(m_out,
                                              main_file.byte_swap(),main_file.compression(),
@@ -89,13 +91,13 @@ public:
       m_main_ntuple.get_branches(main_branches);
       std::vector<tools::uint32> basket_sizes;
      {tools_vforcit(tools::wroot::branch*,main_branches,it) basket_sizes.push_back((*it)->basket_size());}
-   
+
       tools::wroot::mt_ntuple_column_wise* mt_ntuple =
         new tools::wroot::mt_ntuple_column_wise(m_out,
                                                 main_file.byte_swap(),main_file.compression(),
                                                 m_main_ntuple.dir().seek_directory(),
 	                                        main_branches,
-                                                basket_sizes,m_nbk,m_verbose);
+                                                basket_sizes,m_nbk,m_row_mode,m_nev,m_verbose);
       _imt_ntuple = static_cast<tools::wroot::imt_ntuple*>(mt_ntuple);
       _base_pntuple = static_cast<tools::wroot::base_pntuple*>(mt_ntuple);
     }
@@ -125,6 +127,10 @@ public:
     
     mutex _mutex(m_main_mutex); //and not m_mutex.
 
+    bool read_check_row_wise = m_row_wise||(!m_row_wise&&m_row_mode);
+    
+    unsigned int print_count = 100000;
+  
    {tools::rgaussd rg(1,2);
     tools::rbwf rbwf(0,1);
     tools::rbwd rbwd(-1,1);
@@ -134,11 +140,8 @@ public:
     std::string stmp;
     unsigned int entries = m_megas*1000000;
     for(unsigned int count=0;count<entries;count++) {
-    //if(!col_rgauss->fill(rg.shoot())) {
-    //  m_out << "col_rgauss fill failed." << std::endl;
-    //  break;
-    //}
-    //col_rgauss->variable() = rg.shoot();
+      if(m_verbose) {if(print_count*tools::uint32(count/print_count)==count) m_out << "count " << count << std::endl;}
+      
       *col_rgauss = rg.shoot();
       
       if(!col_rbw->fill(rbwf.shoot())) {
@@ -157,7 +160,7 @@ public:
       }
      
      {user_vec_d.clear();
-      unsigned int number = row_wise ? count%100 : (unsigned int)(10*rflat.shoot());
+      unsigned int number = read_check_row_wise ? count%100 : (unsigned int)(10*rflat.shoot());
       for(unsigned int i=0;i<number;i++) user_vec_d.push_back(rg.shoot());
       col_vec_d->fill(user_vec_d);
       //user_vec_d_count += number;
@@ -165,7 +168,7 @@ public:
      
      {std::vector<std::string>& vec_s = col_vec_s->variable();
       vec_s.clear();
-      unsigned int number = row_wise ? count%5 : (unsigned int)(5*rflat.shoot());
+      unsigned int number = read_check_row_wise ? count%5 : (unsigned int)(5*rflat.shoot());
       for(unsigned int i=0;i<number;i++) {
         if(!tools::num2s(i,stmp)){}
         vec_s.push_back(stmp);
@@ -193,6 +196,9 @@ protected:
   size_t m_index;
   tools::ntuple_booking m_nbk;
   tools::wroot::ntuple& m_main_ntuple;
+  bool m_row_wise;
+  bool m_row_mode;
+  unsigned int m_nev;
   unsigned int m_megas;
 };
 
@@ -203,17 +209,21 @@ public:
     std::string prefix;
     tools::num2s(a_index,prefix);
     prefix += ":";
-    return new thread_args(a_main_mutex,a_index,/*a_num_threads,*/prefix,m_nbk,m_main_ntuple,m_megas);
+    return new thread_args(a_main_mutex,a_index,prefix,m_nbk,m_main_ntuple,m_row_wise,m_row_mode,m_nev,m_megas);
   }
 public:
   threads(std::ostream& a_out,
                  const tools::ntuple_booking& a_nbk,
                  tools::wroot::ntuple& a_main_ntuple,
+                 bool a_row_wise,bool a_row_mode,unsigned int a_nev,
                  unsigned int a_megas,
                  bool a_verbose = false)
   :parent(a_out,a_verbose)
   ,m_nbk(a_nbk)
   ,m_main_ntuple(a_main_ntuple) 
+  ,m_row_wise(a_row_wise)
+  ,m_row_mode(a_row_mode)
+  ,m_nev(a_nev)
   ,m_megas(a_megas)
   {}
   virtual ~threads() {}
@@ -227,6 +237,9 @@ protected:
 protected:
   tools::ntuple_booking m_nbk;
   tools::wroot::ntuple& m_main_ntuple;
+  bool m_row_wise;
+  bool m_row_mode;
+  unsigned int m_nev;
   unsigned int m_megas;
 };
 
@@ -262,7 +275,9 @@ int main(int argc,char** argv) {
   bool verbose = args.is_arg("-verbose");
 
   bool row_wise = !args.is_arg("-column_wise"); //default is row_wise.
-  
+  bool row_mode = args.is_arg("-row_mode");    //if column_wise (to attempt to have a row like storage in column_wise ntuple).
+   
+  bool read_check_row_wise = row_wise||(!row_wise&&row_mode);
   //////////////////////////////////////////////////////////
   /// create a .root file : ////////////////////////////////
   //////////////////////////////////////////////////////////
@@ -274,12 +289,16 @@ int main(int argc,char** argv) {
   args.find<unsigned int>("-megas",num_megas,1);
   unsigned int basket_size;
   args.find<unsigned int>("-basket_size",basket_size,32000);
+  unsigned int nev;
+  args.find<unsigned int>("-basket_entries",nev,4000);
   
   if(verbose) {
     std::cout << (row_wise?"row_wise":"column_wise") << std::endl;
+    if(!row_wise) std::cout << (row_mode?"row_mode":"not row_mode") << std::endl;
     std::cout << "num threads " << num_threads << std::endl;
     std::cout << "num megas (per thread) " << num_megas << std::endl;
     std::cout << "basket_size " << basket_size << std::endl;
+    if(!row_wise && row_mode) std::cout << "basket_entries " << nev << std::endl;
   }
   
   tools::wroot::file rfile(std::cout,file);
@@ -309,7 +328,7 @@ int main(int argc,char** argv) {
   main_ntuple->set_basket_size(basket_size);
 
   if(num_threads) {
-    threads _threads(std::cout,nbk,*main_ntuple,num_megas,verbose);
+    threads _threads(std::cout,nbk,*main_ntuple,row_wise,row_mode,nev,num_megas,verbose);
     if(_threads.start(num_threads)) {
       while(!_threads.ended()) {}
     }

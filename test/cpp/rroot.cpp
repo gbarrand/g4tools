@@ -1,6 +1,9 @@
 // Copyright (C) 2010, Guy Barrand. All rights reserved.
 // See the file tools.license for terms.
 
+#ifdef TOOLS_MEM
+#include <tools/mem>
+#endif //TOOLS_MEM
 
 #include <tools/args>
 #include <tools/fileis>
@@ -21,6 +24,9 @@
 
 int main(int argc,char** argv) {
 
+#ifdef TOOLS_MEM
+  tools::mem::set_check_by_class(true);{
+#endif //TOOLS_MEM
 
   tools::args args(argc,argv);
 
@@ -245,6 +251,12 @@ int main(int argc,char** argv) {
     }
   }}
 
+#ifdef TOOLS_MEM
+  std::cout << "exit (mem)..." << std::endl;
+  }tools::mem::balance(std::cout);
+#else  
+  if(verbose) std::cout << "exit..." << std::endl;
+#endif //TOOLS_MEM
 
   return EXIT_SUCCESS;
 }

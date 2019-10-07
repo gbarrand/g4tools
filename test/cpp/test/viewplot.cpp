@@ -3,51 +3,6 @@
 
 #include <tools/sg/plots>
 
-inline void regions_style(tools::sg::plots& a_plots,float a_plotter_scale = 1) {
-  // Rescale some plotter parameters (for example margins) according to the number of regions.
-  // We assume that these parameters had been set previously according to one plot per page.
-  // Then this function must be applied after all the styles had been applied (because
-  // a plotting style may set these parameter
-  float ww_wc = a_plots.width;
-  float wh_wc = a_plots.height;
-  float rw_wc = ww_wc/a_plots.cols;
-  float rh_wc = wh_wc/a_plots.rows;
-
-  float cooking = 1.2f; //if increased the data area is diminished.
-
-  float wfac = (rw_wc/ww_wc)*cooking;
-  float hfac = (rh_wc/wh_wc)*cooking;
-
-  float label_cooking = 1.6f; //if increased the labels are bigger.
-
-  if((a_plots.cols.value()>=4)&&(a_plots.cols.value()>a_plots.rows.value())) label_cooking = 0.9f;
-
-  float title_cooking = 1.1f; //extra title cooking.
-
-  a_plots.plotter_scale = a_plotter_scale;
-
-  std::vector<tools::sg::plotter*> plotters;
-  a_plots.plotters(plotters);
-  tools_vforcit(tools::sg::plotter*,plotters,it) {
-    tools::sg::plotter* _plotter = *it;
-
-    _plotter->left_margin = _plotter->left_margin * wfac;
-    _plotter->right_margin = _plotter->right_margin * wfac;
-    _plotter->bottom_margin = _plotter->bottom_margin * hfac;
-    _plotter->top_margin = _plotter->top_margin * hfac;
-
-    _plotter->x_axis().tick_length = _plotter->x_axis().tick_length * wfac;
-    _plotter->y_axis().tick_length = _plotter->y_axis().tick_length * hfac;
-
-    _plotter->title_to_axis = _plotter->title_to_axis * hfac;
-    _plotter->title_height = _plotter->title_height * hfac * title_cooking;
-
-    _plotter->x_axis().label_height = _plotter->x_axis().label_height * hfac * label_cooking;
-    _plotter->y_axis().label_height = _plotter->y_axis().label_height * hfac * label_cooking;
-
-  }    
-}
-
 #include <tools/random>
 #include <tools/viewplot>
 
@@ -93,12 +48,12 @@ inline bool write_out_one_page_two_regions(std::ostream& a_out,bool a_verbose,co
   tools::sg::plotter& plotter = viewer.plots().current_plotter();
   plotter.bins_style(0).color = tools::colorf_red();}
 
-  regions_style(viewer.plots());
+  viewer.plots().adjust_scales();
 
   viewer.write(a_file,true); //true = anonymous = no creator, creation date, title in the file.
 
 //#ifdef TOOLS_USE_PNG
-//  viewer.write_png("out_1.png");
+//  viewer.write_inzb_png("out_1.png");
 //#endif
 
   return true;
@@ -147,7 +102,7 @@ inline bool write_out_two_pages(std::ostream& a_out,bool a_verbose,const std::st
   viewer.plot(p1);
   viewer.plots().next();
   viewer.plot(h2); 
-  regions_style(viewer.plots());
+  viewer.plots().adjust_scales();
   viewer.write_page();
 
   viewer.close_file();
@@ -177,10 +132,12 @@ bool test_viewplot(std::ostream& a_out,bool a_verbose) {
   //bool _remove = false;
   bool _remove = true;
 
+  bool stop_if_failed = true;
+  
   if(!tools::test_with_file(a_out,a_verbose,"utest_1_",".ps",_remove,
-                            utest_viewplot_1_ps,write_out_one_page_two_regions)) return false;
+                            utest_viewplot_1_ps,write_out_one_page_two_regions) && stop_if_failed) return false;
   if(!tools::test_with_file(a_out,a_verbose,"utest_2_",".ps",_remove,
-                            utest_viewplot_2_ps,write_out_two_pages)) return false;
+                            utest_viewplot_2_ps,write_out_two_pages) && stop_if_failed) return false;
 
   return true;
 }

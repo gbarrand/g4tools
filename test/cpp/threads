@@ -84,7 +84,7 @@ public:
       _args->m_continue = false;
       _args->m_mutex.unlock();
 
-      while(!_args->m_exit){sleep_milli_secs(100);}
+      while(!exit_set(*_args)) {sleep_milli_secs(100);}
 
 #ifdef _WIN32
       (*it).first->close();
@@ -98,11 +98,7 @@ public:
 
   bool ended() {
     tools_typename_vforit(idargs,m_threads,it) {
-      ARGS* _args = (*it).second;
-      //_args->m_mutex.lock();
-      bool _exit = _args->m_exit;
-      //_args->m_mutex.unlock();
-      if(!_exit) return false;
+      if(!exit_set(*(*it).second)) return false;
     }
     return true;
   }
@@ -120,6 +116,14 @@ protected:
     args->m_mutex.unlock();
     //if(args->m_verbose) args->m_out << "thread_main : exit" << std::endl;  
     return 0;
+  }
+
+protected:
+  static bool exit_set(ARGS& a_args) {
+    a_args.m_mutex.lock();
+    bool _exit = a_args.m_exit;
+    a_args.m_mutex.unlock();
+    return _exit;
   }
 
 protected:

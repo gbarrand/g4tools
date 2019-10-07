@@ -11,9 +11,12 @@ build_mem=no
 build_expat=no
 build_freetype=no
 build_hdf5=no
+build_use_our=   # reverse of the bush -sys_ logic.
+build_parallel=no
 
 build_cl_exe=no
 if [ "`uname | grep CYGWIN`" != "" ] ; then build_cl_exe=yes; fi
+if [ "`uname -r | grep Microsoft`" != "" ] ; then build_cl_exe=yes; fi
 
 args=""
 while test $# -ge 1 ; do
@@ -29,7 +32,10 @@ while test $# -ge 1 ; do
     -ttf)      build_freetype=yes; args="${args} $1";;
     -freetype) build_freetype=yes; args="${args} $1";;
     -hdf5)     build_hdf5=yes;     args="${args} $1";;
+    -parallel) build_parallel=yes; args="${args} $1";;
     
+    -our_*)    build_use_our="${build_use_our} $1"; args="${args} $1";;
+
     -*) echo "unknown option : $1" ; exit ;;
      *) if [ $# = 1 ] ; then
           what=$1
@@ -61,31 +67,37 @@ echo "build ${exa}..."
 
 . ./use_cpp
 . ./use_cc
+. ./use_sys
 
 . ./build_bin_dir
 
 use_archive=yes
 
+#//////////////////////////////////////////////////////
+#/// -our_<pack> : ////////////////////////////////////
+#//////////////////////////////////////////////////////
+for item in ${build_use_our} ; do
+  item="`echo ${item} | sed -e 's:\-our_::g'`"
+  var="build_use_our_${item}"
+  eval ${var}=yes
+done
+
 if [ ${build_expat}    = yes ] ; then use_expat=yes;fi
 if [ ${build_freetype} = yes ] ; then use_freetype=yes;fi
 if [ ${build_hdf5}     = yes ] ; then use_hdf5=yes;fi
 
-if [ ${build_cl_exe} = "yes" ] ; then
-  # rm painfull warnings about API strcpy, etc... deprecated.
-  cppflags="${cppflags} /wd4996"
-  ccflags0="${ccflags0} /wd4996"
-  # 64 bits machines : size_t to unsigned int : rm these warnings for the moment :
-  cppflags="${cppflags} /wd4267"
-  ccflags0="${ccflags0} /wd4267"
-fi
+#//////////////////////////////////////////////////////
+#//////////////////////////////////////////////////////
+#//////////////////////////////////////////////////////
+#if [ ${build_cl_exe} = "yes" ] ; then
+#  # rm painfull warnings about API strcpy, etc... deprecated.
+#  # 64 bits machines : size_t to unsigned int : rm these warnings for the moment :
+#  cppflags="${cppflags} -wd4267"
+#  ccflags0="${ccflags0} -wd4267"
+#fi
 
-if [ ${build_cl_exe} = "yes" ] ; then
-  cppflags="${cppflags} /I../.."
-  cppflags="${cppflags} /I../g4tools/include" # if within G4.
-else
-  cppflags="${cppflags} -I../.."
-  cppflags="${cppflags} -I../g4tools/include" # if within G4.
-fi
+cppflags="${cppflags} -I../.."
+cppflags="${cppflags} -I../g4tools/include" # if within G4.
 
 cppflags="${cppflags} -DNDEBUG"
 
@@ -146,8 +158,8 @@ if [ ${exa} = "cern_root_read_rg_rbw" ] ; then
 fi
 if [ ${exa} = "utest" ] ; then    
   if [ ${build_cl_exe} = "yes" ] ; then
-    cppflags="${cppflags} /bigobj"
-    ccflags0="${ccflags0} /bigobj"
+    cppflags="${cppflags} -bigobj"
+    ccflags0="${ccflags0} -bigobj"
   fi
   
   cppfiles="${cppfiles} ./test/histo.cpp"
@@ -203,33 +215,22 @@ cppflags="${G4_cppflags} ${cppflags}"
 for file in ${cfiles} ; do
   oname=`basename ${file}`
   obj="./${oname}.o"
-  if [ ${build_cl_exe} = "yes" ] ; then
-    eval ${cc_compiler} /c ${ccflags} /Fo${obj} ${file}
-  else
-    eval ${cc_compiler} -c ${ccflags} -o ${obj} ${file}
-    use_status=$?;if [ ${use_status} != 0 ] ; then exit ${use_status};fi
-  fi
+  eval ${cc_compiler} -c ${ccflags} -o ${obj} ${file}
+  use_status=$?;if [ ${use_status} != 0 ] ; then exit ${use_status};fi
   objs="${objs} ${obj}"
 done
+
+cppfiles="${cppfiles} ${exa}.cpp"
 
 for file in ${cppfiles} ; do
   oname=`basename ${file}`
   obj="./${oname}.o"
-  if [ ${build_cl_exe} = "yes" ] ; then
-    eval ${cpp_compiler} /c ${cppflags} /Fo${obj} ${file}
-  else
-    eval ${cpp_compiler} -c ${cppflags} -o ${obj} ${file}
-    use_status=$?;if [ ${use_status} != 0 ] ; then exit ${use_status};fi
-  fi
+  eval ${cpp_compiler} -c ${cppflags} -o ${obj} ${file}
+  use_status=$?;if [ ${use_status} != 0 ] ; then exit ${use_status};fi
   objs="${objs} ${obj}"
 done
 
-if [ ${build_cl_exe} = "yes" ] ; then
-  eval ${cpp_compiler} /c ${cppflags} /Fomain.o ${exa}.cpp
-  eval ${cpp_linker} /nologo /OPT:NOREF /out:tools_test_${exa}.exe main.o ${objs} ${libs}
-else
-  eval ${cpp_linker} -o tools_test_${exa} ${cppflags} ${exa}.cpp ${objs} ${libs}
-fi
+eval ${cpp_linker} -o tools_test_${exa} ${cppflags} ${objs} ${libs}
 
 /bin/rm -f ${objs}
 

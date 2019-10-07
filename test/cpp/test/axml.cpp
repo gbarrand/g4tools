@@ -293,7 +293,7 @@ static bool read_axml(std::ostream& a_out,bool a_verbose,const to_compare_axml& 
       if((*it).name()=="rg_rbw") {
         if(a_verbose) a_out << "check ntu = " << (*it).name() << std::endl;
 
-       {const std::vector<tools::aida::base_col*>& cols = nt->cols();
+       {const std::vector<tools::aida::base_col*>& cols = nt->columns();
         std::vector<tools::aida::base_col*>::const_iterator itc;
         for(itc=cols.begin();itc!=cols.end();++itc) {
           tools::aida::aida_base_col* acol = tools::safe_cast<tools::aida::base_col,tools::aida::aida_base_col>(*(*itc));

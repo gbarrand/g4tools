@@ -3,6 +3,8 @@
 
 // to run :
 //   Darwin> mpirun-openmpi-mp -np 3 ./bin_clang/mpi_histos -verbose
+//   Darwin> /usr/local/openmpi/3.1.2/bin/mpirun -np 3 ./bin_clang/mpi_histos -verbose
+//   centos> /usr/lib64/openmpi/bin/mpirun -np 3 ./bin_gnu/mpi_histos -verbose
 
 #ifdef TOOLS_MEM
 #include <tools/mem>

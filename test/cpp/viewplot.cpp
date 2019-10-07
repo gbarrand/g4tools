@@ -5,113 +5,12 @@
 #include <tools/mem>
 #endif //TOOLS_MEM
 
-#include <tools/sg/plots>
-
-inline void HD_style(tools::sg::plots& a_plots,float a_line_width) {
-  std::vector<tools::sg::plotter*> plotters;
-  a_plots.plotters(plotters);
-  tools_vforcit(tools::sg::plotter*,plotters,it) {
-    tools::sg::plotter* _plotter = *it;
-    _plotter->bins_style(0).line_width = a_line_width;
-    _plotter->inner_frame_style().line_width = a_line_width;
-    _plotter->grid_style().line_width = a_line_width;
-    _plotter->x_axis().line_style().width = a_line_width;
-    _plotter->x_axis().ticks_style().width = a_line_width;
-    _plotter->y_axis().line_style().width = a_line_width;
-    _plotter->y_axis().ticks_style().width = a_line_width;
-    _plotter->z_axis().line_style().width = a_line_width;
-    _plotter->z_axis().ticks_style().width = a_line_width;
-
-    // needed if font is hershey :
-    _plotter->title_style().line_width = a_line_width;
-    _plotter->infos_style().line_width = a_line_width;
-    _plotter->title_box_style().line_width = a_line_width;
-
-    _plotter->x_axis().labels_style().line_width = a_line_width;
-    _plotter->x_axis().mag_style().line_width = a_line_width;
-    _plotter->x_axis().title_style().line_width = a_line_width;
-
-    _plotter->y_axis().labels_style().line_width = a_line_width;
-    _plotter->y_axis().mag_style().line_width = a_line_width;
-    _plotter->y_axis().title_style().line_width = a_line_width;
-
-    _plotter->z_axis().labels_style().line_width = a_line_width;
-    _plotter->z_axis().mag_style().line_width = a_line_width;
-    _plotter->z_axis().title_style().line_width = a_line_width;
-  }    
-}
-
-/*
-inline void border_style(tools::sg::plots& a_plots) {
-  std::vector<tools::sg::plotter*> plotters;
-  a_plots.plotters(plotters);
-  tools_vforcit(tools::sg::plotter*,plotters,it) {
-    tools::sg::plotter* _plotter = *it;
-    _plotter->background_style().visible = true;
-    _plotter->background_style().color = tools::colorf_black();
-    _plotter->background_style().line_width = 0.003;
-  }    
-  a_plots.border_visible = true;
-}
-*/
-
-inline void grid_style(tools::sg::plots& a_plots,bool a_visible = false) {
-  std::vector<tools::sg::plotter*> plotters;
-  a_plots.plotters(plotters);
-  tools_vforcit(tools::sg::plotter*,plotters,it) {
-    tools::sg::plotter* _plotter = *it;
-    _plotter->grid_style().visible = a_visible;
-  }    
-  a_plots.border_visible = true;
-}
-
-inline void regions_style(tools::sg::plots& a_plots,float a_plotter_scale = 1) {
-  // Rescale some plotter parameters (for example margins) according to the number of regions.
-  // We assume that these parameters had been set previously according to one plot per page.
-  // Then this function must be applied after all the styles had been applied (because
-  // a plotting style may set these parameters).
-
-  float ww_wc = a_plots.width;
-  float wh_wc = a_plots.height;
-  float rw_wc = ww_wc/a_plots.cols;
-  float rh_wc = wh_wc/a_plots.rows;
-
-  float cooking = 1.2f; //if increased the data area is diminished.
-
-  float wfac = (rw_wc/ww_wc)*cooking;
-  float hfac = (rh_wc/wh_wc)*cooking;
-
-  float label_cooking = 1.6f; //if increased the labels are bigger.
-
-  if((a_plots.cols.value()>=4)&&(a_plots.cols.value()>a_plots.rows.value())) label_cooking = 0.9f;
-
-  float title_cooking = 1.1f; //extra title cooking.
-
-  a_plots.plotter_scale = a_plotter_scale;
-
-  std::vector<tools::sg::plotter*> plotters;
-  a_plots.plotters(plotters);
-  tools_vforcit(tools::sg::plotter*,plotters,it) {
-    tools::sg::plotter* _plotter = *it;
-
-    _plotter->left_margin = _plotter->left_margin * wfac;
-    _plotter->right_margin = _plotter->right_margin * wfac;
-    _plotter->bottom_margin = _plotter->bottom_margin * hfac;
-    _plotter->top_margin = _plotter->top_margin * hfac;
-
-    _plotter->x_axis().tick_length = _plotter->x_axis().tick_length * wfac;
-    _plotter->y_axis().tick_length = _plotter->y_axis().tick_length * hfac;
-
-    _plotter->title_to_axis = _plotter->title_to_axis * hfac;
-    _plotter->title_height = _plotter->title_height * hfac * title_cooking;
-
-    _plotter->x_axis().label_height = _plotter->x_axis().label_height * hfac * label_cooking;
-    _plotter->y_axis().label_height = _plotter->y_axis().label_height * hfac * label_cooking;
-
-  }    
-}
-
 #include <tools/viewplot>
+
+#ifdef TOOLS_USE_PNG
+#include <tools/png>
+#endif
+
 
 void plot_file(tools::viewplot& a_viewer,
                const std::string& a_filename,
@@ -139,9 +38,9 @@ void plot_file(tools::viewplot& a_viewer,
     isWriteNeeded = true;
 
     if( a_viewer.plots().current_index() == (plots_per_page-1) ) {
-      if ( use_HD ) HD_style(a_viewer.plots(),5);
-      grid_style(a_viewer.plots());
-      regions_style(a_viewer.plots(),a_plotter_scale);
+      if ( use_HD ) a_viewer.plots().set_line_width(5);
+      a_viewer.plots().set_grids_visibility();
+      a_viewer.plots().adjust_scales(a_plotter_scale);
       a_viewer.write_page();
 
       a_viewer.plots().init_sg(); //it will recreate the sg::plotters and then reset the styles on new ones.
@@ -152,9 +51,9 @@ void plot_file(tools::viewplot& a_viewer,
   }  
 
   if ( isWriteNeeded ) {
-    if ( use_HD ) HD_style(a_viewer.plots(),5);
-    grid_style(a_viewer.plots());
-    regions_style(a_viewer.plots(),a_plotter_scale);
+    if ( use_HD ) a_viewer.plots().set_line_width(5);
+    a_viewer.plots().set_grids_visibility();
+    a_viewer.plots().adjust_scales(a_plotter_scale);
     a_viewer.write_page();
   }
 
@@ -244,10 +143,13 @@ int main(int argc,char** argv) {
   plotter.bins_style(0).color = tools::colorf_red();}
 
   viewer.plots().view_border = false;
-  regions_style(viewer.plots());
+  viewer.plots().adjust_scales();
 
   viewer.write("out_one_page_two_regions_hershey_font.ps");
 
+#ifdef TOOLS_USE_PNG
+  viewer.write_inzb_png(tools::png::write,"out_one_page_two_regions_hershey_font.png");
+#endif  
   //////////////////////////////////////////////////////////
   /// two pages with one plot per page : ///////////////////
   //////////////////////////////////////////////////////////
@@ -262,7 +164,7 @@ int main(int argc,char** argv) {
   viewer.plot(p1);
   viewer.plots().next();
   viewer.plot(h2); 
-  regions_style(viewer.plots());
+  viewer.plots().adjust_scales();
   viewer.write_page();
 
   viewer.close_file();
@@ -300,7 +202,7 @@ int main(int argc,char** argv) {
   viewer.plots().view_border = false;
 
   //if(tools::file::exists("viewplot.style")) {
-  //  tools::xml::load_style_file(viewer.styles(),"viewplot.style");
+  //  tools::xml::load_style_file(std::cout,"viewplot.style",viewer.styles());
   //} else {
   load_embeded_styles(viewer.styles());
   //}
@@ -316,7 +218,7 @@ int main(int argc,char** argv) {
   viewer.set_cols_rows(1,1);
   viewer.plot(h1);
   viewer.set_current_plotter_style("ROOT_default");
-  HD_style(viewer.plots(),5);
+  viewer.plots().set_line_width(5);
   viewer.write_page();
 
   viewer.set_cols_rows(1,2);
@@ -326,8 +228,8 @@ int main(int argc,char** argv) {
   viewer.plots().next();
   viewer.plot(h2); 
   viewer.set_current_plotter_style("hippodraw");
-  HD_style(viewer.plots(),5);
-  regions_style(viewer.plots());
+  viewer.plots().set_line_width(5);
+  viewer.plots().adjust_scales();
   viewer.write_page();
 
   viewer.close_file();
@@ -338,32 +240,44 @@ int main(int argc,char** argv) {
   viewer.open_file("out_2x2.ps");
   viewer.plots().set_current_plotter(0);
 
-  viewer.set_cols_rows(2,3);
+  viewer.set_cols_rows(2,2);
   viewer.plots().clear();
 
   viewer.plot(h1);
   viewer.set_current_plotter_style("ROOT_default");
-  HD_style(viewer.plots(),5);
+  viewer.plots().set_line_width(5);
 
   viewer.plots().next();
   viewer.plot(p1); 
   viewer.set_current_plotter_style("ROOT_default");
-  HD_style(viewer.plots(),5);
+  viewer.plots().set_line_width(5);
 
   viewer.plots().next();
   viewer.plot(p1); 
   viewer.set_current_plotter_style("ROOT_default");
-  HD_style(viewer.plots(),5);
+  viewer.plots().set_line_width(5);
 
   viewer.plots().next();
   viewer.plot(h1); 
   viewer.set_current_plotter_style("ROOT_default");
-  HD_style(viewer.plots(),5);
+  viewer.plots().set_line_width(5);
 
-  regions_style(viewer.plots());
+  viewer.plots().adjust_scales();
   viewer.write_page();
 
   viewer.close_file();
+
+#ifdef TOOLS_USE_PNG
+  viewer.write_inzb_png(tools::png::write,"out_2x2.png");
+#endif
+  
+  //////////////////////////////////////////////////////////
+  /// with a copy of viewer : //////////////////////////////
+  //////////////////////////////////////////////////////////
+ {tools::viewplot viewer_cp(viewer);
+  viewer_cp.open_file("out_2x2_viewer_copy.ps");
+  viewer_cp.write_page();
+  viewer_cp.close_file();}
 
   //////////////////////////////////////////////////////////
   /// Ivana tests : ////////////////////////////////////////

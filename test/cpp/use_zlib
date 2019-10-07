@@ -12,11 +12,16 @@ if [ "${use_zlib}" = "yes" ] ; then
 fi
 
 if [ "${use_sys_zlib}" = "yes" ] ; then
-  if [ ! -e /usr/include/zlib.h ] ; then
-    echo "use_zlib : /usr/include/zlib.h not found."
+  if [ -e /usr/include/zlib.h ] ; then
+    libs="${libs} -lz"
+  elif [ -e /opt/local/include/zlib.h ] ; then
+    ccflags="${ccflags} -I/opt/local"  
+    cppflags="${cppflags} -I/opt/local"
+    libs="${libs} -L/opt/local/lib -lz"
+  else
+    echo "use_zlib : zlib.h not found."
     exit
   fi
-  libs="${libs} -lz"
 fi
 
 if [ "${use_our_zlib}" = "yes" ] ; then
@@ -27,13 +32,8 @@ if [ "${use_our_zlib}" = "yes" ] ; then
     exit
   fi
 
-  if [ ${build_cl_exe} = "yes" ] ; then
-    ccflags="${ccflags} /DTOOLS_DONT_HAVE_ZLIB"  
-    cppflags="${cppflags} /DTOOLS_DONT_HAVE_ZLIB"
-  else
-    ccflags="${ccflags} -DTOOLS_DONT_HAVE_ZLIB"  
-    cppflags="${cppflags} -DTOOLS_DONT_HAVE_ZLIB"
-  fi
+  ccflags="${ccflags} -DTOOLS_DONT_HAVE_ZLIB"  
+  cppflags="${cppflags} -DTOOLS_DONT_HAVE_ZLIB"
   
   libs="${libs} ${zlib_home}/${bin_dir}/libourex_zlib.a"
 

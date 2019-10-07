@@ -26,6 +26,9 @@ int main(int argc, char* argv[]) {
 
   bool verbose = args.is_arg("-verbose");
 
+  bool no_dir = args.is_arg("-no_dir");
+  if(verbose) std::cout << "no_dir : " << no_dir << std::endl;  
+
   unsigned int wentries;
   unsigned int basket_size;
   args.find<unsigned int>("-entries",wentries,9923);        //it is a prime!
@@ -62,18 +65,23 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 
-  // create a directory :
-  hid_t ntuples = tools_H5Gcreate(file,"ntuples",0);
-  if(ntuples<0) {
-    std::cout << "can't create group." << std::endl;
-    ::H5Fclose(file);
-    return EXIT_FAILURE;
-  }
-  if(!tools::hdf5::write_atb(ntuples,"type","directory")) {
-    std::cout << "write_atb() class failed." << std::endl;
-    ::H5Gclose(ntuples);
-    ::H5Fclose(file);
-    return EXIT_FAILURE;
+  hid_t ntuples = (-1);
+  if(no_dir) {
+    ntuples = file;
+  } else {
+    // create a directory :
+    ntuples = tools_H5Gcreate(file,"ntuples",0);
+    if(ntuples<0) {
+      std::cout << "can't create group." << std::endl;
+      ::H5Fclose(file);
+      return EXIT_FAILURE;
+    }
+    if(!tools::hdf5::write_atb(ntuples,"type","directory")) {
+      std::cout << "write_atb() class failed." << std::endl;
+      ::H5Gclose(ntuples);
+      ::H5Fclose(file);
+      return EXIT_FAILURE;
+    }
   }
 
   if(verbose) std::cout << "compression : " << compress << std::endl;
@@ -94,7 +102,7 @@ int main(int argc, char* argv[]) {
   if(ntuple.columns().size()!=wncols) {
     std::cout << "mismatch column numbers :"
 	      << " " << ntuple.columns().size() << ". " << wncols << " expected." << std::endl;
-    ::H5Gclose(ntuples);
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
@@ -103,21 +111,21 @@ int main(int argc, char* argv[]) {
   tools::hdf5::ntuple::column<double>* col_rgauss = ntuple.find_column<double>("rgauss");
   if(!col_rgauss) {
     std::cout << "column rgauss not found." << std::endl;
-    ::H5Gclose(ntuples);
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
     }*/
   tools::hdf5::ntuple::column<float>* col_rbw = ntuple.find_column<float>("rbw");
   if(!col_rbw) {
     std::cout << "column rbw not found." << std::endl;
-    ::H5Gclose(ntuples);
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
   tools::hdf5::ntuple::column_string* col_str = ntuple.find_column_string("string");
   if(!col_str) {
     std::cout << "column strings not found." << std::endl;
-    ::H5Gclose(ntuples);
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
@@ -183,7 +191,7 @@ int main(int argc, char* argv[]) {
   nbk.add_column<float>("rbw");
   tools::hdf5::ntuple ntuple(std::cout,ntuples,nbk,compress,basket_size);}
   
-  ::H5Gclose(ntuples);
+  if(!no_dir) ::H5Gclose(ntuples);
   ::H5Fclose(file);
   }
  
@@ -210,12 +218,17 @@ int main(int argc, char* argv[]) {
   }
   if(verbose) std::cout << "read : writer " << swriter << std::endl;
   if(verbose) std::cout << "read : data_schema_version " << data_schema_version << std::endl;}
-  
-  hid_t ntuples = tools_H5Gopen(file,"ntuples");
-  if(ntuples<0) {
-    std::cout << "can't open group." << std::endl;
-    ::H5Fclose(file);
-    return EXIT_FAILURE;
+
+  hid_t ntuples = (-1);
+  if(no_dir) {
+    ntuples = file;
+  } else {
+    ntuples = tools_H5Gopen(file,"ntuples");
+    if(ntuples<0) {
+      std::cout << "can't open group." << std::endl;
+      ::H5Fclose(file);
+      return EXIT_FAILURE;
+    }
   }
  
   tools::hdf5::ntuple ntuple(std::cout,ntuples,"rg_rbw");
@@ -223,7 +236,7 @@ int main(int argc, char* argv[]) {
   if(ntuple.columns().size()!=wncols) {
     std::cout << "mismatch column numbers :"
 	      << " " << ntuple.columns().size() << ". " << wncols << " expected." << std::endl;
-    ::H5Gclose(ntuples);
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
@@ -231,21 +244,21 @@ int main(int argc, char* argv[]) {
   tools::hdf5::ntuple::column<double>* col_rgauss = ntuple.find_column<double>("rgauss");
   if(!col_rgauss) {
     std::cout << "column rgauss not found." << std::endl;
-    ::H5Gclose(ntuples);
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
   tools::hdf5::ntuple::column<float>* col_rbw = ntuple.find_column<float>("rbw");
   if(!col_rbw) {
     std::cout << "column rbw not found." << std::endl;
-    ::H5Gclose(ntuples);
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
   tools::hdf5::ntuple::column_string* col_str = ntuple.find_column_string("string");
   if(!col_str) {
     std::cout << "column strings not found." << std::endl;
-    ::H5Gclose(ntuples);
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
@@ -253,14 +266,14 @@ int main(int argc, char* argv[]) {
   tools::hdf5::ntuple::std_vector_column<float>* col_vec_float = ntuple.find_std_vector_column<float>("vec_float");
   if(!col_vec_float) {
     std::cout << "column vec_float not found." << std::endl;
-    ::H5Gclose(ntuples);
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
   tools::hdf5::ntuple::std_vector_column<double>* col_vec_double = ntuple.find_std_vector_column<double>("vec_double");
   if(!col_vec_double) {
     std::cout << "column vec_double not found." << std::endl;
-    ::H5Gclose(ntuples);
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
@@ -268,14 +281,14 @@ int main(int argc, char* argv[]) {
   tools::uint64 entries;
   if(!ntuple.entries(entries)) {
     std::cout << "entries() failed." << std::endl;
-    ::H5Gclose(ntuples); 
+    if(!no_dir) ::H5Gclose(ntuples); 
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
 
   if(entries!=wentries) {
     std::cout << "read entries != write entries." << std::endl;
-    ::H5Gclose(ntuples); 
+    if(!no_dir) ::H5Gclose(ntuples); 
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
@@ -289,7 +302,7 @@ int main(int argc, char* argv[]) {
   for(tools::uint64 row=0;row<entries;row++) {
     if(!ntuple.get_row()) {
       std::cout << "ntuple.get_row() failed." << std::endl;
-      ::H5Gclose(ntuples); 
+      if(!no_dir) ::H5Gclose(ntuples); 
       ::H5Fclose(file);
       return EXIT_FAILURE;
     }
@@ -307,7 +320,7 @@ int main(int argc, char* argv[]) {
     if(vs!=stmp) {
       std::cout << "for row " << row << ", string mismatch : "
 		<< tools::sout(vs) << ". Expected " << tools::sout(stmp) << "." << std::endl;
-      ::H5Gclose(ntuples); 
+      if(!no_dir) ::H5Gclose(ntuples); 
       ::H5Fclose(file);
       return EXIT_FAILURE;
     }
@@ -359,7 +372,7 @@ int main(int argc, char* argv[]) {
   for(tools::uint64 row=0;row<entries;row++) {
     if(!ntuple.get_row()) {
       std::cout << "ntuple.get_row() failed." << std::endl;
-      ::H5Gclose(ntuples); 
+      if(!no_dir) ::H5Gclose(ntuples); 
       ::H5Fclose(file);
       return EXIT_FAILURE;
     }
@@ -380,7 +393,7 @@ int main(int argc, char* argv[]) {
     if(row==entries_2_3) ntuple.set_basket_size(827);
   }}
       
-  ::H5Gclose(ntuples); 
+  if(!no_dir) ::H5Gclose(ntuples); 
   ::H5Fclose(file);
 
   }
@@ -396,13 +409,17 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 
-  hid_t ntuples = tools_H5Gopen(file,"ntuples");
-  if(ntuples<0) {
-    std::cout << "can't open group." << std::endl;
-    ::H5Fclose(file);
-    return EXIT_FAILURE;
+  hid_t ntuples = (-1);
+  if(no_dir) {
+    ntuples = file;
+  } else {
+    ntuples = tools_H5Gopen(file,"ntuples");
+    if(ntuples<0) {
+      std::cout << "can't open group." << std::endl;
+      ::H5Fclose(file);
+      return EXIT_FAILURE;
+    }
   }
-
 
   tools::ntuple_binding bd;
   double user_rgauss;
@@ -420,7 +437,7 @@ int main(int argc, char* argv[]) {
   tools::hdf5::ntuple ntuple(std::cout,ntuples,"rg_rbw");
   if(!ntuple.initialize(std::cout,bd)) {
     std::cout << "ntuple.initialize(binding) failed." << std::endl;
-    ::H5Gclose(ntuples);
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
@@ -428,14 +445,14 @@ int main(int argc, char* argv[]) {
   if(ntuple.columns().size()!=wncols) {
     std::cout << "mismatch column numbers :"
 	      << " " << ntuple.columns().size() << ". " << wncols << " expected." << std::endl;
-    ::H5Gclose(ntuples);
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
   
   if(ntuple.columns().empty()) {
     std::cout << "can't initialize ntuple for read with binding." << std::endl;
-    ::H5Gclose(ntuples);
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
@@ -443,14 +460,14 @@ int main(int argc, char* argv[]) {
   tools::uint64 entries;
   if(!ntuple.entries(entries)) {
     std::cout << "entries() failed." << std::endl;
-    ::H5Gclose(ntuples); 
+    if(!no_dir) ::H5Gclose(ntuples); 
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
 
   if(entries!=wentries) {
     std::cout << "read entries != write entries." << std::endl;
-    ::H5Gclose(ntuples); 
+    if(!no_dir) ::H5Gclose(ntuples); 
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
@@ -464,7 +481,7 @@ int main(int argc, char* argv[]) {
   for(tools::uint64 row=0;row<entries;row++) {
     if(!ntuple.get_row()) {
       std::cout << "ntuple.get_row() failed." << std::endl;
-      ::H5Gclose(ntuples); 
+      if(!no_dir) ::H5Gclose(ntuples); 
       ::H5Fclose(file);
       return EXIT_FAILURE;
     }
@@ -476,7 +493,7 @@ int main(int argc, char* argv[]) {
     if(user_string!=stmp) {
       std::cout << "for row " << row << ", string mismatch : "
 		<< tools::sout(user_string) << ". Expected " << tools::sout(stmp) << "." << std::endl;
-      ::H5Gclose(ntuples); 
+      if(!no_dir) ::H5Gclose(ntuples); 
       ::H5Fclose(file);
       return EXIT_FAILURE;
     }
@@ -516,7 +533,7 @@ int main(int argc, char* argv[]) {
     std::cout << "read some entries != write some entries." << std::endl;
   }
 
-  ::H5Gclose(ntuples); 
+  if(!no_dir) ::H5Gclose(ntuples); 
   ::H5Fclose(file);}
  
   ///////////////////////////////////////////////////////////////////

@@ -68,12 +68,22 @@ int main(int argc,char** argv) {
   unsigned int basket_size;
   args.find<unsigned int>("-basket_size",basket_size,32000);
 
+  unsigned int nev;
+  args.find<unsigned int>("-basket_entries",nev,4000);
+
   bool row_wise = !args.is_arg("-column_wise"); //default is row_wise.
+  bool row_mode = args.is_arg("-row_mode");    //if column_wise (to attempt to have a row like storage in column_wise ntuple).
+   
+  bool read_check_row_wise = row_wise||(!row_wise&&row_mode);
   
   //////////////////////////////////////////////////////////
   /// create a .root file : ////////////////////////////////
   //////////////////////////////////////////////////////////
-  if(verbose) std::cout << (row_wise?"row_wise":"column_wise") << std::endl;
+  if(verbose) {
+    std::cout << (row_wise?"row_wise":"column_wise") << std::endl;
+    if(!row_wise) std::cout << (row_mode?"row_mode":"not row_mode") << std::endl;
+    if(!row_wise && row_mode) std::cout << "basket_entries " << nev << std::endl;
+  }
   
   std::string file = "mt_ntuple_seq.root";
   
@@ -159,7 +169,7 @@ int main(int argc,char** argv) {
       pntuple = new tools::wroot::mt_ntuple_column_wise(std::cout,
                                                         rfile.byte_swap(),rfile.compression(),rfile.dir().seek_directory(),
                                                         main_branches,
-                                                        basket_sizes,nbk_thread,verbose);
+                                                        basket_sizes,nbk_thread,row_mode,nev,verbose);
     }
 
 
@@ -181,12 +191,12 @@ int main(int argc,char** argv) {
       user_count = count;
       
      {user_vec_d.clear();
-      unsigned int number = row_wise ? count%100 : (unsigned int)(10*rflat.shoot());
+      unsigned int number = read_check_row_wise ? count%100 : (unsigned int)(10*rflat.shoot());
       for(unsigned int i=0;i<number;i++) user_vec_d.push_back(rg.shoot());
       user_vec_d_count += number;}
     
      {user_vec_s.clear();
-      unsigned int number = row_wise ? count%5 : (unsigned int)(5*rflat.shoot());
+      unsigned int number = read_check_row_wise ? count%5 : (unsigned int)(5*rflat.shoot());
       for(unsigned int i=0;i<number;i++) {
         if(!tools::num2s(i,stmp)){}
         user_vec_s.push_back(stmp);

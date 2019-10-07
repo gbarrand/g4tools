@@ -14,7 +14,7 @@ static bool test_h12d(std::ostream& a_out,bool a_verbose) {
  {if(a_verbose) a_out << "test_h12d : h1d ..." << std::endl;
   double tolerance = 1e-8;
   tools::histo::h1d h("title",40,-10,10);
-  if(h.title()!="title") return false;
+  if(!tools::equal(a_out,__FILE__,__LINE__,h.title(),"title")) return false;
   if(h.axis().bins()!=40) return false;
   if(h.axis().lower_edge()!=-10) return false;
   if(h.axis().upper_edge()!=10) return false;
@@ -34,7 +34,7 @@ static bool test_h12d(std::ostream& a_out,bool a_verbose) {
  {if(a_verbose) a_out << "test_h12d : h2d ..." << std::endl;
   double tolerance = 1e-8;
   tools::histo::h2d h("title",40,-10,10,20,-5,5);
-  if(h.title()!="title") return false;
+  if(!tools::equal(a_out,__FILE__,__LINE__,h.title(),"title")) return false;
   if(h.axis_x().bins()!=40) return false;
   if(h.axis_x().lower_edge()!=-10) return false;
   if(h.axis_x().upper_edge()!=10) return false;
@@ -63,7 +63,7 @@ static bool test_h12d(std::ostream& a_out,bool a_verbose) {
   std::vector<double> edges(41);
  {for(unsigned int i=0;i<=40;i++) edges[i] = -10+0.5*i;}
   tools::histo::h1d h("title",edges);
-  if(h.title()!="title") return false;
+  if(!tools::equal(a_out,__FILE__,__LINE__,h.title(),"title")) return false;
   if(h.axis().bins()!=40) return false;
   if(h.axis().lower_edge()!=-10) return false;
   if(h.axis().upper_edge()!=10) return false;
@@ -95,7 +95,7 @@ static bool test_sh12d(std::ostream& a_out,bool a_verbose) {
  {if(a_verbose) a_out << "test_sh12d : sh1d ..." << std::endl;
   double tolerance = 1e-8;
   tools::histo::sh1d h("title",40,-10,10);
-  if(h.title()!="title") return false;
+  if(!tools::equal(a_out,__FILE__,__LINE__,h.title(),"title")) return false;
   if(h.axis().bins()!=40) return false;
   if(h.axis().lower_edge()!=-10) return false;
   if(h.axis().upper_edge()!=10) return false;
@@ -119,7 +119,7 @@ static bool test_sh12d(std::ostream& a_out,bool a_verbose) {
  {if(a_verbose) a_out << "test_sh12d : sh2d ..." << std::endl;
   double tolerance = 1e-8;
   tools::histo::sh2d h("title",40,-10,10,20,-5,5);
-  if(h.title()!="title") return false;
+  if(!tools::equal(a_out,__FILE__,__LINE__,h.title(),"title")) return false;
   if(h.axis_x().bins()!=40) return false;
   if(h.axis_x().lower_edge()!=-10) return false;
   if(h.axis_x().upper_edge()!=10) return false;

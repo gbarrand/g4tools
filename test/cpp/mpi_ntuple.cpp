@@ -3,6 +3,7 @@
 
 // to run :
 //   Darwin> mpirun-openmpi-mp -np 3 ./bin_clang/mpi_ntuple -verbose
+//   centos> /usr/lib64/openmpi/bin/mpirun -np 3 ./bin_gnu/mpi_ntuple -verbose
 
 #ifdef TOOLS_MEM
 #include <tools/mem>
@@ -44,6 +45,13 @@ int main(int argc,char **argv) {
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
+  tools::args args(argc,argv);
+  
+  bool verbose = args.is_arg("-verbose");
+
+  //////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////
   
   tools::mpi::world mpi_world;
   tools::impi_world& _mpi = mpi_world;
@@ -69,17 +77,20 @@ int main(int argc,char **argv) {
   // the ntuple_booking should be the same for all ranks (in this program it is not passed through MPI to ranks) :
   double user_rgauss;
   float user_rbw;
-  std::string user_string;
   int user_count;
+  double user_rw_count;
+
+  std::string user_string;
   std::vector<double> user_vec_d;
   std::vector<std::string> user_vec_s;
   
   tools::ntuple_booking nbk("rg_rbw","Randoms");
   nbk.add_column("rgauss",user_rgauss);
   nbk.add_column("rbw",user_rbw);
+  nbk.add_column("count",user_count);
+  nbk.add_column("rw_count",user_rw_count);
   nbk.add_column("string",user_string);
 //nbk.add_column<std::string>("string");
-  nbk.add_column("count",user_count);
   nbk.add_column("vec_d",user_vec_d);
   nbk.add_column("vec_s",user_vec_s);
 
@@ -92,13 +103,11 @@ int main(int argc,char **argv) {
     /// args : ///////////////////////////////////////////////
     //////////////////////////////////////////////////////////
 
-    tools::args args(argc,argv);
-  
-    bool verbose = args.is_arg("-verbose");
-    
     bool row_wise = !args.is_arg("-column_wise"); //default is row_wise.
-    //bool row_wise = args.is_arg("-row_wise");
+    bool row_mode = args.is_arg("-row_mode");    //if column_wise (to attempt to have a row like storage in column_wise ntuple).
   
+    bool read_check_row_wise = row_wise||(!row_wise&&row_mode);
+    
     //////////////////////////////////////////////////////////
     /// write file : /////////////////////////////////////////
     //////////////////////////////////////////////////////////
@@ -108,11 +117,18 @@ int main(int argc,char **argv) {
     
     unsigned int num_megas;
     args.find<unsigned int>("-megas",num_megas,1);
-
     unsigned int basket_size;
     args.find<unsigned int>("-basket_size",basket_size,32000);
+    unsigned int nev;
+    args.find<unsigned int>("-basket_entries",nev,4000);
 
-    if(verbose) std::cout << (row_wise?"row_wise":"column_wise") << std::endl;
+    if(verbose) {
+      std::cout << (row_wise?"row_wise":"column_wise") << std::endl;
+      if(!row_wise) std::cout << (row_mode?"row_mode":"not row_mode") << std::endl;
+      std::cout << "num megas (per thread) " << num_megas << std::endl;
+      std::cout << "basket_size " << basket_size << std::endl;
+      if(!row_wise && row_mode) std::cout << "basket_entries " << nev << std::endl;
+    }
     
     //////////////////////////////////////////////////////////
     /// create a .root file : ////////////////////////////////
@@ -152,7 +168,9 @@ int main(int argc,char **argv) {
     if(row_wise) {
       if(!_impi.pack(basket_size)) {std::cout << "pack(basket_size) failed."<< std::endl;return EXIT_FAILURE;}
     } else {
+      if(!_impi.bpack(row_mode)) {std::cout << "bpack(row_mode) failed."<< std::endl;return EXIT_FAILURE;}
       if(!_impi.vpack(basket_sizes)) {std::cout << "vpack(basket_sizes) failed."<< std::endl;return EXIT_FAILURE;}
+      if(!_impi.pack(nev)) {std::cout << "pack(nev) failed."<< std::endl;return EXIT_FAILURE;}
     }
     if(!_impi.pack(num_megas)) {std::cout << "pack(basket_size) failed."<< std::endl;return EXIT_FAILURE;}
     if(!_impi.send_buffer(rank_dest,tag)) {
@@ -172,7 +190,9 @@ int main(int argc,char **argv) {
     if(row_wise) {
       if(!_impi.pack(basket_size)) {std::cout << "pack(basket_size) failed."<< std::endl;return EXIT_FAILURE;}
     } else {
+      if(!_impi.bpack(row_mode)) {std::cout << "bpack(row_mode) failed."<< std::endl;return EXIT_FAILURE;}
       if(!_impi.vpack(basket_sizes)) {std::cout << "vpack(basket_sizes) failed."<< std::endl;return EXIT_FAILURE;}
+      if(!_impi.pack(nev)) {std::cout << "pack(nev) failed."<< std::endl;return EXIT_FAILURE;}
     }
     if(!_impi.pack(num_megas)) {std::cout << "pack(basket_size) failed."<< std::endl;return EXIT_FAILURE;}
     if(!_impi.send_buffer(rank_dest,tag)) {
@@ -201,13 +221,28 @@ int main(int argc,char **argv) {
         tools::uint32 ntuple_id;
         if(!_impi.unpack(ntuple_id)) {std::cout << "unpack(ntuple_id) failed."<< std::endl;return EXIT_FAILURE;}
 
-	if(ntuple_id!=main_ntuple_id) {
+        if(ntuple_id!=main_ntuple_id) {
           std::cout << "unknown ntuple_id " << ntuple_id << "." << std::endl;
           return EXIT_FAILURE;
-	}
+        }
 
-	if(!main_ntuple->mpi_add_basket(_impi)) {
+        if(!main_ntuple->mpi_add_basket(_impi)) {
           std::cout << "main_ntuple->mpi_add_basket() failed." << std::endl;	  
+          return EXIT_FAILURE;
+        }
+	
+      } else if(protocol==tools::wroot::mpi_protocol_baskets()) { //column_wise and row_mode only.
+        //::printf("debug : from %d, receive baskets\n",probe_src);
+        tools::uint32 ntuple_id;
+        if(!_impi.unpack(ntuple_id)) {std::cout << "unpack(ntuple_id) failed."<< std::endl;return EXIT_FAILURE;}
+
+        if(ntuple_id!=main_ntuple_id) {
+          std::cout << "unknown ntuple_id " << ntuple_id << "." << std::endl;
+          return EXIT_FAILURE;
+        }
+
+        if(!main_ntuple->mpi_add_baskets(_impi)) {
+          std::cout << "main_ntuple->mpi_add_baskets() failed." << std::endl;	  
           return EXIT_FAILURE;
         }
 	
@@ -215,12 +250,12 @@ int main(int argc,char **argv) {
         tools::uint32 ntuple_id;
         if(!_impi.unpack(ntuple_id)) {std::cout << "unpack(ntuple_id) failed."<< std::endl;return EXIT_FAILURE;}
 	
-	if(ntuple_id!=main_ntuple_id) {
+        if(ntuple_id!=main_ntuple_id) {
           std::cout << "unknown ntuple_id " << ntuple_id << "." << std::endl;
           return EXIT_FAILURE;
-	}
+        }
 	
-	if(!main_ntuple->mpi_end_fill(_impi)) {
+        if(!main_ntuple->mpi_end_fill(_impi)) {
           std::cout << "main_ntuple->mpi_end_fill() failed." << std::endl;	  
           return EXIT_FAILURE;
         }
@@ -264,15 +299,16 @@ int main(int argc,char **argv) {
 
     int rank_src = 0;
 
-    bool verbose;
     tools::uint32 main_ntuple_id;
     bool row_wise;
+    bool row_mode = false;
     bool byte_swap;
     unsigned int compression;
     tools::wroot::seek seek_directory;
     tools::uint32 basket_size;
     std::vector<tools::uint32> basket_sizes;
     unsigned int num_megas;
+    unsigned int nev;
 
    {tools::mpi::wrmpi _wrmpi(std::cout,comm);    
     tools::impi& _impi = _wrmpi; //in the below, we use only the tools::impi interface.
@@ -292,7 +328,9 @@ int main(int argc,char **argv) {
     if(row_wise) {
       if(!_impi.unpack(basket_size)) {std::cout << "unpack(basket_size) failed."<< std::endl;return EXIT_FAILURE;}
     } else {
+      if(!_impi.bunpack(row_mode)) {std::cout << "bunpack(row_mode) failed."<< std::endl;return EXIT_FAILURE;}
       if(!_impi.vunpack(basket_sizes)) {std::cout << "vunpack(basket_sizes) failed."<< std::endl;return EXIT_FAILURE;}
+      if(!_impi.unpack(nev)) {std::cout << "unpack(nev) failed."<< std::endl;return EXIT_FAILURE;}
     }
     if(!_impi.unpack(num_megas)) {std::cout << "unpack(num_megas) failed."<< std::endl;return EXIT_FAILURE;}
     }
@@ -313,11 +351,11 @@ int main(int argc,char **argv) {
     if(row_wise) {
       _ntuple = new tools::wroot::mpi_ntuple_row_wise(main_ntuple_id,
                                                       std::cout,byte_swap,compression,seek_directory,
-						      basket_size,nbk,false/*verbose*/);
+                                                      basket_size,nbk,false/*verbose*/);
     } else {
       _ntuple = new tools::wroot::mpi_ntuple_column_wise(main_ntuple_id,
                                                          std::cout,byte_swap,compression,seek_directory,
-							 basket_sizes,nbk,false/*verbose*/);
+                                                         basket_sizes,nbk,row_mode,nev,false/*verbose*/);
     }
 
     /*
@@ -335,6 +373,8 @@ int main(int argc,char **argv) {
     tools::mpi::wrmpi _wrmpi(std::cout,comm);    
     tools::impi& _impi = _wrmpi; //in the below, we use only the tools::impi interface.
 
+    bool read_check_row_wise = row_wise||(!row_wise&&row_mode);
+    
    {tools::rgaussd rg(1,2);
     tools::rbwf rbwf(0,1);
     tools::rbwd rbwd(-1,1);
@@ -354,13 +394,14 @@ int main(int argc,char **argv) {
     //}
 
       user_count = count;
+      user_rw_count = count;
       
      {user_vec_d.clear();
-      unsigned int number = row_wise ? count%100 : (unsigned int)(10*rflat.shoot());
+      unsigned int number = read_check_row_wise ? count%100 : (unsigned int)(10*rflat.shoot());
       for(unsigned int i=0;i<number;i++) user_vec_d.push_back(rg.shoot());}
 
      {user_vec_s.clear();
-      unsigned int number = row_wise ? count%5 : (unsigned int)(5*rflat.shoot());
+      unsigned int number = read_check_row_wise ? count%5 : (unsigned int)(5*rflat.shoot());
       for(unsigned int i=0;i<number;i++) {
         if(!tools::num2s(i,stmp)){}
         user_vec_s.push_back(stmp);
@@ -384,6 +425,9 @@ int main(int argc,char **argv) {
 
 #ifdef TOOLS_MEM
   }tools::mem::balance(std::cout);
+  std::cout << "mpi_ntuple : (mem) exit..." << std::endl;
+#else  
+  if(verbose) std::cout << "mpi_ntuple : exit... " << std::endl;
 #endif //TOOLS_MEM
   return EXIT_SUCCESS;
 }

@@ -28,7 +28,8 @@ int main(int argc,char** argv) {
   
  {hid_t file = H5Fopen("ntuple.hdf5",H5F_ACC_RDONLY, H5P_DEFAULT);
   if(file<0) {
-    std::cout << "can't open file." << std::endl;
+    std::cout << "can't open ntuple.hdf5 file." << std::endl;
+    std::cout << "You can produce it with the hdf5_ntuple.cpp program." << std::endl;
     return EXIT_FAILURE;
   }
 

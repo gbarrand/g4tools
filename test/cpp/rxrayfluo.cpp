@@ -1,6 +1,7 @@
 // Copyright (C) 2010, Guy Barrand. All rights reserved.
 // See the file tools.license for terms.
 
+#include <tools/mem>
 
 #include <tools/args>
 #include <tools/rroot/file>
@@ -20,6 +21,9 @@
 
 int main(int argc,char** argv) {
 
+#ifdef TOOLS_MEM
+  tools::mem::set_check_by_class(true);{
+#endif //TOOLS_MEM
 
   tools::args args(argc,argv);
 
@@ -200,6 +204,9 @@ int main(int argc,char** argv) {
   //////////////////////////////////////////////////////
   //////////////////////////////////////////////////////
   
+#ifdef TOOLS_MEM
+  }tools::mem::balance(std::cout);
+#endif //TOOLS_MEM
 
   return EXIT_SUCCESS;
 }

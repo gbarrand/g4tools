@@ -10,23 +10,8 @@ else
     cc_linker=clang
   else
     if [ ${build_cl_exe} = "yes" ] ; then
-      cc_compiler=cl.exe
-
-      if [ "${MSVCDir}" != "" ] ;  then
-        # Visual Studio 2003
-        cc_linker="`cygpath \"${MSVCDir}\"/bin/link.exe`"
-      else
-        if [ "${VCINSTALLDIR}" != "" ] ;  then
-          # Visual Studio 9.0
-          cc_linker="`cygpath \"${VCINSTALLDIR}\"/bin/link.exe`"
-        else
-          echo "env variables MSVCDir and VCINSTALLDIR not defined. You have to setup Visual."
-          exit
-        fi  
-      fi  
-      #echo ${cc_linker}
-      cc_linker=`echo ${cc_linker} | sed -e 's: :\\\ :g'`
-
+      cc_compiler=./vc++
+      cc_linker=./vc++
     else
       cc_compiler=cc
       cc_linker=cc
@@ -37,7 +22,8 @@ fi
 ccflags=
 if [ ${build_cl_exe} = "yes" ] ; then
 
-  ccflags="${ccflags} /nologo /DWIN32 /MD /O2 /W3" 
+ #ccflags="${ccflags} -DWIN32" 
+  echo dummy > /dev/null
 
 else
 

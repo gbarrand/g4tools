@@ -50,13 +50,8 @@ if [ "${use_our_hdf5}" = "yes" ] ; then
     exit
   fi
   
-  if [ ${build_cl_exe} = "yes" ] ; then
-    cflags="${cflags} /DTOOLS_USE_OUREX_HDF5 /I${hdf5_home}/include"
-    cppflags="${cppflags} /DTOOLS_USE_OUREX_HDF5 /I${hdf5_home}/include"
-  else
-    cflags="${cflags} -DTOOLS_USE_OUREX_HDF5 -I${hdf5_home}/include"
-    cppflags="${cppflags} -DTOOLS_USE_OUREX_HDF5 -I${hdf5_home}/include"
-  fi
+  cflags="${cflags} -DTOOLS_USE_OUREX_HDF5 -I${hdf5_home}/include"
+  cppflags="${cppflags} -DTOOLS_USE_OUREX_HDF5 -I${hdf5_home}/include"
 
   libs="${libs} ${hdf5_home}/${bin_dir}/libourex_hdf5.a"
 

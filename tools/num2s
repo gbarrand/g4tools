@@ -9,6 +9,8 @@
 #include "sprintf"
 #include "typedefs"
 
+#include <cstddef> //ptrdiff_t
+
 namespace tools {
 
 /*
@@ -57,6 +59,22 @@ inline bool num2s(float a_value,std::string& a_s){
 
 inline bool num2s(double a_value,std::string& a_s){
   return print2s(a_s,32,"%g",a_value);
+}
+
+inline bool size_t2s(size_t a_value,std::string& a_s) {
+  if(sizeof(size_t)==8) {
+    return num2s((uint64)a_value,a_s);
+  } else { //assume 4 :
+    return num2s((uint32)a_value,a_s);
+  }
+}
+
+inline bool ptrdiff_t2s(ptrdiff_t a_value,std::string& a_s) {  //used in write_bsg.
+  if(sizeof(ptrdiff_t)==8) {
+    return num2s((int64)a_value,a_s);
+  } else { //assume 4 :
+    return num2s((int32)a_value,a_s);
+  }
 }
 
 /*

@@ -316,7 +316,7 @@ bool test_hdf5_ntuple(std::ostream& a_out,bool a_verbose) {
   }
  
   if(!tools::equal(a_out,__FILE__,__LINE__,
-		   tools::vectors_are_equal(wsome_entries,rsome_entries,prec,::fabs),true)) {
+		   tools::vectors_are_equal(wsome_entries,rsome_entries,prec,tools::dfabs),true)) {
     ::H5Gclose(ntuples); 
     ::H5Fclose(_file);
     return false;
@@ -468,7 +468,7 @@ bool test_hdf5_ntuple(std::ostream& a_out,bool a_verbose) {
   }
  
   if(!tools::equal(a_out,__FILE__,__LINE__,
-		   tools::vectors_are_equal(wsome_entries,rsome_entries,prec,::fabs),true)) {
+		   tools::vectors_are_equal(wsome_entries,rsome_entries,prec,tools::dfabs),true)) {
     ::H5Gclose(ntuples); 
     ::H5Fclose(_file);
     return false;

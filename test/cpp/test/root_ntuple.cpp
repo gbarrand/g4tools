@@ -21,7 +21,6 @@
 #include "../sys/process"
 #include <tools/file>
 #include <tools/num2s>
-#include <tools/strip>
 
 bool test_root_ntuple(std::ostream& a_out,bool a_verbose) {
   if(a_verbose) {
@@ -169,6 +168,7 @@ bool test_root_ntuple(std::ostream& a_out,bool a_verbose) {
   char* buf = key->get_object_buffer(rfile,sz);
   if(!tools::valid_pointer(a_out,__FILE__,__LINE__,buf)) return false;
   tools::rroot::buffer b(a_out,rfile.byte_swap(),sz,buf,key->key_length(),rverbose);
+  b.set_map_objs(true);
   tools::rroot::fac fac(a_out);
   tools::rroot::tree tree(rfile,fac);
   TOOLS_TEST_FUNC(tree.stream(b))
@@ -237,7 +237,7 @@ bool test_root_ntuple(std::ostream& a_out,bool a_verbose) {
   
   if(!tools::equal(a_out,__FILE__,__LINE__,hgw.equals(hgr,prec,::fabs),true)) return false;
   if(!tools::equal(a_out,__FILE__,__LINE__,
-		   tools::vectors_are_equal(wsome_entries,rsome_entries,prec,::fabs),true)) return false;
+		   tools::vectors_are_equal(wsome_entries,rsome_entries,prec,tools::dfabs),true)) return false;
   
   if(!tools::equal(a_out,__FILE__,__LINE__,hvdw.equals(hvdr,prec,::fabs),true)) return false;
   

@@ -6,6 +6,9 @@
 //  See rroot.C for an example of how to manipulate
 // (and check !) the content of this file with CERN-ROOT.
 
+#ifdef TOOLS_MEM
+#include <tools/mem>
+#endif //TOOLS_MEM
 
 #include <tools/wroot/file>
 #include <tools/wroot/to>
@@ -39,11 +42,16 @@
 
 int main(int argc,char** argv) {
 
+#ifdef TOOLS_MEM
+  tools::mem::set_check_by_class(true);{
+#endif //TOOLS_MEM
   tools::args args(argc,argv);
 
   bool verbose = args.is_arg("-verbose");
 
   bool row_wise = args.is_arg("-row_wise");
+
+  bool read_check_row_wise = row_wise;
   
   //////////////////////////////////////////////////////////
   /// create a .root file : ////////////////////////////////
@@ -253,13 +261,13 @@ int main(int argc,char** argv) {
     }}
 
    {user_vec_d.clear();
-    unsigned int number = row_wise ? count%100 : (unsigned int)(10*rflat.shoot());
+    unsigned int number = row_wise ? count%100 : 10*tools::uint32(rflat.shoot());
     for(unsigned int i=0;i<number;i++) {
       user_vec_d.push_back(rg.shoot());
     }}
 
    {user_vec_s.clear();
-    unsigned int number = row_wise ? count%5 : (unsigned int)(5*rflat.shoot());
+    unsigned int number = row_wise ? count%5 : 5*tools::uint32(rflat.shoot());
     for(unsigned int i=0;i<number;i++) {
       if(!tools::num2s(i,stmp)){}
       user_vec_s.push_back(stmp);
@@ -336,6 +344,9 @@ int main(int argc,char** argv) {
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
 
+#ifdef TOOLS_MEM
+  }tools::mem::balance(std::cout);
+#endif //TOOLS_MEM
 
   return EXIT_SUCCESS;
 }

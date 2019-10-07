@@ -64,7 +64,7 @@ int main(int argc,char** argv) {
       tools::aida::ntuple* nt = (tools::aida::ntuple*)raxml_out.object();
       std::cout << "ntuple : title " << nt->title() << std::endl;
       std::cout << "ntuple : rows " << nt->rows() << std::endl;
-     {const std::vector<tools::aida::base_col*>& cols = nt->cols();
+     {const std::vector<tools::aida::base_col*>& cols = nt->columns();
       std::vector<tools::aida::base_col*>::const_iterator itc;
       for(itc=cols.begin();itc!=cols.end();++itc) {
 	tools::aida::aida_base_col* acol = tools::safe_cast<tools::aida::base_col,tools::aida::aida_base_col>(*(*itc));

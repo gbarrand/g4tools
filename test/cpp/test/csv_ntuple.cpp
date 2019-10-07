@@ -14,7 +14,6 @@
 #include "../sys/process"
 #include <tools/file>
 #include <tools/num2s>
-#include <tools/strip>
 
 #include <fstream>
 
@@ -213,7 +212,7 @@ bool test_csv_ntuple(std::ostream& a_out,bool a_verbose) {
     return false;
   }
   if(!tools::equal(a_out,__FILE__,__LINE__,
-                   tools::vectors_are_equal(wsome_entries,rsome_entries,prec,::fabs),true)) return false;
+                   tools::vectors_are_equal(wsome_entries,rsome_entries,prec,tools::dfabs),true)) return false;
   
   if(!tools::equal(a_out,__FILE__,__LINE__,hvdw.equals(hvdr,prec,::fabs),true)) return false;
   

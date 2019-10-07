@@ -1,6 +1,8 @@
 
 // code common to mt_ntuple.cpp, mt_ntuple_seq.cpp and exlib mpi_ntuple.cpp.
 
+  if(verbose) std::cout << "read " << file << " ..." << std::endl;
+
  {bool read_verbose = false;
   tools::rroot::file rfile(std::cout,file,read_verbose);
 #ifdef TOOLS_DONT_HAVE_ZLIB
@@ -104,7 +106,7 @@
  //  std::cout << " " << tools::sout(*it) << std::endl;
  // }}
    
-    if(row_wise) {
+    if(read_check_row_wise) {
       if(user_string_count!=read_user_count)  {
         std::cout << "found an inconsistent row at row : "<< row
                   << ", user_string_count " << user_string_count

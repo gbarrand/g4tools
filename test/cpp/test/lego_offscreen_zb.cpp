@@ -3,7 +3,7 @@
 
 #include "lego_offscreen_sg"
 
-#include <tools/sg/render_zb>
+#include <tools/sg/zb_action>
 #include <tools/wps>
 
 #include <tools/test>
@@ -16,14 +16,14 @@ inline bool lego_offscreen_zb(std::ostream& a_out,bool a_verbose,const std::stri
   unsigned int width = 400;
   unsigned int height = 200;
   
-  tools::sg::manager_zb mgr; //must be deleted after sep.
-  
+  tools::sg::zb_manager mgr;
+ 
   tools::sg::separator* sep = lego_offscreen_sg(width,height);
 
  {unsigned int factor = 2; //have greater size to have good freetype rendering.
   unsigned int _width = factor*width;
   unsigned int _height = factor*height;
-  tools::sg::render_zb action(mgr,a_out,_width,_height);
+  tools::sg::zb_action action(mgr,a_out,_width,_height);
   tools::colorf clear_color = tools::colorf_white();
   action.zbuffer().clear_color_buffer(0);
   action.add_color(clear_color.r(),clear_color.g(),clear_color.b());
@@ -33,7 +33,7 @@ inline bool lego_offscreen_zb(std::ostream& a_out,bool a_verbose,const std::stri
   TOOLS_TEST_FUNC(wps.open_file(a_file,true))
   wps.PS_BEGIN_PAGE();
   wps.PS_PAGE_SCALE(float(_width),float(_height));
-  wps.PS_IMAGE(_width,_height,tools::wps::rgb_4,tools::sg::render_zb::get_rgb,&action);
+  wps.PS_IMAGE(_width,_height,tools::wps::rgb_4,tools::sg::zb_action::get_rgb,&action);
   wps.PS_END_PAGE();
   wps.close_file();}
 
@@ -68,7 +68,7 @@ bool test_lego_offscreen_zb(std::ostream& a_out,bool a_verbose) {
 
   bool _remove = true;
 
-  if(!tools::test_with_file(a_out,a_verbose,"out_lego_offscreen_zb",".ps",_remove,utest_lego_offscreen_out_zb_ps,
+  if(!tools::test_with_file(a_out,a_verbose,"out_lego_offscreen_zb_",".ps",_remove,utest_lego_offscreen_out_zb_ps,
 			    lego_offscreen_zb,filter_CreationDate)) {
     a_out << "test_lego_offscreen_zb :"
           << " failed. It may come from a version of freetype producing not the same results as the one"
@@ -76,6 +76,6 @@ bool test_lego_offscreen_zb(std::ostream& a_out,bool a_verbose) {
           << std::endl;
     return false;
   }
- 
+  
   return true;
 }

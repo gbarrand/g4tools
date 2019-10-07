@@ -10,28 +10,8 @@ else
     cpp_linker=clang++
   else
     if [ ${build_cl_exe} = "yes" ] ; then
-      cpp_compiler=cl.exe
-
-      # NOTE : cygwin adds /usr/bin in front of PATH, and this directory
-      #        contains a link.exe which is not the VisualC++ one. Then
-      #        we arrange to give the full path toward the VisualC++ one.
-
-      if [ "${MSVCDir}" != "" ] ;  then
-        # Visual Studio 2003
-        vc_linker_path="`cygpath \"${MSVCDir}\"/bin`"
-        cpp_linker="\"${vc_linker_path}\"/link.exe"
-      else
-        if [ "${VCINSTALLDIR}" != "" ] ;  then
-          # Visual Studio >= 9.0
-          vc_linker_path="`cygpath \"${VCINSTALLDIR}\"/bin`"
-          cpp_linker="\"${vc_linker_path}\"/link.exe"
-        else
-          echo "Env variables MSVCDir and VCINSTALLDIR not defined."
-          echo "You have to setup Visual."
-          exit
-        fi  
-      fi  
-
+      cpp_compiler=./vc++
+      cpp_linker=./vc++
     else
       cpp_compiler=c++
       cpp_linker=c++
@@ -43,13 +23,13 @@ cppflags=
 G4_cppflags=
 if [ ${build_cl_exe} = "yes" ] ; then
 
-  cppflags="${cppflags} /nologo /DWIN32 /MD /O2 /W3 /EHsc /GR" 
+  #cppflags="${cppflags} -DWIN32" 
 
   if [ ${build_mem} = "yes" ] ; then
-    cppflags="${cppflags} /DTOOLS_MEM"
+    cppflags="${cppflags} -DTOOLS_MEM"
   fi
 
-  cppflags="${cppflags} /I.."
+  cppflags="${cppflags} -I.."
 
 else
 
