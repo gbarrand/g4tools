@@ -1,0 +1,64 @@
+
+# to be sourced from another build script.
+
+# Copyright (C) 2010, Guy Barrand. All rights reserved.
+# See the file bush.license for terms.
+
+# NOTE : cygwin adds /usr/bin in front of PATH, and this directory
+#        contains a link.exe which is not the VisualC++ one. Then
+#        we arrange to give the full path toward the VisualC++ one.
+
+visual_link_flags=
+visual_link_exe=not_found
+
+if [ "`uname -n`" = "PC-PANO" ] ; then # for my old XP.
+  
+  visual_link_exe="\"/cygdrive/c/Program Files/Microsoft Visual Studio 9.0/VC/bin\"/link.exe"
+
+elif [ "`uname | grep CYGWIN`" != "" ] ; then
+  if [ "${ORIGINAL_PATH}" = "" ] ; then
+    echo 'bush/find_link_exe : env variable ORIGINAL_PATH not defined.'
+    exit
+  fi  
+  old_IFS="${IFS}"
+  IFS=:
+  for item in ${ORIGINAL_PATH} ; do
+    #echo Look ${item}
+    if [ -f "${item}/link.exe" ] ; then
+      if [ "${visual_link_exe}" = "not_found" ] ; then
+        #echo Found in ${item}
+        visual_link_exe="\"${item}\"/link.exe"
+      fi
+    fi
+  done
+  IFS="${old_IFS}"
+  unset old_IFS
+
+elif [ "`uname -r | grep Microsoft`" != "" ] ; then
+  if [ "${LIB}" = "" ] ; then
+    echo "bush/find_link_exe : env variable LIB not defined."
+    exit
+  fi
+  # do the back slash to slash replacement on "printenv LIB"
+  # to avoid some ${} that would interpret back slash as an escape.
+  items="`printenv LIB | sed 's#\\\#/#g'`"
+  old_IFS="${IFS}"
+  IFS=';'
+  for item in ${items} ; do visual_link_flags="${visual_link_flags} /LIBPATH:'${item}'"; done
+  IFS="${old_IFS}"
+  unset old_IFS
+
+  visual_link_exe=link.exe
+
+else  
+  echo 'bush/find_link_exe : not on cygwin.'
+  exit
+fi
+
+if [ "${visual_link_exe}" = "not_found" ] ; then
+  echo 'bush/find_link_exe : link.exe not found.'
+  exit
+fi  
+
+#echo "bush/find_link_exe : ${visual_link_exe}"
+

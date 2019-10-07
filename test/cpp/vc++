@@ -1,0 +1,257 @@
+#!/bin/sh -f
+
+# Copyright (C) 2010, Guy Barrand. All rights reserved.
+# See the file bush.license for terms.
+
+verbose=no
+
+on_microsoft_ubuntu=no
+if [ "`uname -r | grep Microsoft`" != "" ] ; then
+  on_microsoft_ubuntu=yes
+  path_u2w="echo"
+else
+  #path_u2w='cygpath -w -a'
+  path_u2w="echo" # in fact, it works with that.
+fi
+
+Is=
+Ds=
+Ls=
+ws=
+
+compile=no
+language=none
+
+x_language=none
+
+debug=no
+
+file_o=
+file_cpp=
+
+dll=no
+bigobj=no
+std_cpp11=no
+std_cpp14=no
+
+libs=
+objs=
+
+while test $# -ge 1 ; do
+  case $1 in
+    -c) compile=yes;;
+    -verbose) verbose=yes;;
+    -x) if [ $# -ge 2 ] ; then x_language=$2;shift; fi;;
+    -o) if [ $# -ge 2 ] ; then file_o=$2;shift; fi;;
+    -I*) path="`echo $1 | sed -e 's:-I::g'`";path="`${path_u2w} ${path}`";path="'${path}'";Is="${Is} /I${path}";;
+    -D*) Ds="${Ds} $1";;
+    -L*) path="`echo $1 | sed -e 's:-L::g'`";path="`${path_u2w} ${path}`";path="'${path}'";Ls="${Ls} /LIBPATH:${path}";;
+    -w*) ws="${ws} $1";;
+    -g)  debug=yes;;
+    -dll) dll=yes;;
+    -bigobj) bigobj=yes;;
+    -std=c++11) std_cpp11=yes;;
+    -std=c++14) std_cpp14=yes;;
+    -*) echo "bush/vc++ : unknown minus option $1";exit;;
+     *) suffix=`echo $1 | sed 's:.*\.::'`
+        if [ "`basename $1`" = "$1" ] ; then
+          path="$1"
+        else
+          path="`${path_u2w} $1`";path="'${path}'";
+        fi
+        if [ "${suffix}" = a ] ; then
+          libs="${libs} ${path}"
+        elif [ "${suffix}" = lib ] ; then
+          libs="${libs} ${path}"
+        elif [ "${suffix}" = o ] ; then
+          objs="${objs} ${path}"
+        elif [ "${suffix}" = exp ] ; then
+          objs="${objs} ${path}"
+        else
+          if [ $# = 1 ] ; then
+            file_cpp=$1
+          else
+            echo "bush/vc++ : unknown option : $1"
+            exit
+          fi
+        fi;;
+  esac
+  shift
+done
+
+if [ "${file_o}" = "" ] ; then
+  echo "bush/vc++ : no .o given."
+  exit
+fi
+
+file_o="`${path_u2w} ${file_o}`"
+
+file_o="'${file_o}'"
+
+#/////////////////////////////////////////////////////
+#/// compile : ///////////////////////////////////////
+#/////////////////////////////////////////////////////
+if [ "${compile}" = "yes" ] ; then
+
+  if [ "${file_cpp}" = "" ] ; then
+    echo "bush/vc++ : no file to compile."
+    exit
+  fi
+
+  Is="`echo ${Is} | sed -e 's:-I:/I:g'`"
+  Ds="`echo ${Ds} | sed -e 's:-D:/D:g'`"
+  ws="`echo ${ws} | sed -e 's:-w:/w:g'`"
+  #Ls="`echo ${Ls} | sed -e 's:-L:/LIBPATH:g'`"
+
+  cl_exe_cmd="cl.exe "
+  #cl_exe_cmd="echo "
+
+  if [ ${bigobj} = yes ] ; then cl_exe_cmd="${cl_exe_cmd} /bigobj"; fi
+
+  if [ ${debug} = yes ] ; then
+    cl_exe_cmd="${cl_exe_cmd} /Zi"
+   #cl_exe_cmd="${cl_exe_cmd} /Yd"
+  fi
+
+  # NOTE : /MD, /MDd induces some cpp macros (_MT,_DLL,_DEBUG). It adds also some MSVCRT[D].lib in .obj !
+  if [ ${debug} = yes ] ; then
+    cl_exe_cmd="${cl_exe_cmd} /MDd"
+  else
+    cl_exe_cmd="${cl_exe_cmd} /MD"
+  fi
+
+  if [ ${language} = none ] ; then
+    suffix=`echo ${file_cpp} | sed 's:.*\.::'`
+    language=c++ #default for files without extension.
+    if [ "${suffix}" = c   ] ; then language=c;   fi
+    if [ "${suffix}" = cpp ] ; then language=c++; fi
+    if [ "${suffix}" = cc  ] ; then language=c++; fi
+    if [ "${suffix}" = cxx ] ; then language=c++; fi
+  fi
+
+  if [ "${x_language}" != "none" ] ; then
+    if [ "${x_language}" != "${language}" ] ; then
+      echo "warning : -x language '${x_language}' differ from guessed language '${language}'."
+    fi
+  fi
+
+  if [ ${language} = c++ ] ; then
+    cl_exe_cmd="${cl_exe_cmd} /nologo /O2 /W3 /EHsc /GR"
+    if [ ${std_cpp14} = yes ] ; then
+      cl_exe_cmd="${cl_exe_cmd} /std:c++latest"  # to pass ourex/cern_root_arte.
+    fi	
+   #cl_exe_cmd="${cl_exe_cmd} /std:c++17"
+   #cl_exe_cmd="${cl_exe_cmd} /std:c++14"
+  else
+    cl_exe_cmd="${cl_exe_cmd} /nologo /O2 /W3" 
+  fi
+
+  # rm painfull warnings about API strcpy, etc... deprecated :
+  cl_exe_cmd="${cl_exe_cmd} /wd4996"
+
+  # enforce error on "size_t on unsigned int" :
+  #cl_exe_cmd="${cl_exe_cmd} /wd4267"
+
+  cl_exe_cmd="${cl_exe_cmd} /c" 
+
+  if [ ${on_microsoft_ubuntu} = yes ] ; then
+    if [ "${INCLUDE}" = "" ] ; then
+      echo "bush/vc++ : env variable INCLUDE not defined."
+      exit
+    fi
+    # do the back slash to slash replacement on "printenv INCLUDE"
+    # to avoid some ${} that would interpret back slash as an escape.
+    items="`printenv INCLUDE | sed 's#\\\#/#g'`"
+    old_IFS="${IFS}"
+    IFS=';'
+    for item in ${items} ; do Is="${Is} /I'${item}'"; done
+    IFS="${old_IFS}"
+    unset old_IFS
+
+    #cl_exe_cmd="${cl_exe_cmd} /d1scalableinclude-" # to bypass casing problems in include paths.
+    
+    file_cpp="`${path_u2w} ${file_cpp}`"
+  fi
+
+  if [ "${Is}" != "" ] ; then cl_exe_cmd="${cl_exe_cmd} ${Is}"; fi
+  if [ "${Ds}" != "" ] ; then cl_exe_cmd="${cl_exe_cmd} ${Ds}"; fi
+
+  cl_exe_cmd="${cl_exe_cmd} /Fo${file_o}"
+
+  if [ ${language} = c++ ] ; then
+    cl_exe_cmd="${cl_exe_cmd} /Tp${file_cpp}"
+  elif [ ${language} = c ] ; then
+    cl_exe_cmd="${cl_exe_cmd} ${file_cpp}"
+  else
+    echo "bush/vc++ : unknown language ${language}"
+    exit
+  fi
+
+  #echo "${cl_exe_cmd}" > debug_compile.log
+  
+  if [ ${verbose} = yes ] ; then echo "${cl_exe_cmd}";fi
+
+  /bin/rm -f ./cl_exe_tmp
+  eval ${cl_exe_cmd} > ./cl_exe_tmp
+  use_status=$?
+  if [ ${use_status} != 0 ] ; then
+    cat ./cl_exe_tmp
+    /bin/rm -f ./cl_exe_tmp
+    exit ${use_status}
+  else
+    /bin/rm -f ./cl_exe_tmp
+    exit 0
+  fi
+
+else
+#/////////////////////////////////////////////////////
+#/// link : //////////////////////////////////////////
+#/////////////////////////////////////////////////////
+
+  #bush_home=`dirname $0`
+  bush_home=.
+  . ${bush_home}/find_link_exe    
+  link_exe_cmd="${visual_link_exe} ${visual_link_flags}"
+
+  link_exe_cmd="${link_exe_cmd} /nologo" 
+
+  if [ ${debug} = yes ] ; then
+   #link_exe_cmd="${link_exe_cmd} /DEBUG:FULL" 
+    link_exe_cmd="${link_exe_cmd} /DEBUG" 
+  fi
+
+  #link_exe_cmd="${link_exe_cmd} /NODEFAULTLIB:LIBCMT.lib /DEFAULTLIB:MSVCRT.lib" 
+
+  if [ "${Ls}" != "" ] ; then link_exe_cmd="${link_exe_cmd} ${Ls}"; fi
+
+  if [ ${dll} = yes ] ; then
+    link_exe_cmd="${link_exe_cmd} /dll"
+    file_o="`echo ${file_o} | sed 's:.dll::g'`"
+    file_o="${file_o}.dll"
+  else      
+    file_o="`echo ${file_o} | sed 's:.exe::g'`"
+    file_o="${file_o}.exe"
+  fi
+
+  link_exe_cmd="${link_exe_cmd} /out:${file_o} ${objs} ${libs}"
+
+  if [ ${verbose} = yes ] ; then echo "${link_exe_cmd}";fi
+
+  /bin/rm -f ./link_exe_tmp
+  eval ${link_exe_cmd} > ./link_exe_tmp
+  use_status=$?
+  if [ ${use_status} != 0 ] ; then
+    cat ./link_exe_tmp
+    /bin/rm -f ./link_exe_tmp
+    exit ${use_status}
+  else
+    /bin/rm -f ./link_exe_tmp
+    exit 0
+  fi
+
+  file_exe_manifest="${file_exe}.manifest"
+
+fi
+#/////////////////////////////////////////////////////
+#/////////////////////////////////////////////////////
+#/////////////////////////////////////////////////////
