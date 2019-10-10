@@ -93,6 +93,14 @@ inline bool numas(const T& a_value,std::string& a_s){
   return true;
 }
 
+template <class T>
+inline bool size_tas(const T& a_value,std::string& a_s){
+  std::string stmp;
+  if(!size_t2s(a_value,stmp)) return false;
+  a_s += stmp;
+  return true;
+}
+
 /*
 inline bool num2s(unsigned int a_linen,const char* a_lines[],std::string& a_s) {
   a_s.clear();
@@ -104,7 +112,7 @@ inline bool num2s(unsigned int a_linen,const char* a_lines[],std::string& a_s) {
 }
 */
 
-// for the below std::vector num2s in cast T=std::string :
+// for the below std::vector num2s in case T=std::string :
 inline bool num2s(const std::string& a_value,std::string& a_s){a_s = a_value;return true;}
 
 template <class T>

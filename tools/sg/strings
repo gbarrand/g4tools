@@ -145,6 +145,10 @@ inline const std::string& modeling_arrow() { //used in EsbRootView.
   static const std::string s_v("arrow");
   return s_v;
 }
+inline const std::string& modeling_cone() { //used in EsbRootView.
+  static const std::string s_v("cone");
+  return s_v;
+}
 
 ///////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////

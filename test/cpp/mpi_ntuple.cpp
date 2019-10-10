@@ -172,7 +172,7 @@ int main(int argc,char **argv) {
       if(!_impi.vpack(basket_sizes)) {std::cout << "vpack(basket_sizes) failed."<< std::endl;return EXIT_FAILURE;}
       if(!_impi.pack(nev)) {std::cout << "pack(nev) failed."<< std::endl;return EXIT_FAILURE;}
     }
-    if(!_impi.pack(num_megas)) {std::cout << "pack(basket_size) failed."<< std::endl;return EXIT_FAILURE;}
+    if(!_impi.pack(num_megas)) {std::cout << "pack(num_megas) failed."<< std::endl;return EXIT_FAILURE;}
     if(!_impi.send_buffer(rank_dest,tag)) {
       std::cout << "send_buffer() failed." << std::endl;
       return EXIT_FAILURE;
@@ -194,7 +194,7 @@ int main(int argc,char **argv) {
       if(!_impi.vpack(basket_sizes)) {std::cout << "vpack(basket_sizes) failed."<< std::endl;return EXIT_FAILURE;}
       if(!_impi.pack(nev)) {std::cout << "pack(nev) failed."<< std::endl;return EXIT_FAILURE;}
     }
-    if(!_impi.pack(num_megas)) {std::cout << "pack(basket_size) failed."<< std::endl;return EXIT_FAILURE;}
+    if(!_impi.pack(num_megas)) {std::cout << "pack(num_megas) failed."<< std::endl;return EXIT_FAILURE;}
     if(!_impi.send_buffer(rank_dest,tag)) {
       std::cout << "send_buffer() failed." << std::endl;
       return EXIT_FAILURE;

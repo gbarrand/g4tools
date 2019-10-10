@@ -1,3 +1,7 @@
+5.0.1 :
+ - gl2ps_def.h, gl2ps_begin.icc, Xt/OpenGLArea.c : /*/////*/ => /*-----*/.
+ - lina/vec3, vec3f : cos_angle.
+ 
 5.0.0 : ROOT format : restore a "per event/row view" for the ntuple column-wise in MT and MPI.
         batch plotting : fixes to avoid labels overlap when having a grid of plotters.
         MPI : fix a memory leak.
