@@ -1,3 +1,6 @@
+5.0.2:
+ - tools/sg/tools : add_string_opt : handle axis label of format "10^%d?" in case of freetype font.
+ 
 5.0.1 :
  - gl2ps_def.h, gl2ps_begin.icc, Xt/OpenGLArea.c : /*/////*/ => /*-----*/.
  - lina/vec3, vec3f : cos_angle.

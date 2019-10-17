@@ -15,6 +15,10 @@
 
 #include "../lina/vec3f"
 
+#include <cstdio> //sscanf
+//#include <sstream>
+//#include <cmath>
+
 namespace tools {
 namespace sg {
 
@@ -113,6 +117,18 @@ inline matrix* add_string_opt(
 
   } else {
 
+    std::string _s = a_string;
+    if(a_encoding==encoding_PAW()) {
+      int mag;
+      if(::sscanf(a_string.c_str(),"10^%d?",&mag)==1) {
+        _s[2] = 'e';
+        _s = _s.substr(0,_s.size()-1);
+        //std::ostringstream oss;
+        //oss << ::pow(10.0,mag);
+        //_s = oss.str();
+      }
+    }
+    
     base_freetype* text = base_freetype::create(a_ttf);
     
     text->font = a_font;
@@ -120,7 +136,7 @@ inline matrix* add_string_opt(
     //text->modeling.value(font_outline);
     //text->encoding.value(a_encoding);
     //text->smooting.value(a_smoothing);
-    text->strings.add(a_string);
+    text->strings.add(_s);
     text->hjust.value(a_hjust);
     text->vjust.value(a_vjust);
     text->modeling = a_font_modeling;
