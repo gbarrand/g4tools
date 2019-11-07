@@ -323,11 +323,13 @@ public:
     }
   }
 
-  void print_plotter_style(std::ostream& a_out,const std::string& a_style) { //used in Geant4.
+  bool print_plotter_style(std::ostream& a_out,const std::string& a_style) {
     std::string _beg = a_style+".";
+    bool found = false;
     tools_vforcit(named_style_t,m_named_styles,it) {
       const std::string& _name = (*it).first;
       if((_name==a_style)||is_beg(_name,_beg)) {
+        found = true;
         a_out << (*it).first << " :" << std::endl;
         const style_t& sty = (*it).second;
         tools_vforcit(style_item_t,sty,vit) {
@@ -336,6 +338,7 @@ public:
         }
       }
     }
+    return found;
   }
 
   void list_plotter_styles(std::ostream& a_out) {

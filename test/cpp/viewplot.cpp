@@ -134,7 +134,12 @@ int main(int argc,char** argv) {
   // up area :
  {viewer.plot(h1);
   tools::sg::plotter& plotter = viewer.plots().current_plotter();
-  plotter.bins_style(0).color = tools::colorf_blue();}
+  plotter.bins_style(0).color = tools::colorf_blue();
+//plotter.x_axis().title.value("MeV");
+//plotter.x_axis().title.value("[MeV");
+//plotter.x_axis().labels_style().encoding = tools::sg::encoding_PAW();
+//plotter.x_axis().labels_style().encoding = tools::sg::encoding_none();
+ }
 
   // down area :
  {viewer.plots().next();

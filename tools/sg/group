@@ -234,9 +234,12 @@ public:
 //void clear() {safe_clear<node>(m_children);}
   void clear() {safe_reverse_clear<node>(m_children);}
 
-  void raw_clear(){ //used for sg coming from exlib/rroot/vis_volume.
+  void raw_clear() { //used for sg coming from exlib/rroot/vis_volume.
     tools::raw_clear<node>(m_children); //inlib:: is needed.
   }
+
+//void children_clear() {m_children.clear();} //warning : nodes are not deleted. Used in [hep_]cone_anim.
+  
   size_t size() const {return m_children.size();}
   bool empty() const {return m_children.size()?false:true;}
   node* operator[](size_t a_index) const{

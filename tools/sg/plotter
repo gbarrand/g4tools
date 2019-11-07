@@ -50,6 +50,10 @@ private:
     return s_v;
   }
   static float default_infos_margin() {return 0.005f;}
+  static float default_title_box_width()    {return 0.3f;}
+  static float default_title_box_height()   {return 0.05f;}
+  static float default_title_box_x_margin() {return 0.01f;}
+  static float default_title_box_y_margin() {return 0.005f;}
 public:
   sf<float> width;          //PAW XSIZ
   sf<float> height;         //PAW YSIZ
@@ -104,6 +108,11 @@ public:
   sf<float> infos_x_margin; //in percent of width. From right.
   sf<float> infos_y_margin; //in percent of height. From top.
   sf_string infos_what;
+
+  sf<float> title_box_width;    //in percent of width.
+  sf<float> title_box_height;   //in percent of height.
+  sf<float> title_box_x_margin; //in percent of width. From left.
+  sf<float> title_box_y_margin; //in percent of height. From top.
 
   sf<bool> func2D_borders_visible;  
 
@@ -169,7 +178,7 @@ public:
 public:
   virtual const desc_fields& node_desc_fields() const {
     TOOLS_FIELD_DESC_NODE_CLASS(tools::sg::plotter)
-    static const desc_fields s_v(parent::node_desc_fields(),57, //WARNING : take care of count.
+    static const desc_fields s_v(parent::node_desc_fields(),61, //WARNING : take care of count.
 
       TOOLS_ARG_FIELD_DESC(width),
       TOOLS_ARG_FIELD_DESC(height),
@@ -260,7 +269,13 @@ public:
       TOOLS_ARG_FIELD_DESC(data_light_on_automated),
       
       TOOLS_ARG_FIELD_DESC(primitives_enforced),
-      TOOLS_ARG_FIELD_DESC(inner_frame_enforced)
+      TOOLS_ARG_FIELD_DESC(inner_frame_enforced),
+      
+      TOOLS_ARG_FIELD_DESC(title_box_width),
+      TOOLS_ARG_FIELD_DESC(title_box_height),
+      TOOLS_ARG_FIELD_DESC(title_box_x_margin),
+      TOOLS_ARG_FIELD_DESC(title_box_y_margin)
+      
     );
     return s_v;
   }
@@ -350,6 +365,11 @@ private:
     add_field(&infos_y_margin);
     add_field(&infos_what);
 
+    add_field(&title_box_width);
+    add_field(&title_box_height);
+    add_field(&title_box_x_margin);
+    add_field(&title_box_y_margin);
+    
     add_field(&func2D_borders_visible);
     add_field(&theta);
     add_field(&phi);
@@ -388,6 +408,11 @@ public: //style
     //infos height is automatic.
     infos_x_margin = a_from.infos_x_margin;
     infos_y_margin = a_from.infos_y_margin;
+
+    title_box_width = a_from.title_box_width;
+    title_box_height = a_from.title_box_height;
+    title_box_x_margin = a_from.title_box_x_margin;
+    title_box_y_margin = a_from.title_box_y_margin;
 
     legends_automated = a_from.legends_automated;
     title_automated = a_from.title_automated;
@@ -474,6 +499,11 @@ public: //style
     //infos height is automatic.
     infos_x_margin = default_infos_margin(); //percent of width
     infos_y_margin = default_infos_margin(); //percent of height
+
+    title_box_width = default_title_box_width();
+    title_box_height = default_title_box_height();
+    title_box_x_margin = default_title_box_x_margin(); //percent of width
+    title_box_y_margin = default_title_box_y_margin(); //percent of height
 
     legends_automated = true;
 
@@ -854,6 +884,23 @@ public: //style
         if(!to<float>(sv,v)) {style_failed(a_out,key,sv);return false;}
         infos_y_margin = v;
 
+      } else if(key=="title_box_width") {
+        float v;
+        if(!to<float>(sv,v)) {style_failed(a_out,key,sv);return false;}
+        title_box_width = v;
+      } else if(key=="title_box_height") {
+        float v;
+        if(!to<float>(sv,v)) {style_failed(a_out,key,sv);return false;}
+        title_box_height = v;
+      } else if(key=="title_box_x_margin") {
+        float v;
+        if(!to<float>(sv,v)) {style_failed(a_out,key,sv);return false;}
+        title_box_x_margin = v;
+      } else if(key=="title_box_y_margin") {
+        float v;
+        if(!to<float>(sv,v)) {style_failed(a_out,key,sv);return false;}
+        title_box_y_margin = v;
+
       } else if(key=="infos_what") {
         infos_what = sv;
 
@@ -1030,6 +1077,17 @@ public:
     return status;
   }
 
+  void set_encoding(const std::string& a_value) {
+    title_style().encoding = a_value;
+    infos_style().encoding = a_value;
+    title_box_style().encoding = a_value;
+    m_x_axis.set_encoding(a_value);
+    m_y_axis.set_encoding(a_value);
+    m_z_axis.set_encoding(a_value);
+    m_cmap_axis.set_encoding(a_value);
+  }
+  void set_encoding_none() {set_encoding(encoding_none());}
+
   void print_available_customization(std::ostream& a_out) const {
     a_out << "plotter fields :" << std::endl;
    {const std::vector<field_desc>& fds = node_desc_fields();
@@ -1098,9 +1156,7 @@ public:
     a_out << std::endl;
   }
 protected:
-  void style_failed(std::ostream& a_out,
-                           const std::string& a_key,
-                           const std::string& a_value) {
+  void style_failed(std::ostream& a_out,const std::string& a_key,const std::string& a_value) {
     a_out << "tools::sg::plotter::set_from_style :"
           << " failed for key " << sout(a_key)
           << " and value " << sout(a_value) << "."
@@ -1195,6 +1251,11 @@ public:
   ,infos_y_margin(default_infos_margin()) //percent of height
   ,infos_what(s_infos_what_def())
 
+  ,title_box_width(default_title_box_width())       //percent of width
+  ,title_box_height(default_title_box_height())     //percent of height
+  ,title_box_x_margin(default_title_box_x_margin()) //percent of width
+  ,title_box_y_margin(default_title_box_y_margin()) //percent of height
+  
   ,func2D_borders_visible(true)
   ,theta(30)
   ,phi(30)
@@ -1291,6 +1352,11 @@ public:
   ,infos_y_margin(a_from.infos_y_margin)
   ,infos_what(a_from.infos_what)
 
+  ,title_box_width(a_from.title_box_width)
+  ,title_box_height(a_from.title_box_height)
+  ,title_box_x_margin(a_from.title_box_x_margin)
+  ,title_box_y_margin(a_from.title_box_y_margin)
+  
   ,func2D_borders_visible(a_from.func2D_borders_visible)
   ,theta(a_from.theta)
   ,phi(a_from.phi)
@@ -1405,6 +1471,11 @@ public:
     infos_y_margin = a_from.infos_y_margin;
     infos_what = a_from.infos_what;
 
+    title_box_width = a_from.title_box_width;
+    title_box_height = a_from.title_box_height;
+    title_box_x_margin = a_from.title_box_x_margin;
+    title_box_y_margin = a_from.title_box_y_margin;
+    
     func2D_borders_visible = a_from.func2D_borders_visible;
     theta = a_from.theta;
     phi = a_from.phi;
@@ -5040,11 +5111,11 @@ protected: //vis bins
     float zz = _zinfos();
     if(m_shape==xyz) zz = depth*0.5f;
 
-    float wbox = width*0.3f;
-    float hbox = height*0.05f;
+    float wbox = width*title_box_width;
+    float hbox = height*title_box_height;
 
-    float xmargin = width*0.01f;   //from left border
-    float ymargin = height*0.005f; //from top border
+    float xmargin = width*title_box_x_margin;  //from left border
+    float ymargin = height*title_box_y_margin; //from top border
 
     matrix* _tsf = new matrix;
    {float xx = -width*0.5f+wbox*0.5f+xmargin; //at left.
@@ -8202,7 +8273,7 @@ protected: //rep
       _text->front_width = _width;
       _text->back_visible = false;
       
-      _text->encoding = "PAW";
+      _text->encoding = encoding_PAW();
       _text->strings.add(a_obj.m_TEXT);
       _text->line_width = a_obj.m_line_width;
       _text->font = a_obj.m_FONT;
@@ -8238,7 +8309,7 @@ protected: //rep
       _text->front_height = _height;
       _text->back_visible = false;  //if true, we should adapt back_area::width, height to inside text size.
       
-      _text->encoding = "PAW";
+      _text->encoding = encoding_PAW();
       _text->strings.add(a_obj.m_TEXT);
       _text->line_width = a_obj.m_line_width;
       _text->font = a_obj.m_FONT;
@@ -8275,7 +8346,7 @@ protected: //rep
         sep->add(ds);
     
         text_hershey* text = new text_hershey;
-        text->encoding = "PAW";
+        text->encoding = encoding_PAW();
         text->strings.add(a_obj.m_TEXT);
         if(a_obj.m_HJUST=='R') {
           text->hjust = right;
@@ -8315,7 +8386,7 @@ protected: //rep
   
         text->modeling = a_obj.m_font_modeling;
   
-        //text->encoding = "PAW"
+        //text->encoding = encoding_PAW()
         //text->smooting = a_obj.m_SMOOTHING;
         //text->hinting = a_obj.m_HINTING;
         text->strings.add(a_obj.m_TEXT);

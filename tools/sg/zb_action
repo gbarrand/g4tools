@@ -516,7 +516,7 @@ protected:
       float alpha = a_color.a();
       zb::buffer::ZPixel px;
       if(alpha<1.0f) {
-        zb::buffer::ZPixel old_px;
+        zb::buffer::ZPixel old_px = 0;
         if(!m_zb_action.m_zb.get_pixel(p,old_px)) return false;
         colorf old_color;
         if(!m_zb_action.find_color(old_px,old_color)) return false;

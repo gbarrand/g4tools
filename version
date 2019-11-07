@@ -6,12 +6,12 @@
 
 #define G4TOOLS_MAJOR_VERSION 5
 #define G4TOOLS_MINOR_VERSION 0
-#define G4TOOLS_PATCH_VERSION 2
-#define G4TOOLS_VERSION "5.0.2"
-#define G4TOOLS_VERSION_VRP "v5r0p2"
+#define G4TOOLS_PATCH_VERSION 3
+#define G4TOOLS_VERSION "5.0.3"
+#define G4TOOLS_VERSION_VRP "v5r0p3"
 
 namespace tools {
-inline unsigned int version() {return 50002;}
+inline unsigned int version() {return 50003;}
 }
 
 #endif

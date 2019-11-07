@@ -30,6 +30,11 @@ public:
   TOOLS_SCLASS(tools::sg::node)
 //public:
 //  static bool is_a(const std::string& a_class) {return rcmp(a_class,s_class());}
+// in a derived class:
+//  static bool is_a(const std::string& a_class) {
+//    if(rcmp(a_class,s_class())) return true;
+//    return parent::is_a(a_class);
+//  }
   virtual void* cast(const std::string& a_class) const {
     if(void* p = cmp_cast<node>(this,a_class)) {return p;}
     else return 0;

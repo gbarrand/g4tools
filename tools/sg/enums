@@ -199,6 +199,13 @@ enum shade_type { //shade_model is a node.
   shade_smooth //Gouraud
 };
   
+enum solid_operation {
+  solid_none,
+  solid_union,
+  solid_intersection,
+  solid_subtraction
+};
+
 }}
 
 #endif

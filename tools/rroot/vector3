@@ -56,7 +56,7 @@ public:
   }
 
 public:
-  vector3(){
+  vector3():m_x(0),m_y(0),m_z(0){
 #ifdef TOOLS_MEM
     mem::increment(s_class().c_str());
 #endif

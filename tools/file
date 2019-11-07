@@ -86,21 +86,26 @@ inline bool read_cstring(FILE* a_file,char* a_buff,unsigned int a_lbuf,size_t& a
 }
 
 
-inline bool read(const std::string& a_file,std::vector<std::string>& a_text){
+inline bool read(FILE* a_FILE,std::vector<std::string>& a_text){
   a_text.clear();
-  FILE* file = ::fopen(a_file.c_str(),"rb");
-  if(!file) return false;
   unsigned int BUFSIZE = 65536;
   char* buffer = new char[BUFSIZE+1];
-  if(!buffer) {::fclose(file);return false;}
+  if(!buffer) return false;
   while(true) {
     size_t l;
-    if(!read_cstring(file,buffer,BUFSIZE,l)) break; // EOF.
+    if(!read_cstring(a_FILE,buffer,BUFSIZE,l)) break; // EOF.
     a_text.push_back(buffer);
   }
   delete [] buffer;
-  ::fclose(file);
   return true;
+}
+
+inline bool read(const std::string& a_file,std::vector<std::string>& a_text){
+  FILE* file = ::fopen(a_file.c_str(),"rb");
+  if(!file) {a_text.clear();return false;}
+  bool status = read(file,a_text);
+  ::fclose(file);
+  return status;
 }
 
 inline bool read_num(const std::string& a_file,std::vector<std::string>::size_type a_num,std::vector<std::string>& a_text,const std::string& a_cmt = ""){

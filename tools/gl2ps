@@ -2529,7 +2529,8 @@ static void tools_gl2psWriteByte(unsigned char byte)
   tools_gl2psPrintf("%x%x", h, l);
 }
 
-static void tools_gl2psPrintPostScriptPixmap(tools_GLfloat x, tools_GLfloat y, tools_GL2PSimage *im)
+static void tools_gl2psPrintPostScriptPixmap(tools_GLfloat x, tools_GLfloat y, tools_GL2PSimage *im,
+                                             int greyscale,int nbit) /*G.Barrand : to quiet coverity : add last greyscale,nbit.*/
 {
   tools_GLuint nbhex, nbyte, nrgb, nbits;
   tools_GLuint row, col, ibyte, icase;
@@ -2540,8 +2541,8 @@ static void tools_gl2psPrintPostScriptPixmap(tools_GLfloat x, tools_GLfloat y, t
 
   /* FIXME: should we define an option for these? Or just keep the
      8-bit per component case? */
-  int greyscale = 0; /* set to 1 to output greyscale image */
-  int nbit = 8; /* number of bits per color compoment (2, 4 or 8) */
+  /*int greyscale = 0;*/ /* set to 1 to output greyscale image */
+  /*int nbit = 8;*/ /* number of bits per color compoment (2, 4 or 8) */
 
   if((width <= 0) || (height <= 0)) return;
 
@@ -2742,7 +2743,7 @@ static void tools_gl2psPrintPostScriptImagemap(tools_GLfloat x, tools_GLfloat y,
   tools_gl2psPrintf("gsave\n");
   tools_gl2psPrintf("%.2f %.2f translate\n", x, y);
   tools_gl2psPrintf("%d %d scale\n%d %d\ntrue\n", width, height,width, height);
-  tools_gl2psPrintf("[ %d 0 0 -%d 0 %d ] {<", width, height);
+  tools_gl2psPrintf("[ %d 0 0 -%d 0 %d ] {<", width, height, height);
   for(i = 0; i < size; i++){
     tools_gl2psWriteByte(*imagemap);
     imagemap++;
@@ -3161,8 +3162,7 @@ static void tools_gl2psPrintPostScriptPrimitive(void *data)
     tools_gl2psMsg(TOOLS_GL2PS_WARNING, "There should not be any quad left to print");
     break;
   case TOOLS_GL2PS_PIXMAP :
-    tools_gl2psPrintPostScriptPixmap(prim->verts[0].xyz[0], prim->verts[0].xyz[1],
-                               prim->data.image);
+    tools_gl2psPrintPostScriptPixmap(prim->verts[0].xyz[0], prim->verts[0].xyz[1],prim->data.image,0,8);
     break;
   case TOOLS_GL2PS_IMAGEMAP :
     if(prim->data.image->type != TOOLS_GL2PS_IMAGEMAP_WRITTEN){

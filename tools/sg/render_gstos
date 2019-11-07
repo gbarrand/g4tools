@@ -118,12 +118,16 @@ public: //node
     return false;
   }
 public:
-  render_gstos():parent() {}
+  render_gstos():parent(),m_gstos_points_sz(0),m_gstos_lines_sz(0),m_gstos_tris_sz(0),m_gstos_nms_sz(0) {}
   virtual ~render_gstos() {}
 public:
-  render_gstos(const render_gstos& a_from):parent(a_from){}
+  render_gstos(const render_gstos& a_from):parent(a_from),m_gstos_points_sz(0),m_gstos_lines_sz(0),m_gstos_tris_sz(0),m_gstos_nms_sz(0) {}
   render_gstos& operator=(const render_gstos& a_from){
     parent::operator=(a_from);
+    m_gstos_points_sz = 0;
+    m_gstos_lines_sz = 0;
+    m_gstos_tris_sz = 0;
+    m_gstos_nms_sz = 0;
     return *this;
   }
 protected:

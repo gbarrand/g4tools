@@ -791,6 +791,11 @@ public: //style
     return true;
   }
 
+  void set_encoding(const std::string& a_value) {
+    labels_style().encoding = a_value;
+    mag_style().encoding = a_value;
+    title_style().encoding = a_value;
+  }
 protected:
   float get_overlap(std::ostream& a_out,bool& a_overlap) {
     a_overlap = false;

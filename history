@@ -1,3 +1,12 @@
+5.0.3:
+ - tools/gl2ps : tools_gl2psPrintPostScriptPixmap : quiet coverity.
+ - tools/rroot/vector3 : quiet coverity about uninited variables.
+ - tools/zb/buffer : get_pixel() : quiet coverity : set a_pixel=0 in case args out of range.
+ - tools/sg/text : quiet coverity : a bxw => bxh.
+ - tools/sg/axis, sg/plotter : set_encoding(), set_encoding_none().
+ - tools/sg/render_gsots : init fields in cp cstor and operator=.
+ - tools/sg/plotter : add fields : title_box_[width,height,x_margin,y_margin].
+
 5.0.2:
  - tools/sg/tools : add_string_opt : handle axis label of format "10^%d?" in case of freetype font.
  

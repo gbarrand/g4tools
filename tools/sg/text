@@ -374,7 +374,7 @@ public:
       } else if(vjust==bottom) {
         ytrans = -fh*0.5f+bxh*0.5f;
       } else if(vjust==top) {
-        ytrans = fh*0.5f-bxw*0.5f;
+        ytrans = fh*0.5f-bxh*0.5f;
       }
 
       float xx = -(mn_x+mx_x)*0.5F+xtrans;

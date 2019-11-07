@@ -711,8 +711,35 @@ public:
     case NONE:
       sprintf(a_s,5,"(nil)");
       return true;
+    case BOOL:
+      sprintf(a_s,5,"%s",a_v.u.m_bool?"true":"false");
+      return true;
+  //case UNSIGNED_CHAR:
+  //  sprintf(a_s,32,"%c",a_v.u.m_unsigned_char);
+  //  return true;
+  //case CHAR:
+  //  sprintf(a_s,32,"%c",a_v.u.m_char);
+  //  return true;
+    case UNSIGNED_SHORT:
+      sprintf(a_s,32,"%u",a_v.u.m_unsigned_short);
+      return true;
+    case SHORT:
+      sprintf(a_s,32,"%d",a_v.u.m_short);
+      return true;
+    case UNSIGNED_INT:
+      sprintf(a_s,32,"%u",a_v.u.m_unsigned_int);
+      return true;
     case INT:
       sprintf(a_s,32,"%d",a_v.u.m_int);
+      return true;
+    case UNSIGNED_INT64:
+      sprintf(a_s,32,int64_format(),a_v.u.m_unsigned_int64);
+      return true;
+    case INT64:
+      sprintf(a_s,32,int64_format(),a_v.u.m_int64);
+      return true;
+    case FLOAT:
+      sprintf(a_s,32,"%g",a_v.u.m_float);
       return true;
     case DOUBLE:
       sprintf(a_s,32,"%g",a_v.u.m_double);
@@ -720,33 +747,6 @@ public:
     case VOID_STAR:
       sprintf(a_s,32,upointer_format_x(),(upointer)a_v.u.m_void_star);
       return true;
-    case UNSIGNED_SHORT:
-      sprintf(a_s,32,"%u",a_v.u.m_unsigned_short);
-      return true;
-    case UNSIGNED_INT:
-      sprintf(a_s,32,"%u",a_v.u.m_unsigned_int);
-      return true;
-    case BOOL:
-      sprintf(a_s,5,"%s",a_v.u.m_bool?"true":"false");
-      return true;
-    case SHORT:
-      sprintf(a_s,32,"%d",a_v.u.m_short);
-      return true;
-    case INT64:
-      sprintf(a_s,32,int64_format(),a_v.u.m_int64);
-      return true;
-    case UNSIGNED_INT64:
-      sprintf(a_s,32,int64_format(),a_v.u.m_unsigned_int64);
-      return true;
-    case FLOAT:
-      sprintf(a_s,32,"%g",a_v.u.m_float);
-      return true;
-    //case UNSIGNED_CHAR:
-    //  sprintf(a_s,32,"%c",a_v.u.m_unsigned_char);
-    //  return true;
-    //case CHAR:
-    //  sprintf(a_s,32,"%c",a_v.u.m_char);
-    //  return true;
     case DOUBLE_STAR:
       sprintf(a_s,32,upointer_format_x(),(upointer)a_v.u.m_double_star);
       return true;

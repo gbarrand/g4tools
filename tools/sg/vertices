@@ -165,7 +165,6 @@ public:
     v[a_pos] = a_z;a_pos++;
     xyzs.touch();
   }
-/*
   bool add(const std::vector<float>& a_v) {
     std::vector<float>::size_type number = a_v.size()/3;
     if(3*number!=a_v.size()) return false;
@@ -177,7 +176,7 @@ public:
     }
     return true;
   }
-*/
+
   size_t number() const {return xyzs.size()/3;}
   void clear() {xyzs.clear();}
 
