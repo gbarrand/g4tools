@@ -1,3 +1,6 @@
+5.0.4:
+ - tools/sg/vertices : fix a shadow warning in the add(vector<float>&) method.
+
 5.0.3:
  - tools/gl2ps : tools_gl2psPrintPostScriptPixmap : quiet coverity.
  - tools/rroot/vector3 : quiet coverity about uninited variables.
