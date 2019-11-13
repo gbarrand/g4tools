@@ -2291,7 +2291,7 @@ static void tools_gl2psParseFeedbackBuffer(tools_GLint used)
   tools_GLboolean boundary;
   tools_GLint i, sizeoffloat, count, v, vtot, offset = 0, factor = 0, auxindex = 0;
   tools_GLint lcap = 0, ljoin = 0;
-  tools_GLfloat lwidth = 1.0F, psize = 1.0F, ofactor = 0.0F, ounits = 0.0F; //G.Barrand : init ofactor, ounits to 0.0F.
+  tools_GLfloat lwidth = 1.0F, psize = 1.0F, ofactor = 0.0F, ounits = 0.0F; /*G.Barrand : init ofactor, ounits to 0.0F.*/
   tools_GLfloat *current;
   tools_GL2PSvertex vertices[3];
   tools_GL2PSprimitive *prim;
@@ -4040,6 +4040,7 @@ static int tools_tools_gl2psPDFgroupListWriteXObjectResources(void)
       if(TOOLS_GL_RGBA == p->data.image->format)  /* reserve one object for image mask */
         tools_gl2ps_context->objects_stack++;
       offs += fprintf(tools_gl2ps_context->stream, "/Im%d %d 0 R\n", gro->imno, gro->imobjno);
+      break; /*G.Barrand : add this break.*/
     case TOOLS_GL2PS_TRIANGLE:
       if(gro->trgroupno >=0)
         offs += fprintf(tools_gl2ps_context->stream, "/TrG%d %d 0 R\n", gro->trgroupno, gro->trgroupobjno);
