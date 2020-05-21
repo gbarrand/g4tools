@@ -19,9 +19,9 @@ int main(int,char**) {
   //////////////////////////////////////////////////////////
   /// create a .aida file : ////////////////////////////////
   //////////////////////////////////////////////////////////
-  std::ofstream writer("waxml.aida");
+  std::ofstream writer("out_waxml.aida",std::ios::binary);
   if(writer.fail()) {
-    std::cout << "can't open waxml.aida." << std::endl;
+    std::cout << "can't open out_waxml.aida." << std::endl;
     return EXIT_FAILURE;
   }
   tools::waxml::begin(writer);

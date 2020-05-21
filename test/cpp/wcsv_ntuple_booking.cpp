@@ -20,9 +20,9 @@ int main(int,char**) {
   //////////////////////////////////////////////////////////
   /// create a .csv file : /////////////////////////////////
   //////////////////////////////////////////////////////////
-  std::ofstream writer("wcsv_booking.csv");
+  std::ofstream writer("out_wcsv_ntuple_booking.csv",std::ios::binary);
   if(writer.fail()) {
-    std::cout << "can't open wcsv_booking.csv." << std::endl;
+    std::cout << "can't open out_wcsv_ntuple_booking.csv." << std::endl;
     return EXIT_FAILURE;
   }
 

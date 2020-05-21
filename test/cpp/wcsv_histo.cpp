@@ -51,7 +51,7 @@ int main(int argc,char** argv) {
   char hc = '#';
   char sep = ',';
 
- {std::ofstream writer("out_h1d.csv");
+ {std::ofstream writer("out_wcsv_histo_h1d.csv",std::ios::binary);
   if(writer.fail()) {std::cout << "can't open out_h1d.csv." << std::endl;return EXIT_FAILURE;}
   tools::histo::h1d h("Rand gauss",100,-5,5);
   for(unsigned int count=0;count<entries;count++) h.fill(rg.shoot(),1.4);
@@ -70,7 +70,7 @@ int main(int argc,char** argv) {
   if(!tools::wcsv::hto(writer,h.s_cls(),h,sep,hc,have_header)) return EXIT_FAILURE;
   writer.close();}
 
- {std::ofstream writer("out_h1df.csv");
+ {std::ofstream writer("out_wcsv_histo_h1df.csv",std::ios::binary);
   if(writer.fail()) {std::cout << "can't open out_h1df.csv." << std::endl;return EXIT_FAILURE;}
   tools::rgaussf rf(1,2);
   tools::histo::h1df h("GaussF",100,-5,5);
@@ -89,7 +89,7 @@ int main(int argc,char** argv) {
   if(!tools::wcsv::hto(writer,h.s_cls(),h,sep,hc,have_header)) return EXIT_FAILURE;
   writer.close();}
 
- {std::ofstream writer("out_p1d.csv");
+ {std::ofstream writer("out_wcsv_histo_p1d.csv",std::ios::binary);
   if(writer.fail()) {std::cout << "can't open out_p1d.csv." << std::endl;return EXIT_FAILURE;}
   tools::histo::p1d h("Profile",100,-5,5,-2,2);
   for(unsigned int count=0;count<entries;count++) h.fill(rg.shoot(),rbw.shoot(),1);
@@ -103,7 +103,7 @@ int main(int argc,char** argv) {
   if(!tools::wcsv::pto(writer,h.s_cls(),h,sep,hc,have_header)) return EXIT_FAILURE;
   writer.close();}
 
- {std::ofstream writer("out_h2d.csv");
+ {std::ofstream writer("out_wcsv_histo_h2d.csv",std::ios::binary);
   if(writer.fail()) {std::cout << "can't open out_h2d.csv." << std::endl;return EXIT_FAILURE;}
   tools::histo::h2d h("Gauss_BW",20,-5,5,20,-2,2);
   for(unsigned int count=0;count<entries;count++) h.fill(rg.shoot(),rbw.shoot(),0.8);
@@ -122,7 +122,7 @@ int main(int argc,char** argv) {
   if(!tools::wcsv::hto(writer,h.s_cls(),h,sep,hc,have_header)) return EXIT_FAILURE;
   writer.close();}
 
- {std::ofstream writer("out_p2d.csv");
+ {std::ofstream writer("out_wcsv_histo_p2d.csv",std::ios::binary);
   if(writer.fail()) {std::cout << "can't open out_p2d.csv." << std::endl;return EXIT_FAILURE;}
   tools::histo::p2d h("Profile2D",100,-5,5,100,-5,5,-2,2);
   for(unsigned int count=0;count<entries;count++) h.fill(rg.shoot(),rg.shoot(),rbw.shoot(),1);
@@ -137,7 +137,7 @@ int main(int argc,char** argv) {
   if(!tools::wcsv::pto(writer,h.s_cls(),h,sep,hc,have_header)) return EXIT_FAILURE;
   writer.close();}
 
- {std::ofstream writer("out_h3d.csv");
+ {std::ofstream writer("out_wcsv_histo_h3d.csv",std::ios::binary);
   if(writer.fail()) {std::cout << "can't open out_h3d.csv." << std::endl;return EXIT_FAILURE;}
   tools::histo::h3d h("Gauss_Gauss_BW",20,-5,5,20,-5,5,20,-2,2);
   for(unsigned int count=0;count<entries;count++) h.fill(rg.shoot(),rg.shoot(),rbw.shoot(),0.8);
@@ -157,7 +157,7 @@ int main(int argc,char** argv) {
   if(!tools::wcsv::hto(writer,h.s_cls(),h,sep,hc,have_header)) return EXIT_FAILURE;
   writer.close();}
 
- {std::ofstream writer("out_h1d_edges.csv");
+ {std::ofstream writer("out_wcsv_histo_h1d_edges.csv",std::ios::binary);
   if(writer.fail()) {std::cout << "can't open out_h1d.csv." << std::endl;return EXIT_FAILURE;}
   std::vector<double> edges;
   double width = (5.0-(-5.0))/100;

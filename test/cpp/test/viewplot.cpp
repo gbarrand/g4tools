@@ -1,6 +1,8 @@
 // Copyright (C) 2010, Guy Barrand. All rights reserved.
 // See the file tools.license for terms.
 
+//inlib_build_bigobj
+
 #include <tools/sg/plots>
 
 #include <tools/random>

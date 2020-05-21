@@ -25,9 +25,9 @@ int main(int argc,char** argv) {
   //////////////////////////////////////////////////////////
   /// create a .csv file : /////////////////////////////////
   //////////////////////////////////////////////////////////
-  std::ofstream writer("wcsv.csv");
+  std::ofstream writer("out_wcsv_ntuple.csv",std::ios::binary);
   if(writer.fail()) {
-    std::cout << "can't open wcsv.csv." << std::endl;
+    std::cout << "can't open out_wcsv_ntuple.csv." << std::endl;
     return EXIT_FAILURE;
   }
 
