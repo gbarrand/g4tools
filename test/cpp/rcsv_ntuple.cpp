@@ -188,7 +188,7 @@ int main(int argc,char** argv) {
     typedef tools::read::icolumn< std::vector<double> > colvd_t;
     const std::vector<icol_t*>& cols = ntu.columns();
     std::vector<icol_t*>::const_iterator it;
-  
+
     ntu.start();
     while(ntu.next()){
       for(it=cols.begin();it!=cols.end();++it) {

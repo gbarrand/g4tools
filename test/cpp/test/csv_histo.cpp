@@ -273,7 +273,7 @@ static bool write_test_csv(std::ostream& a_out,bool a_verbose,to_compare_csv& a_
   writer.close();}
 
   if(a_verbose) a_out << "write_test_csv : end." << std::endl;
-  
+
   return true;
 }
 
@@ -546,7 +546,7 @@ static bool read_test_csv(std::ostream& a_out,bool a_verbose,const to_compare_cs
   TOOLS_TEST_FUNC(tools::file::std_remove(file))}
 
   if(a_verbose) a_out << "read_test_csv : end." << std::endl;
-  
+
   return true;
 }
 

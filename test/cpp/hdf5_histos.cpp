@@ -44,25 +44,25 @@ int main(int argc,char** argv) {
 
   tools::random::gauss rg(1,2);
   tools::random::bw rbw(0,1);
-  
+
   tools::histo::h2d h2("Gauss_BW",20,-5,5,20,-2,2);
  {for(unsigned int count=0;count<30000;count++) h2.fill(rg.shoot(),rbw.shoot(),0.8);}
 
   tools::histo::p1d p1("Profile",100,-5,5,-2,2);
  {for(unsigned int count=0;count<10000;count++) p1.fill(rg.shoot(),rbw.shoot(),1);}
-  
+
   tools::histo::p2d p2("Profile2D",100,-5,5,100,-5,5,-2,2);
  {for(unsigned int count=0;count<40000;count++) p2.fill(rg.shoot(),rg.shoot(),rbw.shoot(),1);}
 
   tools::histo::h1d h1_1("Random Gauss",100,-6.0,4.0);
  {tools::random::gauss _rg(-1,1.5);
   for(unsigned int index=0;index<20000;index++) h1_1.fill(_rg.shoot(),1);}
- 
+
   ///////////////////////////////////////////////////////////////////
   /// write : ///////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////
   if(verbose) std::cout << "write ..." << std::endl;
-  
+
  {hid_t file = ::H5Fcreate("histos.hdf5",H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
   if(file<0) {
     std::cout << "can't create file." << std::endl;
@@ -162,7 +162,7 @@ int main(int argc,char** argv) {
   ::H5Gclose(sub_histos);}
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
-  
+
   ::H5Gclose(histos);
   ::H5Fclose(file);}
 
@@ -170,7 +170,7 @@ int main(int argc,char** argv) {
   /// read : ////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////
   if(verbose) std::cout << "read ..." << std::endl;
-  
+
  {hid_t file = H5Fopen("histos.hdf5",H5F_ACC_RDONLY, H5P_DEFAULT);
   if(file<0) {
     std::cout << "can't open file." << std::endl;
@@ -185,7 +185,7 @@ int main(int argc,char** argv) {
     std::cout << "group xxxx found !" << std::endl;
     return EXIT_FAILURE;
   }
-  
+
  {std::string swriter;
   int data_schema_version;
   if(!tools::hdf5::read_header(file,swriter,data_schema_version)) {
@@ -195,14 +195,14 @@ int main(int argc,char** argv) {
   }
   if(verbose) std::cout << "read : writer " << swriter << std::endl;
   if(verbose) std::cout << "read : data_schema_version " << data_schema_version << std::endl;}
-  
+
   hid_t histos = tools_H5Gopen(file,"histos");
   if(histos<0) {
     std::cout << "can't open group." << std::endl;
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
- 
+
  {tools::histo::h1d* rh1;
   if(!tools::hdf5::read_histo(std::cout,histos,"h1",rh1)) {
     ::H5Gclose(histos);
@@ -214,7 +214,7 @@ int main(int argc,char** argv) {
     std::cout << "read h1d != write histo." << std::endl;
   }
   delete rh1;}
- 
+
  {tools::histo::h2d* rh2;
   if(!tools::hdf5::read_histo(std::cout,histos,"h2",rh2)) {
     ::H5Gclose(histos);
@@ -238,7 +238,7 @@ int main(int argc,char** argv) {
     std::cout << "read p1d != write histo." << std::endl;
   }
   delete rp1;}
- 
+
  {tools::histo::p2d* rp2;
   if(!tools::hdf5::read_profile(std::cout,histos,"p2",rp2)) {
     ::H5Gclose(histos);
@@ -258,14 +258,14 @@ int main(int argc,char** argv) {
  {hid_t sub_histos = tools_H5Gopen(file,"histos/sub_histos");
   if(sub_histos<0) {
     std::cout << "can't open group." << std::endl;
-    ::H5Gclose(histos); 
+    ::H5Gclose(histos);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
- 
+
  {tools::histo::h1d* rh1_1;
   if(!tools::hdf5::read_histo(std::cout,sub_histos,"h1_1",rh1_1)) {
-    ::H5Gclose(sub_histos); 
+    ::H5Gclose(sub_histos);
     ::H5Gclose(histos);
     ::H5Fclose(file);
     return EXIT_FAILURE;
@@ -277,12 +277,12 @@ int main(int argc,char** argv) {
   delete rh1_1;}
   ::H5Gclose(sub_histos);}
 
- 
+
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
-  ::H5Gclose(histos); 
+  ::H5Gclose(histos);
   ::H5Fclose(file);}
-  
+
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
@@ -290,7 +290,7 @@ int main(int argc,char** argv) {
   if(num_open) std::cout << "warning : after read num_open " << num_open << std::endl;}
 
  if(verbose) std::cout << "exit ..." << std::endl;
-  
+
 #ifdef TOOLS_MEM
   }tools::mem::balance(std::cout);
 #endif

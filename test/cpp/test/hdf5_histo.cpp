@@ -45,18 +45,18 @@ bool test_hdf5_histo(std::ostream& a_out,bool a_verbose) {
 
   tools::histo::p1d p1("Profile",100,-5,5,-2,2);
  {for(unsigned int count=0;count<10000;count++) p1.fill(rg.shoot(),rbw.shoot(),1);}
-  
+
   tools::histo::p2d p2("Profile2D",100,-5,5,100,-5,5,-2,2);
  {for(unsigned int count=0;count<40000;count++) p2.fill(rg.shoot(),rg.shoot(),rbw.shoot(),1);}
 
   ///////////////////////////////////////////////////////////////////////
   /// write : ///////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////
-  if(a_verbose) a_out << "test_histo_hdf5 : write ..." << std::endl;  
+  if(a_verbose) a_out << "test_histo_hdf5 : write ..." << std::endl;
 
  {hid_t _file = ::H5Fcreate(file.c_str(),H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
    if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,_file,0)) return false;
-  
+
   // create a directory :
   hid_t histos = tools_H5Gcreate(_file,"histos",0);
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,histos,0)) {
@@ -66,28 +66,28 @@ bool test_hdf5_histo(std::ostream& a_out,bool a_verbose) {
   if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::write_atb(histos,"type","directory"),true)) {
     ::H5Fclose(_file);
     return false;
-  }  
+  }
 
   if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::write_histo(a_out,histos,"h1",h1),true)) {
     ::H5Gclose(histos);
     ::H5Fclose(_file);
     return false;
-  }  
+  }
   if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::write_histo(a_out,histos,"h2",h2),true)) {
     ::H5Gclose(histos);
     ::H5Fclose(_file);
     return false;
-  }  
+  }
   if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::write_profile(a_out,histos,"p1",p1),true)) {
     ::H5Gclose(histos);
     ::H5Fclose(_file);
     return false;
-  }  
+  }
   if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::write_profile(a_out,histos,"p2",p2),true)) {
     ::H5Gclose(histos);
     ::H5Fclose(_file);
     return false;
-  }  
+  }
 
   ::H5Gclose(histos);
   ::H5Fclose(_file);}
@@ -106,7 +106,7 @@ bool test_hdf5_histo(std::ostream& a_out,bool a_verbose) {
     ::H5Fclose(_file);
     return false;
   }
- 
+
  {tools::histo::h1d* rh1;
   if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::read_histo(a_out,histos,"h1",rh1),true)) {
     ::H5Gclose(histos);
@@ -116,13 +116,13 @@ bool test_hdf5_histo(std::ostream& a_out,bool a_verbose) {
   double prec = 1e-8;
   TOOLS_TEST_FUNC(rh1->equals(h1,prec,::fabs))
   delete rh1;}
- 
+
  {tools::histo::h2d* rh2;
   if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::read_histo(a_out,histos,"h2",rh2),true)) {
     ::H5Gclose(histos);
     ::H5Fclose(_file);
     return false;
-  }  
+  }
   double prec = 1e-8;
   TOOLS_TEST_FUNC(rh2->equals(h2,prec,::fabs))
   delete rh2;}
@@ -136,7 +136,7 @@ bool test_hdf5_histo(std::ostream& a_out,bool a_verbose) {
   double prec = 1e-8;
   TOOLS_TEST_FUNC(rp1->equals(p1,prec,::fabs))
   delete rp1;}
- 
+
  {tools::histo::p2d* rp2;
   if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::read_profile(a_out,histos,"p2",rp2),true)) {
     ::H5Gclose(histos);
@@ -146,14 +146,14 @@ bool test_hdf5_histo(std::ostream& a_out,bool a_verbose) {
   double prec = 1e-8;
   TOOLS_TEST_FUNC(rp2->equals(p2,prec,::fabs))
   delete rp2;}
- 
-  ::H5Gclose(histos); 
+
+  ::H5Gclose(histos);
   ::H5Fclose(_file);}
-  
+
  {ssize_t num_open = H5Fget_obj_count(H5F_OBJ_ALL,H5F_OBJ_ALL);
    if(!tools::equal<ssize_t>(a_out,__FILE__,__LINE__,num_open,0)) return false;}
-   
+
   TOOLS_TEST_FUNC(tools::file::std_remove(file))
-    
+
   return true;
 }

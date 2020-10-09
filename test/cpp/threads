@@ -32,7 +32,7 @@ public:
   ,m_mutex()
   ,m_threads()
   ,m_verbose(a_verbose)
-  { 
+  {
 #ifdef TOOLS_MEM
     mem::increment(s_class().c_str());
 #endif
@@ -58,7 +58,7 @@ protected:
   }
   threads& operator=(const threads&){return *this;}
 public:
-  bool start(size_t a_num_threads) { 
+  bool start(size_t a_num_threads) {
     for(size_t count=0;count<a_num_threads;count++) {
       pthread_t* id = new pthread_t;
       ARGS* args = create_args(m_mutex,count,a_num_threads);
@@ -112,9 +112,9 @@ protected:
       //sleep_milli_secs(1);
     }
     args->m_mutex.lock();
-    args->m_exit = true;  
+    args->m_exit = true;
     args->m_mutex.unlock();
-    //if(args->m_verbose) args->m_out << "thread_main : exit" << std::endl;  
+    //if(args->m_verbose) args->m_out << "thread_main : exit" << std::endl;
     return 0;
   }
 
@@ -261,9 +261,9 @@ public:
   bool m_continue;
   bool m_exit;
   bool m_verbose;
-  mutex m_mutex;  
+  mutex m_mutex;
 };
 
 }
-  
+
 #endif

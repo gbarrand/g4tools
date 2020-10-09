@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
   bool verbose = args.is_arg("-verbose");
 
   bool no_dir = args.is_arg("-no_dir");
-  if(verbose) std::cout << "no_dir : " << no_dir << std::endl;  
+  if(verbose) std::cout << "no_dir : " << no_dir << std::endl;
 
   unsigned int wentries;
   unsigned int basket_size;
@@ -35,23 +35,23 @@ int main(int argc, char* argv[]) {
   args.find<unsigned int>("-basket_size",basket_size,433);  //it is a prime.
   //args.find<unsigned int>("-entries",wentries,1299709);     //it is a prime!
   //args.find<unsigned int>("-basket_size",basket_size,2017); //it is a prime.
-  
-  if(verbose) std::cout << "entries : " << wentries << std::endl;  
+
+  if(verbose) std::cout << "entries : " << wentries << std::endl;
   if(verbose) std::cout << "basket_size : " << basket_size << std::endl;
-  
+
   unsigned int compress;
   args.find<unsigned int>("-compress",compress,0);
-  
+
   tools::histo::h1d hgw("rgauss",100,-5,5);
   tools::histo::h1d hvdw("rgauss",100,-5,5);
   std::vector<double> wsome_entries;
-  
+
   unsigned int wncols = 0;
   ///////////////////////////////////////////////////////////////////
   /// write : ///////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////
   if(verbose) std::cout << "write ..." << std::endl;
-  
+
  {hid_t file = ::H5Fcreate("ntuple.hdf5",H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
   if(file<0) {
     std::cout << "can't create file." << std::endl;
@@ -92,12 +92,12 @@ int main(int argc, char* argv[]) {
   nbk.add_column<double>("rgauss",user_rgauss);wncols++;
   nbk.add_column<float>("rbw");wncols++;
   nbk.add_column<std::string>("string");wncols++;
-  
+
   std::vector<float> user_vec_f;
   nbk.add_column<float>("vec_float",user_vec_f);wncols++;
   std::vector<double> user_vec_d;
   nbk.add_column<double>("vec_double",user_vec_d);wncols++;
-  
+
   tools::hdf5::ntuple ntuple(std::cout,ntuples,nbk,compress,basket_size);
   if(ntuple.columns().size()!=wncols) {
     std::cout << "mismatch column numbers :"
@@ -106,7 +106,7 @@ int main(int argc, char* argv[]) {
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
-  
+
   /*
   tools::hdf5::ntuple::column<double>* col_rgauss = ntuple.find_column<double>("rgauss");
   if(!col_rgauss) {
@@ -129,15 +129,15 @@ int main(int argc, char* argv[]) {
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
-  
+
   tools::rgaussd vrg(5,2);
-  
+
   tools::rgaussd rg(1,2);
   tools::rbwf rbwf(0,1);
   std::string stmp;
   unsigned int entries_3 = wentries/3;
   unsigned int entries_2_3 = 2*entries_3;
-  for(unsigned int count=0;count<wentries;count++) {    
+  for(unsigned int count=0;count<wentries;count++) {
     double vd = rg.shoot();
     hgw.fill(vd);
     user_rgauss = vd;
@@ -145,13 +145,13 @@ int main(int argc, char* argv[]) {
       std::cout << "col_rbw fill failed." << std::endl;
       break;
     }
-    
+
     if(!tools::num2s(count,stmp)){}
     if(!col_str->fill("str "+stmp)) {
       std::cout << "col_str fill failed." << std::endl;
       break;
     }
-    
+
    {double dnumber = vrg.shoot();
     size_t number = size_t(dnumber>=0?dnumber:0);
     user_vec_f.resize(number);
@@ -159,7 +159,7 @@ int main(int argc, char* argv[]) {
 
    {double dnumber = vrg.shoot();
     size_t number = size_t(dnumber>=0?dnumber:0);
-    user_vec_d.resize(number);     
+    user_vec_d.resize(number);
     for(size_t i=0;i<number;i++) {
       double v = rg.shoot();
       user_vec_d[i] = v;
@@ -179,30 +179,30 @@ int main(int argc, char* argv[]) {
       if(verbose) std::cout << "count " << count << " : " << vd << std::endl;
       wsome_entries.push_back(vd);
     }
-    
+
     if(count==entries_3) ntuple.set_basket_size(613);
     if(count==entries_2_3) ntuple.set_basket_size(827);
   }}
-  
+
  {tools::hdf5::ntuple ntuple(std::cout,ntuples,"empty_ntuple",compress,basket_size);}
 
  {tools::ntuple_booking nbk("same_booking","Randoms");
   nbk.add_column<double>("rgauss");
   nbk.add_column<float>("rbw");
   tools::hdf5::ntuple ntuple(std::cout,ntuples,nbk,compress,basket_size);}
-  
+
   if(!no_dir) ::H5Gclose(ntuples);
   ::H5Fclose(file);
   }
- 
+
  {ssize_t num_open = H5Fget_obj_count(H5F_OBJ_ALL,H5F_OBJ_ALL);
   if(num_open) std::cout << "write : warning : H5F num_open " << num_open << std::endl;}
- 
+
   ///////////////////////////////////////////////////////////////////
   /// read : ////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////
   if(verbose) std::cout << "read ..." << std::endl;
- 
+
  {hid_t file = H5Fopen("ntuple.hdf5",H5F_ACC_RDONLY, H5P_DEFAULT);
   if(file<0) {
     std::cout << "can't open file." << std::endl;
@@ -230,7 +230,7 @@ int main(int argc, char* argv[]) {
       return EXIT_FAILURE;
     }
   }
- 
+
   tools::hdf5::ntuple ntuple(std::cout,ntuples,"rg_rbw");
 
   if(ntuple.columns().size()!=wncols) {
@@ -240,7 +240,7 @@ int main(int argc, char* argv[]) {
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
-  
+
   tools::hdf5::ntuple::column<double>* col_rgauss = ntuple.find_column<double>("rgauss");
   if(!col_rgauss) {
     std::cout << "column rgauss not found." << std::endl;
@@ -277,24 +277,24 @@ int main(int argc, char* argv[]) {
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
-  
+
   tools::uint64 entries;
   if(!ntuple.entries(entries)) {
     std::cout << "entries() failed." << std::endl;
-    if(!no_dir) ::H5Gclose(ntuples); 
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
 
   if(entries!=wentries) {
     std::cout << "read entries != write entries." << std::endl;
-    if(!no_dir) ::H5Gclose(ntuples); 
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
 
   std::vector<double> user_vec_d;
-  
+
   std::string stmp;
   tools::histo::h1d hgr("rgauss",100,-5,5);
   tools::histo::h1d hvdr("rgauss",100,-5,5);
@@ -302,17 +302,17 @@ int main(int argc, char* argv[]) {
   for(tools::uint64 row=0;row<entries;row++) {
     if(!ntuple.get_row()) {
       std::cout << "ntuple.get_row() failed." << std::endl;
-      if(!no_dir) ::H5Gclose(ntuples); 
+      if(!no_dir) ::H5Gclose(ntuples);
       ::H5Fclose(file);
       return EXIT_FAILURE;
     }
-    
+
     double vd;
     col_rgauss->get_entry(vd);
     hgr.fill(vd);
     float vf;
     col_rbw->get_entry(vf);
-    
+
     std::string vs;
     col_str->get_entry(vs);
     stmp = "str ";
@@ -320,11 +320,11 @@ int main(int argc, char* argv[]) {
     if(vs!=stmp) {
       std::cout << "for row " << row << ", string mismatch : "
 		<< tools::sout(vs) << ". Expected " << tools::sout(stmp) << "." << std::endl;
-      if(!no_dir) ::H5Gclose(ntuples); 
+      if(!no_dir) ::H5Gclose(ntuples);
       ::H5Fclose(file);
       return EXIT_FAILURE;
     }
-    
+
   //col_vec_double->get_entry(user_vec_d);
  //{tools_vforcit(double,user_vec_d,it) hvdr.fill(*it);}
     const std::vector<double>& uvd = col_vec_double->data();
@@ -339,9 +339,9 @@ int main(int argc, char* argv[]) {
       rsome_entries.push_back(vd);
     }
   }
-      
+
   double prec = 1e-8;
-  
+
   if(!hgw.equals(hgr,prec,::fabs)) {
     std::cout << "read histo != write histo." << std::endl;
     hgw.hprint(std::cout);
@@ -350,13 +350,13 @@ int main(int argc, char* argv[]) {
   if(!tools::vectors_are_equal(wsome_entries,rsome_entries,prec,::fabs)) {
     std::cout << "read some entries != write some entries." << std::endl;
   }
-  
+
   if(!hvdw.equals(hvdr,prec,::fabs)) {
     std::cout << "read histo != write histo." << std::endl;
     hvdw.hprint(std::cout);
     hvdr.hprint(std::cout);
   }
-  
+
   if(!tools::vectors_are_equal(wsome_entries,rsome_entries,prec,::fabs)) {
     std::cout << "read some entries != write some entries." << std::endl;
   }
@@ -372,7 +372,7 @@ int main(int argc, char* argv[]) {
   for(tools::uint64 row=0;row<entries;row++) {
     if(!ntuple.get_row()) {
       std::cout << "ntuple.get_row() failed." << std::endl;
-      if(!no_dir) ::H5Gclose(ntuples); 
+      if(!no_dir) ::H5Gclose(ntuples);
       ::H5Fclose(file);
       return EXIT_FAILURE;
     }
@@ -392,8 +392,8 @@ int main(int argc, char* argv[]) {
     if(row==entries_3) ntuple.set_basket_size(613);
     if(row==entries_2_3) ntuple.set_basket_size(827);
   }}
-      
-  if(!no_dir) ::H5Gclose(ntuples); 
+
+  if(!no_dir) ::H5Gclose(ntuples);
   ::H5Fclose(file);
 
   }
@@ -402,7 +402,7 @@ int main(int argc, char* argv[]) {
   /// read (binding) : //////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////
   if(verbose) std::cout << "read with user variables binding..." << std::endl;
- 
+
  {hid_t file = H5Fopen("ntuple.hdf5",H5F_ACC_RDONLY, H5P_DEFAULT);
   if(file<0) {
     std::cout << "can't open file." << std::endl;
@@ -432,7 +432,7 @@ int main(int argc, char* argv[]) {
   bd.add_column("vec_float",user_vec_float);
   std::vector<double> user_vec_double;
   bd.add_column("vec_double",user_vec_double);
-  
+
 //tools::hdf5::ntuple ntuple(std::cout,ntuples,"rg_rbw",bd);
   tools::hdf5::ntuple ntuple(std::cout,ntuples,"rg_rbw");
   if(!ntuple.initialize(std::cout,bd)) {
@@ -441,7 +441,7 @@ int main(int argc, char* argv[]) {
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
-  
+
   if(ntuple.columns().size()!=wncols) {
     std::cout << "mismatch column numbers :"
 	      << " " << ntuple.columns().size() << ". " << wncols << " expected." << std::endl;
@@ -449,7 +449,7 @@ int main(int argc, char* argv[]) {
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
-  
+
   if(ntuple.columns().empty()) {
     std::cout << "can't initialize ntuple for read with binding." << std::endl;
     if(!no_dir) ::H5Gclose(ntuples);
@@ -460,20 +460,20 @@ int main(int argc, char* argv[]) {
   tools::uint64 entries;
   if(!ntuple.entries(entries)) {
     std::cout << "entries() failed." << std::endl;
-    if(!no_dir) ::H5Gclose(ntuples); 
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
 
   if(entries!=wentries) {
     std::cout << "read entries != write entries." << std::endl;
-    if(!no_dir) ::H5Gclose(ntuples); 
+    if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
 
   std::vector<double> user_vec_d;
-  
+
   std::string stmp;
   tools::histo::h1d hgr("rgauss",100,-5,5);
   tools::histo::h1d hvdr("rgauss",100,-5,5);
@@ -481,23 +481,23 @@ int main(int argc, char* argv[]) {
   for(tools::uint64 row=0;row<entries;row++) {
     if(!ntuple.get_row()) {
       std::cout << "ntuple.get_row() failed." << std::endl;
-      if(!no_dir) ::H5Gclose(ntuples); 
+      if(!no_dir) ::H5Gclose(ntuples);
       ::H5Fclose(file);
       return EXIT_FAILURE;
     }
-    
+
     hgr.fill(user_rgauss);
-    
+
     stmp = "str ";
     if(!tools::numas(row,stmp)){}
     if(user_string!=stmp) {
       std::cout << "for row " << row << ", string mismatch : "
 		<< tools::sout(user_string) << ". Expected " << tools::sout(stmp) << "." << std::endl;
-      if(!no_dir) ::H5Gclose(ntuples); 
+      if(!no_dir) ::H5Gclose(ntuples);
       ::H5Fclose(file);
       return EXIT_FAILURE;
     }
-    
+
   //col_vec_double->get_entry(user_vec_d);
  //{tools_vforcit(double,user_vec_d,it) hvdr.fill(*it);}
     {tools_vforcit(double,user_vec_double,it) hvdr.fill(*it);}
@@ -511,9 +511,9 @@ int main(int argc, char* argv[]) {
       rsome_entries.push_back(user_rgauss);
     }
   }
-      
+
   double prec = 1e-8;
-  
+
   if(!hgw.equals(hgr,prec,::fabs)) {
     std::cout << "read histo != write histo." << std::endl;
     hgw.hprint(std::cout);
@@ -522,24 +522,24 @@ int main(int argc, char* argv[]) {
   if(!tools::vectors_are_equal(wsome_entries,rsome_entries,prec,::fabs)) {
     std::cout << "read some entries != write some entries." << std::endl;
   }
-  
+
   if(!hvdw.equals(hvdr,prec,::fabs)) {
     std::cout << "read histo != write histo." << std::endl;
     hvdw.hprint(std::cout);
     hvdr.hprint(std::cout);
   }
-  
+
   if(!tools::vectors_are_equal(wsome_entries,rsome_entries,prec,::fabs)) {
     std::cout << "read some entries != write some entries." << std::endl;
   }
 
-  if(!no_dir) ::H5Gclose(ntuples); 
+  if(!no_dir) ::H5Gclose(ntuples);
   ::H5Fclose(file);}
- 
+
   ///////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////
-  
+
  {ssize_t num_open = H5Fget_obj_count(H5F_OBJ_ALL,H5F_OBJ_ALL);
   if(num_open) std::cout << "read : warning : H5F num_open " << num_open << std::endl;}
 

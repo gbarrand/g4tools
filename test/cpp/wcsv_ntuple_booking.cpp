@@ -64,7 +64,7 @@ int main(int,char**) {
     // fill :
     char snum[128];
     std::string stmp;
-    for(unsigned int count=0;count<entries;count++) {    
+    for(unsigned int count=0;count<entries;count++) {
       col_index->fill(count);
       col_rgauss->fill(rg.shoot());
       col_rbw->fill(rbw.shoot());
@@ -74,7 +74,7 @@ int main(int,char**) {
         std::cout << "col_str fill failed." << std::endl;
         break;
       }
-    
+
       // fill vector
       user_vec_int.clear();
       int number = count%5;

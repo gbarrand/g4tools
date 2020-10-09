@@ -86,12 +86,12 @@ int main(int argc,char** argv) {
     return EXIT_FAILURE;
   }
   tree.dump(std::cout,"","  ");
-  tools::uint64 entries = tree.entries();  
+  tools::uint64 entries = tree.entries();
  {for(tools::uint32 i=0;i<5;i++){
     if(!tree.show(std::cout,i)) {
       std::cout << "show failed for entry " << i << std::endl;
       return EXIT_FAILURE;
-    }       
+    }
   }}
  {for(tools::uint64 i=tools::mx<tools::int64>(5,entries-5);i<entries;i++){
     if(!tree.show(std::cout,(tools::uint32)i)) {
@@ -104,7 +104,7 @@ int main(int argc,char** argv) {
   //////////////////////////////////////////////////////
   //////////////////////////////////////////////////////
   //////////////////////////////////////////////////////
-  
+
   //////////////////////////////////////////////////////
   /// read "ntuple" with tools::rroot::ntuple : ////////
   //////////////////////////////////////////////////////
@@ -203,7 +203,7 @@ int main(int argc,char** argv) {
   //////////////////////////////////////////////////////
   //////////////////////////////////////////////////////
   //////////////////////////////////////////////////////
-  
+
 #ifdef TOOLS_MEM
   }tools::mem::balance(std::cout);
 #endif //TOOLS_MEM

@@ -15,9 +15,9 @@ inline bool lego_offscreen_zb(std::ostream& a_out,bool a_verbose,const std::stri
 
   unsigned int width = 400;
   unsigned int height = 200;
-  
+
   tools::sg::zb_manager mgr;
- 
+
   tools::sg::separator* sep = lego_offscreen_sg(width,height);
 
  {unsigned int factor = 2; //have greater size to have good freetype rendering.
@@ -76,6 +76,6 @@ bool test_lego_offscreen_zb(std::ostream& a_out,bool a_verbose) {
           << std::endl;
     return false;
   }
-  
+
   return true;
 }

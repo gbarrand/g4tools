@@ -28,7 +28,7 @@ inline tools::sg::separator* lego_offscreen_sg(unsigned int a_width,unsigned int
   //tools::histo::h2d h("Gauss_BW",100,-5,5,100,-2,2);
   tools::histo::h2d* h = new tools::histo::h2d("Gauss_BW",20,-5,5,20,-2,2);
   for(unsigned int count=0;count<entries;count++) h->fill(rg.shoot(),rbw.shoot(),0.8);
-  
+
   //////////////////////////////////////////////////////////
   /// create scene graph ///////////////////////////////////
   /// create the plotter ///////////////////////////////////
@@ -51,7 +51,7 @@ inline tools::sg::separator* lego_offscreen_sg(unsigned int a_width,unsigned int
   plotter->bins_style(0).modeling = tools::sg::modeling_boxes();
   plotter->bins_style(0).painting = tools::sg::painting_violet_to_red;
 
-  plotter->infos_style().font = tools::sg::font_arialbd_ttf();
+  plotter->infos_style().font = tools::sg::font_roboto_bold_ttf();;
   plotter->infos_style().front_face = tools::sg::winding_cw;
   plotter->infos_x_margin = 0.01f; //percent of plotter width.
   plotter->infos_y_margin = 0.01f; //percent of plotter height.
@@ -65,7 +65,7 @@ inline tools::sg::separator* lego_offscreen_sg(unsigned int a_width,unsigned int
 
   sep->add(new tools::sg::holder<tools::sg::text_freetype>(ttf));
   sep->add(new tools::sg::holder<tools::histo::h2d>(h));
-  
+
   tools::sg::set_plotter_camera(*plotter,*camera,a_width,a_height);
 
   return sep;

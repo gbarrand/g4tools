@@ -8,9 +8,12 @@ find ./test -name 'wrap_*' -exec /bin/rm -f {} \;
 find ./test -name '*.ps' -print > tmp_0
 for file in $(cat tmp_0) ; do
   name=`basename ${file}`
+  dir_name=`dirname ${file}`
   name=`echo ${name} | sed -e 's:\.:\_:g' | sed -e 's:\-:\_:g'`
-  #echo "${name}"
-  ./wrap_exe ${file} ./test/wrap_${name}
+  wrap_file="${dir_name}/wrap_${name}"
+  #echo "${file}"
+  #echo "${wrap_file}"
+  ./wrap_exe ${file} ${wrap_file}
 done
 /bin/rm -f tmp_0
 

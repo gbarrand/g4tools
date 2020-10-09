@@ -9,7 +9,7 @@
 #else
   rfile.add_unziper('Z',tools::decompress_buffer);
 #endif
-   
+
   tools::rroot::key* key = rfile.dir().find_key("rg_rbw");
   if(!key) {
     std::cout << "can't get data buffer for ntuple." << std::endl;
@@ -21,7 +21,7 @@
     std::cout << "can't get data buffer for ntuple." << std::endl;
     return EXIT_FAILURE;
   }
-  
+
   tools::rroot::buffer b(std::cout,rfile.byte_swap(),sz,buf,key->key_length(),read_verbose);
   b.set_map_objs(true);
   tools::rroot::fac fac(std::cout);
@@ -31,19 +31,19 @@
     return EXIT_FAILURE;
   }
   if(verbose)
- {tools::uint64 entries = tree.entries();  
+ {tools::uint64 entries = tree.entries();
   std::cout << "read entries : " << entries << std::endl;}
-  
+
  // {for(tools::uint32 i=0;i<5;i++){
  //    if(!tree.show(std::cout,i)) {
  //      std::cout << "show failed for entry " << i << std::endl;
  //      return EXIT_FAILURE;
  //    }
  //  }}
-   
+
   // read with the flat ntuple API :
   tools::rroot::ntuple ntu(tree); //use the flat ntuple API.
-  
+
   double read_user_rgauss;
   float read_user_rbw;
   std::string read_user_string;
@@ -58,26 +58,26 @@
   nbd.add_column("count",read_user_count);
   nbd.add_column("vec_d",read_user_vec_d);
   nbd.add_column("vec_s",read_user_vec_s);
-  
+
   if(!ntu.initialize(std::cout,nbd)) {
     std::cout << "can't initialize ntuple with ntuple_binding." << std::endl;
     return EXIT_FAILURE;
   }
-  
+
   double user_rgauss_Sw = 0;
   double user_rgauss_Sxw = 0;
   double user_rgauss_Sx2w = 0;
-  
+
   double user_vec_d_Sw = 0;
   double user_vec_d_Sxw = 0;
   double user_vec_d_Sx2w = 0;
-  
+
   size_t S_user_vec_d_size = 0;
-  
+
   unsigned int row = 0;
   int user_string_count = 0;
   std::string stmp;
-  
+
   ntu.start();
   while(ntu.next()){
     if(!ntu.get_row()) {
@@ -105,7 +105,7 @@
  // tools_vforcit(std::string,read_user_vec_s,it) {
  //  std::cout << " " << tools::sout(*it) << std::endl;
  // }}
-   
+
     if(read_check_row_wise) {
       if(user_string_count!=read_user_count)  {
         std::cout << "found an inconsistent row at row : "<< row
@@ -126,7 +126,7 @@
                   << std::endl;
       }
     }
-    
+
     row++;
   }
   if(user_rgauss_Sw) {
@@ -152,8 +152,8 @@
       std::cout << "vec_d rms : " << rms << ". Expected 2.0." << std::endl;
     }
   }
-  
+
   if(verbose) std::cout << "S_user_vec_d_size " << S_user_vec_d_size << std::endl;
 
   rfile.close();}
-  
+

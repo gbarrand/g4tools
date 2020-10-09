@@ -15,12 +15,12 @@
 #include <sstream>
 
 void root_read_rg_rbw(const std::string& a_file,bool verbose) {
-  
+
   typedef char* cstr;
-  
+
   TFile* file = new TFile(a_file.c_str(),"READ");
   if(verbose) file->ls();
-   
+
   TTree* tree = (TTree*)file->Get("rg_rbw");
   if(!tree) {
     std::cout << "tree rg_rbw not found." << std::endl;
@@ -83,7 +83,7 @@ void root_read_rg_rbw(const std::string& a_file,bool verbose) {
     file->Close();
     return;
   }
-  
+
   struct event {
     double  user_rgauss;
     float   user_rbw;
@@ -95,9 +95,9 @@ void root_read_rg_rbw(const std::string& a_file,bool verbose) {
 
   if(verbose) {for(int count=0;count<5;count++) tree->Show(count);}
   if(verbose) {for(int count=entries-5;count<entries;count++) tree->Show(count);}
-  
+
   if(event_branch) event_branch->SetAddress(&_event);
-  
+
   event_rgauss_leaf->SetAddress(&_event.user_rgauss);
   event_rbw_leaf->SetAddress(&_event.user_rbw);
   event_string_leaf->SetAddress(_event.user_string);
@@ -109,29 +109,29 @@ void root_read_rg_rbw(const std::string& a_file,bool verbose) {
   if(event_vec_d_count_leaf) {
     event_vec_d_count_leaf->SetAddress(&event_vec_d_count);
   }
-  
+
   double Sw = 0;
   double Sxw = 0;
   double Sx2w = 0;
-  
+
   int user_string_count = 0;
   std::string stmp;
 
   bool check_string = true;
   //bool check_string = false;
-  
+
  {for(int row=0;row<entries;row++) {
     tree->GetEntry(row);
     if(verbose) {
       ::printf("event %d :\n",row);
       ::printf("  event.user_rgauss %g\n",_event.user_rgauss);
       ::printf("  event.user_rbw %g\n",_event.user_rbw);
-    
-      char* _event_user_string = event_string_leaf->GetValueString();    
+
+      char* _event_user_string = event_string_leaf->GetValueString();
       ::printf("  event.user_string \"%s\"\n",_event_user_string?_event_user_string:"nil");
-    
+
       ::printf("  event.user_count %d\n",_event.user_count);
-    
+
      {int ndata = event_vec_d_leaf->GetNdata();
       ::printf("  event.user_vec_d %d\n",ndata);
       for(int i=0;i<ndata;i++) {
@@ -144,11 +144,11 @@ void root_read_rg_rbw(const std::string& a_file,bool verbose) {
 
     }
     //::printf("  event_vec_d_count %d\n",event_vec_d_count);
-    
+
     Sw += 1;
     Sxw += _event.user_rgauss;
     Sx2w += _event.user_rgauss*_event.user_rgauss;
-    
+
     if(check_string) {
       char* _event_user_string = event_string_leaf->GetValueString();
       if(::strlen(_event_user_string)<4) {
@@ -180,7 +180,7 @@ void root_read_rg_rbw(const std::string& a_file,bool verbose) {
                   << ", user_count%100 " << (_event.user_count%100)
                   << std::endl;
       }
-      
+
       if(check_string) {
         char* _event_user_vec_s = event_vec_s_leaf->GetValueString();
         std::vector<std::string> user_vec_s;
@@ -193,7 +193,7 @@ void root_read_rg_rbw(const std::string& a_file,bool verbose) {
         }
       }
     }
-    
+
   }}
 
   file->Close();
@@ -209,15 +209,15 @@ void root_read_rg_rbw(const std::string& a_file,bool verbose) {
       std::cout << "rgauss rms : " << rms << ". Expected 2.0." << std::endl;
     }
   }
-  
-}    
+
+}
 
 #include <tools/args>
 #include <cstdlib>
 
 int main(int argc,char** argv) {
   tools::args args(argc,argv);
-  
+
   std::string file;
   if(!args.file(file)) {
     std::cout << "give a root file." << std::endl;
@@ -225,8 +225,8 @@ int main(int argc,char** argv) {
   }
 
   bool verbose = args.is_arg("-verbose");
-  
+
   root_read_rg_rbw(file,verbose);
-  
+
   return EXIT_SUCCESS;
-}     
+}

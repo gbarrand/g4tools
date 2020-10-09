@@ -52,14 +52,14 @@ int main(int argc,char** argv) {
   bool row_wise = args.is_arg("-row_wise");
 
   bool read_check_row_wise = row_wise;
-  
+
   //////////////////////////////////////////////////////////
   /// create a .root file : ////////////////////////////////
   //////////////////////////////////////////////////////////
   if(verbose) std::cout << (row_wise?"row_wise":"column_wise") << std::endl;
-  
+
   std::string file = "wroot.root";
-  
+
  {tools::wroot::file rfile(std::cout,file);
 #ifdef TOOLS_DONT_HAVE_ZLIB
 #else
@@ -223,7 +223,7 @@ int main(int argc,char** argv) {
 
   std::vector<double> user_vec_d;
   ntu->create_column_vector_ref<double>("vec_d",user_vec_d);
-  
+
   std::vector<std::string> user_vec_s;
   ntu->create_column_vector_string_ref("vec_s",user_vec_s,'\n');
 
@@ -235,7 +235,7 @@ int main(int argc,char** argv) {
   tools::rtausmed rflat;
   tools::rbwf rbwf(0,1);
   std::string stmp;
-  for(unsigned int count=0;count<entries;count++) {    
+  for(unsigned int count=0;count<entries;count++) {
     if(!col_count->fill(count)) {
       std::cout << "col_count fill failed." << std::endl;
       break;
@@ -297,7 +297,7 @@ int main(int argc,char** argv) {
 
     tools::rbwf rbwf(0,1);
     std::string stmp;
-    for(unsigned int count=0;count<1000;count++) {    
+    for(unsigned int count=0;count<1000;count++) {
       if(!col_rgauss->fill(rg.shoot())) {
         std::cout << "col_rgauss fill failed." << std::endl;
         break;
@@ -331,7 +331,7 @@ int main(int argc,char** argv) {
   if(!rfile.write(n)) {
     std::cout << "file write failed." << std::endl;
   }}
-  
+
   rfile.close();}
 
   //////////////////////////////////////////////////////////

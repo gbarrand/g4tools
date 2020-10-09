@@ -30,10 +30,10 @@ void read_wcsv_csv() {
   /// plotting : //////////////////////////////////
   /////////////////////////////////////////////////
   TCanvas* plotter = new TCanvas("canvas","",10,10,800,600);
-  plotter->Divide(1,1);  
+  plotter->Divide(1,1);
   plotter->cd(1);
   hrg->Draw();
   plotter->Update();
 
-    
+
 }

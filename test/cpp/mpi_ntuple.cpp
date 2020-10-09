@@ -46,13 +46,13 @@ int main(int argc,char **argv) {
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
   tools::args args(argc,argv);
-  
+
   bool verbose = args.is_arg("-verbose");
 
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
-  
+
   tools::mpi::world mpi_world;
   tools::impi_world& _mpi = mpi_world;
   // use the interface :
@@ -83,7 +83,7 @@ int main(int argc,char **argv) {
   std::string user_string;
   std::vector<double> user_vec_d;
   std::vector<std::string> user_vec_s;
-  
+
   tools::ntuple_booking nbk("rg_rbw","Randoms");
   nbk.add_column("rgauss",user_rgauss);
   nbk.add_column("rbw",user_rbw);
@@ -98,23 +98,23 @@ int main(int argc,char **argv) {
 
     std::string progname = tools::nosuffix(argv[0]);
     std::string file = progname+".root";
-    
+
     //////////////////////////////////////////////////////////
     /// args : ///////////////////////////////////////////////
     //////////////////////////////////////////////////////////
 
     bool row_wise = !args.is_arg("-column_wise"); //default is row_wise.
     bool row_mode = args.is_arg("-row_mode");    //if column_wise (to attempt to have a row like storage in column_wise ntuple).
-  
+
     bool read_check_row_wise = row_wise||(!row_wise&&row_mode);
-    
+
     //////////////////////////////////////////////////////////
     /// write file : /////////////////////////////////////////
     //////////////////////////////////////////////////////////
    {if(verbose) std::cout << "Comm size " << comm_size << std::endl;
-    
+
     if(verbose) std::cout << "rank " << rank << " : processor name " << processor_name << std::endl;
-    
+
     unsigned int num_megas;
     args.find<unsigned int>("-megas",num_megas,1);
     unsigned int basket_size;
@@ -129,7 +129,7 @@ int main(int argc,char **argv) {
       std::cout << "basket_size " << basket_size << std::endl;
       if(!row_wise && row_mode) std::cout << "basket_entries " << nev << std::endl;
     }
-    
+
     //////////////////////////////////////////////////////////
     /// create a .root file : ////////////////////////////////
     //////////////////////////////////////////////////////////
@@ -142,7 +142,7 @@ int main(int argc,char **argv) {
     //////////////////////////////////////////////////////////
     /// create a ntuple from a ntuple_booking object. ////////
     //////////////////////////////////////////////////////////
-    tools::uint32 main_ntuple_id = 1;    
+    tools::uint32 main_ntuple_id = 1;
     tools::wroot::ntuple* main_ntuple = new tools::wroot::ntuple(rfile.dir(),nbk,row_wise); //owned by the directory.
     main_ntuple->set_basket_size(basket_size);
 
@@ -202,7 +202,7 @@ int main(int argc,char **argv) {
 
     // wait baskets from other ranks :
     unsigned int num_end_fill = 0;
-    while(true) { 
+    while(true) {
 
       tools::mpi::wrmpi _wrmpi(std::cout,comm);
       tools::impi& _impi = _wrmpi; //in the below, we use only the tools::impi interface.
@@ -212,7 +212,7 @@ int main(int argc,char **argv) {
         std::cout << "impi.wait_buffer() failed." << std::endl;
         return EXIT_FAILURE;
       }
-      
+
       tools::uint32 protocol;
       if(!_impi.unpack(protocol)) {std::cout << "sunpack(protocol) failed."<< std::endl;return EXIT_FAILURE;}
 
@@ -227,7 +227,7 @@ int main(int argc,char **argv) {
         }
 
         if(!main_ntuple->mpi_add_basket(_impi)) {
-          std::cout << "main_ntuple->mpi_add_basket() failed." << std::endl;	  
+          std::cout << "main_ntuple->mpi_add_basket() failed." << std::endl;	
           return EXIT_FAILURE;
         }
 	
@@ -242,7 +242,7 @@ int main(int argc,char **argv) {
         }
 
         if(!main_ntuple->mpi_add_baskets(_impi)) {
-          std::cout << "main_ntuple->mpi_add_baskets() failed." << std::endl;	  
+          std::cout << "main_ntuple->mpi_add_baskets() failed." << std::endl;	
           return EXIT_FAILURE;
         }
 	
@@ -256,7 +256,7 @@ int main(int argc,char **argv) {
         }
 	
         if(!main_ntuple->mpi_end_fill(_impi)) {
-          std::cout << "main_ntuple->mpi_end_fill() failed." << std::endl;	  
+          std::cout << "main_ntuple->mpi_end_fill() failed." << std::endl;	
           return EXIT_FAILURE;
         }
 
@@ -283,7 +283,7 @@ int main(int argc,char **argv) {
     }}
     rfile.close();
     if(verbose) std::cout << "root file " << file << " closed." << std::endl;}
-   
+
     //////////////////////////////////////////////////////////
     /// read the file : //////////////////////////////////////
     //////////////////////////////////////////////////////////
@@ -310,15 +310,15 @@ int main(int argc,char **argv) {
     unsigned int num_megas;
     unsigned int nev;
 
-   {tools::mpi::wrmpi _wrmpi(std::cout,comm);    
+   {tools::mpi::wrmpi _wrmpi(std::cout,comm);
     tools::impi& _impi = _wrmpi; //in the below, we use only the tools::impi interface.
-    
+
     int probe_src;
     if(!_impi.wait_buffer(rank,rank_src,tag,probe_src,false/*verbose*/)) {
       std::cout << "impi.wait_buffer() failed."<< std::endl;
       return EXIT_FAILURE;
     }
-    
+
     if(!_impi.bunpack(verbose)) {std::cout << "bunpack(verbose) failed."<< std::endl;return EXIT_FAILURE;}
     if(!_impi.unpack(main_ntuple_id)) {std::cout << "unpack(ntuple_id) failed."<< std::endl;return EXIT_FAILURE;}
     if(!_impi.bunpack(row_wise)) {std::cout << "bunpack(row_wise) failed."<< std::endl;return EXIT_FAILURE;}
@@ -336,7 +336,7 @@ int main(int argc,char **argv) {
     }
 
     if(verbose) std::cout << "rank " << rank << " : processor name " << processor_name << std::endl;
-    
+
    //std::cout << "rank = " << rank
    //           << ", byte_swap = " << byte_swap
    //           << ", compression = " << compression
@@ -369,23 +369,23 @@ int main(int argc,char **argv) {
     */
   //tools::wroot::base_pntuple::column_string* col_str = _ntuple->find_column_string("string");
   //if(!col_str) {std::cout << "column string not found." << std::endl;return EXIT_FAILURE;}
-    
-    tools::mpi::wrmpi _wrmpi(std::cout,comm);    
+
+    tools::mpi::wrmpi _wrmpi(std::cout,comm);
     tools::impi& _impi = _wrmpi; //in the below, we use only the tools::impi interface.
 
     bool read_check_row_wise = row_wise||(!row_wise&&row_mode);
-    
+
    {tools::rgaussd rg(1,2);
     tools::rbwf rbwf(0,1);
     tools::rbwd rbwd(-1,1);
     tools::rtausmed rflat;
     std::string stmp;
     unsigned int entries = num_megas*1000000;
-    for(unsigned int count=0;count<entries;count++) {    
+    for(unsigned int count=0;count<entries;count++) {
       // fill variables :
       user_rgauss = rg.shoot();
       user_rbw = rbwf.shoot();
-      
+
       if(!tools::num2s(count,stmp)){}
       user_string = "str "+stmp;
     //if(!col_str->fill("str "+stmp)) {
@@ -395,7 +395,7 @@ int main(int argc,char **argv) {
 
       user_count = count;
       user_rw_count = count;
-      
+
      {user_vec_d.clear();
       unsigned int number = read_check_row_wise ? count%100 : (unsigned int)(10*rflat.shoot());
       for(unsigned int i=0;i<number;i++) user_vec_d.push_back(rg.shoot());}
@@ -406,7 +406,7 @@ int main(int argc,char **argv) {
         if(!tools::num2s(i,stmp)){}
         user_vec_s.push_back(stmp);
       }}
-     
+
       if(!_ntuple->add_row(_impi,rank_src,tag)) {
         std::cout << "ntuple fill failed." << std::endl;
         break;
@@ -426,7 +426,7 @@ int main(int argc,char **argv) {
 #ifdef TOOLS_MEM
   }tools::mem::balance(std::cout);
   std::cout << "mpi_ntuple : (mem) exit..." << std::endl;
-#else  
+#else
   if(verbose) std::cout << "mpi_ntuple : exit... " << std::endl;
 #endif //TOOLS_MEM
   return EXIT_SUCCESS;

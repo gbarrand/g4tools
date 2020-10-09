@@ -103,7 +103,7 @@ inline bool write_out_two_pages(std::ostream& a_out,bool a_verbose,const std::st
   viewer.plots().clear();
   viewer.plot(p1);
   viewer.plots().next();
-  viewer.plot(h2); 
+  viewer.plot(h2);
   viewer.plots().adjust_scales();
   viewer.write_page();
 
@@ -135,7 +135,7 @@ bool test_viewplot(std::ostream& a_out,bool a_verbose) {
   bool _remove = true;
 
   bool stop_if_failed = true;
-  
+
   if(!tools::test_with_file(a_out,a_verbose,"utest_1_",".ps",_remove,
                             utest_viewplot_1_ps,write_out_one_page_two_regions) && stop_if_failed) return false;
   if(!tools::test_with_file(a_out,a_verbose,"utest_2_",".ps",_remove,

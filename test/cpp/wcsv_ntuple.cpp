@@ -67,7 +67,7 @@ int main(int argc,char** argv) {
 
   // fill :
   std::string stmp;
-  for(unsigned int count=0;count<entries;count++) {    
+  for(unsigned int count=0;count<entries;count++) {
     col_uint->fill(count);
     col_double->fill(rg.shoot());
     col_float->fill(rbw.shoot());

@@ -56,7 +56,7 @@ int main(int argc,char** argv) {
   if(ls) {
     std::cout << "format version " << rfile.version() << std::endl;
   }
-      
+
   const std::vector<tools::rroot::key*>& keys = rfile.dir().keys();
   tools::rroot::read(std::cout,rfile,keys,true,ls,dump,0);
 
@@ -141,9 +141,9 @@ int main(int argc,char** argv) {
         delete h;
       }
     }}
-    delete dir; 
+    delete dir;
   }}
- 
+
   ////////////////////////////////////////////////////////////////////////////////////////
   // read an ntuple from inlib/examples/cpp/wroot.cpp, wroot_pntuple.cpp, pwroot.cpp : ///
   ////////////////////////////////////////////////////////////////////////////////////////
@@ -170,7 +170,7 @@ int main(int argc,char** argv) {
         return EXIT_FAILURE;
       }
     }}
-   {tools::uint64 entries = tree.entries();  
+   {tools::uint64 entries = tree.entries();
     for(tools::uint64 i=tools::mx<tools::int64>(5,entries-5);i<entries;i++){
       if(!tree.show(std::cout,(tools::uint32)i)) {
         std::cout << "show failed for entry " << i << std::endl;
@@ -182,7 +182,7 @@ int main(int argc,char** argv) {
    {tools::rroot::ntuple ntu(tree); //use the flat ntuple API.
     double user_rgauss;
     std::string user_string;
-    
+
     tools::ntuple_binding nbd;
     nbd.add_column("rgauss",user_rgauss);
     nbd.add_column("string",user_string);
@@ -254,7 +254,7 @@ int main(int argc,char** argv) {
 #ifdef TOOLS_MEM
   std::cout << "exit (mem)..." << std::endl;
   }tools::mem::balance(std::cout);
-#else  
+#else
   if(verbose) std::cout << "exit..." << std::endl;
 #endif //TOOLS_MEM
 

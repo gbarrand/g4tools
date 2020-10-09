@@ -24,23 +24,23 @@ bool test_columns(std::ostream& a_out,bool /*a_verbose*/) {
   //tools::columns::dump_columns(a_out,vars);
 
  {const tools::value& _val = vars[0];
-  std::string stype;        
+  std::string stype;
   _val.s_type(stype);
-  std::string sval;        
+  std::string sval;
   _val.tos(sval);
   std::string s = stype + " : " + _val.label() + " : " + sval;
   if(!tools::equal(a_out,__FILE__,__LINE__,s,"DOUBLE : x : 1")) return false;}
 
  {const tools::value& _val = vars[1];
-  std::string stype;        
+  std::string stype;
   _val.s_type(stype);
   std::string s = stype + " : " + _val.label();
   if(!tools::equal(a_out,__FILE__,__LINE__,s,"VOID_STAR : y")) return false;}
 
  {const tools::value& _val = vars[2];
-  std::string stype;        
+  std::string stype;
   _val.s_type(stype);
-  std::string sval;        
+  std::string sval;
   _val.tos(sval);
   std::string s = stype + " : " + _val.label() + " : " + sval;
   if(!tools::equal(a_out,__FILE__,__LINE__,s,"INT : z : 0")) return false;}
@@ -48,7 +48,7 @@ bool test_columns(std::ostream& a_out,bool /*a_verbose*/) {
   tools::columns::delete_columns(vars);}
 
  {// MEMPHSY sim :
-  std::string in = "int eventId, inputEvtId, interMode, vtxVol, "; 
+  std::string in = "int eventId, inputEvtId, interMode, vtxVol, ";
   in += "ITuple vtxPos = { double x, y, z }, ";
   in += "int nPart, leptonIndex, protonIndex, ";
   in += "ITuple track = { int pId, parent, float timeStart, ";
@@ -62,7 +62,7 @@ bool test_columns(std::ostream& a_out,bool /*a_verbose*/) {
   in += "int nHits, ITuple hit = { int tubeId, int totalPE, ITuple pe = { float time} }, ";
   in += "int nDigits, double sumPE, ";
   in += "ITuple digit = { int tubeId, double pe, time }";
- 
+
   tools::columns::parser pr;
   if(!tools::equal(a_out,__FILE__,__LINE__,pr.parse(in),true)) return false;
   //pr.dump(std::cout);

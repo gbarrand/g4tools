@@ -38,7 +38,7 @@ inline bool test_with_file(std::ostream& a_out,bool a_verbose,
     to_compare += s;
     to_compare += "\n";
   }}
- 
+
   char* buffer;
   long length;
   TOOLS_TEST_FUNC(file::read_bytes(file,buffer,length))
@@ -66,7 +66,7 @@ inline bool test_with_file(std::ostream& a_out,bool a_verbose,
   bool status = equal(a_out,__FILE__,__LINE__,_lines,to_compare);
   if(status && a_remove) TOOLS_TEST_FUNC(file::std_remove(file))
   return status;}
-  
+
 }
 
 typedef bool (*test_plot_func)(std::ostream& a_out,bool a_verbose,const std::string& a_file,
@@ -93,7 +93,7 @@ inline bool test_with_file(std::ostream& a_out,bool a_verbose,
     replace(s,"@@back_slash@@","\\");
     to_compare += s;
     to_compare += "\n";
-  }} 
+  }}
   char* buffer;
   long length;
   TOOLS_TEST_FUNC(file::read_bytes(file,buffer,length))
@@ -122,7 +122,7 @@ inline bool test_with_file(std::ostream& a_out,bool a_verbose,
   bool status = equal(a_out,__FILE__,__LINE__,_lines,to_compare);
   if(status && a_remove) TOOLS_TEST_FUNC(file::std_remove(file))
   return status;}
-  
+
 }
 
 }

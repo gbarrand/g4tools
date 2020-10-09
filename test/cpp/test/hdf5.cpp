@@ -279,10 +279,10 @@ static bool write_hdf5(std::ostream& a_out,bool a_verbose,to_compare_hdf5& a_cmp
 
   hid_t shistos = tools_H5Gcreate(histos,"sub_histograms",0);
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,shistos,0)) return false;
-  
+
   hid_t tuples = tools_H5Gcreate(stat,"tuples",0);
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,tuples,0)) return false;
-  
+
   // Write data in directories :
   TOOLS_TEST_FUNC(tools::hdf5::write_array<int>(histos,"my_histo",n,array))
   TOOLS_TEST_FUNC(tools::hdf5::write_string(histos,"my_title",a_cmp.title))
@@ -294,7 +294,7 @@ static bool write_hdf5(std::ostream& a_out,bool a_verbose,to_compare_hdf5& a_cmp
   vs.push_back("Line 3");
   vs.push_back("Line 4");
   TOOLS_TEST_FUNC(tools::hdf5::write_array_string(histos,"my_strings",vs))
-  
+
   hid_t S_B_file_type;
   TOOLS_TEST_FUNC(build_S_B_file_type(S_B_file_type))
 
@@ -323,13 +323,13 @@ static bool write_hdf5(std::ostream& a_out,bool a_verbose,to_compare_hdf5& a_cmp
   ::memcpy(p,&my_object.ui,sizeof(unsigned int));
   p+=sizeof(unsigned int);
 
-  ::memcpy(p,&my_object.f,sizeof(float)); 
+  ::memcpy(p,&my_object.f,sizeof(float));
   p+=sizeof(float);
 
-  ::memcpy(p,&my_object.lds,sizeof(unsigned int)); 
+  ::memcpy(p,&my_object.lds,sizeof(unsigned int));
   p+=sizeof(unsigned int);
 
-  ::memcpy(p,my_object.ds,LDS*sizeof(double));  
+  ::memcpy(p,my_object.ds,LDS*sizeof(double));
   p += LDS*sizeof(double);
 
   ::memcpy(p,&my_object.i,sizeof(int));
@@ -338,14 +338,14 @@ static bool write_hdf5(std::ostream& a_out,bool a_verbose,to_compare_hdf5& a_cmp
   TOOLS_TEST_FUNC(tools::hdf5::write_object(histos,"my_object",C_A_file_type,buffer))
   delete [] buffer;
   H5Tclose(C_A_file_type);}
-  
+
   // Release HDF5 resources and close the file :
   H5Gclose(tuples);
   H5Gclose(shistos);
   H5Gclose(histos);
   H5Gclose(stat);
   H5Fclose(file);
-  
+
   delete [] my_object.ds;
   delete [] array;
 
@@ -382,7 +382,7 @@ static bool read_hdf5(std::ostream& a_out,bool a_verbose,const to_compare_hdf5& 
 
   std::string rtitle;
   TOOLS_TEST_FUNC(tools::hdf5::read_string(histos,"my_title",rtitle))
-  
+
   S_B s;
   hid_t S_B_mem_type;
   TOOLS_TEST_FUNC(build_S_B_mem_type(S_B_mem_type))
@@ -393,24 +393,24 @@ static bool read_hdf5(std::ostream& a_out,bool a_verbose,const to_compare_hdf5& 
   C_A my_object;
   my_object.ds = 0;
   my_object.i = 0;
-  
+
   size_t sz = 0;
   char* buffer = 0;
   TOOLS_TEST_FUNC(tools::hdf5::read_object(histos,"my_object",sz,buffer))
 
   char* p = buffer;
 
-  ::memcpy(&my_object.ui,p,sizeof(unsigned int));    
+  ::memcpy(&my_object.ui,p,sizeof(unsigned int));
   p += sizeof(unsigned int);
 
   ::memcpy(&my_object.f,p,sizeof(float));
   p += sizeof(float);
- 
-  ::memcpy(&my_object.lds,p,sizeof(unsigned int));    
+
+  ::memcpy(&my_object.lds,p,sizeof(unsigned int));
   p += sizeof(unsigned int);
 
   my_object.ds = new double[my_object.lds];
-  ::memcpy(my_object.ds,p,LDS*sizeof(double)); 
+  ::memcpy(my_object.ds,p,LDS*sizeof(double));
   p += LDS*sizeof(double);
 
   ::memcpy(&my_object.i,p,sizeof(int));
@@ -450,11 +450,11 @@ static bool read_hdf5(std::ostream& a_out,bool a_verbose,const to_compare_hdf5& 
   if(!tools::equal<unsigned int>(a_out,__FILE__,__LINE__,s.d,(unsigned int)316)) return false;
   if(!tools::equal<unsigned int>(a_out,__FILE__,__LINE__,s.e.a,(unsigned int)314)) return false;
   if(!tools::equal<int>(a_out,__FILE__,__LINE__,s.e.b,-315)) return false;
-  if(!tools::equal<float>(a_out,__FILE__,__LINE__,s.e.c,3.14F,0.0001F,tools::ffabsc)) return false;
+  if(!tools::equal<float>(a_out,__FILE__,__LINE__,s.e.c,3.14F,0.0001F,tools::ffabs)) return false;
   if(!tools::equal<double>(a_out,__FILE__,__LINE__,s.e.ds[5],3.16,0.0001,tools::dfabs)) return false;
   if(!tools::equal<int>(a_out,__FILE__,__LINE__,::strcmp(s.e.s,"hello"),0)) return false;
   if(!tools::equal<unsigned int>(a_out,__FILE__,__LINE__,my_object.ui,(unsigned int)314)) return false;
-  if(!tools::equal(a_out,__FILE__,__LINE__,my_object.f,315.0F,0.0001F,tools::ffabsc)) return false;
+  if(!tools::equal(a_out,__FILE__,__LINE__,my_object.f,315.0F,0.0001F,tools::ffabs)) return false;
  {double v = my_object.ds?my_object.ds[5]:0;
   if(!tools::equal(a_out,__FILE__,__LINE__,v,316.0,0.0001,tools::dfabs)) return false;}
   if(!tools::equal(a_out,__FILE__,__LINE__,my_object.i,317)) return false;

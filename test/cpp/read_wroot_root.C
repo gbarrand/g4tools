@@ -12,19 +12,19 @@ void read_wroot_root() {
   }
 
   TCanvas* plotter = new TCanvas("canvas","",10,10,800,800);
-  plotter->Divide(2,4);  
+  plotter->Divide(2,4);
 
   ////////////////////////////////////////////////////////
   /// histos /////////////////////////////////////////////
   ////////////////////////////////////////////////////////
  {TDirectory* dir = (TDirectory*)f->Get("histo");
   if(!dir) {
-    std::cout << "TDirectory histos not found." << std::endl;    
+    std::cout << "TDirectory histos not found." << std::endl;
     return;
   }
   TH1D* hrg = (TH1D*)dir->Get("rg");
   if(!hrg) {
-    std::cout << "TH1D rg not found." << std::endl;    
+    std::cout << "TH1D rg not found." << std::endl;
     return;
   }
   Stat_t hstats[TH1::kNstat];
@@ -35,7 +35,7 @@ void read_wroot_root() {
 
   TProfile* hprof = (TProfile*)dir->Get("prof");
   if(!hprof) {
-    std::cout << "TProfile prof not found." << std::endl;    
+    std::cout << "TProfile prof not found." << std::endl;
     return;
   }
   Stat_t stats[TH1::kNstat];
@@ -53,7 +53,7 @@ void read_wroot_root() {
 
   TH2D* hrgbw = (TH2D*)dir->Get("rgbw");
   if(!hrgbw) {
-    std::cout << "TH2D rgbw not found." << std::endl;    
+    std::cout << "TH2D rgbw not found." << std::endl;
     return;
   }
   plotter->cd(3);
@@ -66,14 +66,14 @@ void read_wroot_root() {
 
   TTree* tree = (TTree*)f->Get("rg_rbw");
   if(!tree) {
-    std::cout << "TTree rg_rbw not found." << std::endl;    
+    std::cout << "TTree rg_rbw not found." << std::endl;
     return;
   }
 
  {TObjArray* brs = tree->GetListOfBranches();
   for(int i=0;i<brs->GetEntries();i++) {
     TBranch* b = (TBranch*)brs->At(i);
-    //std::cout << "branch : " << b->GetName() << std::endl;    
+    //std::cout << "branch : " << b->GetName() << std::endl;
     b->Print();
   }}
 
@@ -90,7 +90,7 @@ void read_wroot_root() {
 
   TLeafC* leaf_string = (TLeafC*)tree->GetLeaf("strings");
 
-  int num = tree->GetEntries();  
+  int num = tree->GetEntries();
   std::cout << "number of events = " << num << std::endl;
 
   TH1D* h_nvf = new TH1D("h_vec_float_size","vf.size()",10,0,10);

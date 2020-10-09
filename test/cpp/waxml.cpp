@@ -51,7 +51,7 @@ int main(int,char**) {
     return EXIT_FAILURE;
   }}
 
- {std::string title = "Gauss_BW";  
+ {std::string title = "Gauss_BW";
   // have XML special characters in the title.
   title += " lower <";
   title += " greater >";
@@ -86,7 +86,7 @@ int main(int,char**) {
 
   // fill :
   std::string stmp;
-  for(unsigned int count=0;count<10000;count++) {    
+  for(unsigned int count=0;count<10000;count++) {
     col_rgauss->fill(rg.shoot());
     col_rbw->fill(rbw.shoot());
     if(!tools::num2s(count,stmp)) {}
@@ -116,7 +116,7 @@ int main(int,char**) {
 
     // fill :
     std::string stmp;
-    for(unsigned int count=0;count<100;count++) {    
+    for(unsigned int count=0;count<100;count++) {
       col_rgauss->fill(rg.shoot());
       col_rbw->fill(rbw.shoot());
       if(!tools::num2s(count,stmp)) {}

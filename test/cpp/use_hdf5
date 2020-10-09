@@ -4,8 +4,13 @@ if [ "${use_hdf5}" = "yes" ] ; then
     use_sys_hdf5=no
     use_our_hdf5=yes
   else
-    use_sys_hdf5=yes
-    use_our_hdf5=no
+    if [ "${build_use_our_hdf5}" = "yes" ] ; then
+      use_sys_hdf5=no
+      use_our_hdf5=yes
+    else
+      use_sys_hdf5=yes
+      use_our_hdf5=no
+    fi
   fi
 fi
 
@@ -14,6 +19,7 @@ if [ "${use_sys_hdf5}" = "yes" ] ; then
   
   hdf5_sys_home=/usr/local/hdf5/1.6.6
   hdf5_sys_home=/usr/local/hdf5/1.8.15
+  hdf5_sys_home=/usr/local/hdf5/1.12.0
   if [ ! -d ${hdf5_sys_home} ] ; then
     echo "use_hdf5 : ${hdf5_sys_home} not found. Use our hdf5."
     use_our_hdf5=yes

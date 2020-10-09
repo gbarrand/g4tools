@@ -70,15 +70,15 @@ int main(int argc,char** argv) {
    std::cout << " sum_w2[50] = " << _bins_sum_w2[50] << std::endl;
    std::cout << " sum_xw[50] = " << _bins_sum_xw[50][0] << std::endl;   //0 = xaxis
    std::cout << "sum_x2w[50] = " << _bins_sum_x2w[50][0] << std::endl;  //0 = xaxis
-  }   
+  }
    // change in range bin 49 weight :
-  {std::cout << "bin_Sw(49) = " << h.bin_Sw(49) << std::endl;   
+  {std::cout << "bin_Sw(49) = " << h.bin_Sw(49) << std::endl;
    tools::histo::h1d::hd_t hdata = h.dac();  //dac=data access.
    hdata.m_bin_Sw[50] *= 2;
    h.copy_from_data(hdata);
-   std::cout << "modified(*2) bin_Sw(49) = " << h.bin_Sw(49) << std::endl;   
+   std::cout << "modified(*2) bin_Sw(49) = " << h.bin_Sw(49) << std::endl;
   }
-  
+
  }
 
  {
@@ -102,7 +102,7 @@ int main(int argc,char** argv) {
 
    // to get all internal data :
    typedef tools::histo::profile_data<double,unsigned int,unsigned int,double,double> pd_t;
-   pd_t hdata = h.get_histo_data(); 
+   pd_t hdata = h.get_histo_data();
  }
 
   ////////////////////////////////////////
@@ -139,7 +139,7 @@ int main(int argc,char** argv) {
     if(print) projection->hprint(std::cout);
     delete projection;
   }
-   
+
   {
     tools::histo::h1d* projection = tools::histo::projection_y(h,"ProjY");
     if(!projection) return -1;
@@ -244,7 +244,7 @@ int main(int argc,char** argv) {
     if(!projection) return -1;
     projection->set_title("Gauss_BW_flat_projectionXY");
     if(print) projection->hprint(std::cout);
-    
+
    {tools::histo::h1d* _projection =
       tools::histo::projection_x(*projection,"ProjX");
     if(!_projection) return -1;
@@ -261,13 +261,13 @@ int main(int argc,char** argv) {
 
     delete projection;
   }
-   
+
   {
     tools::histo::h2d* projection = tools::histo::projection_yz(h,"ProjYZ");
     if(!projection) return -1;
     projection->set_title("Gauss_BW_flat_projectionYZ");
     if(print) projection->hprint(std::cout);
-    
+
    {tools::histo::h1d* _projection =
       tools::histo::projection_y(*projection,"ProjZ");
     if(!_projection) return -1;
@@ -277,7 +277,7 @@ int main(int argc,char** argv) {
 
     delete projection;
   }
-   
+
  }
 
   //////////////////////////////////////////////////////////

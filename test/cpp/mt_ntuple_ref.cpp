@@ -72,7 +72,7 @@ public:
     //m_out << "_main : thread " << m_index << std::endl;
 
     tools::wroot::ifile& main_file = m_main_ntuple.dir().file();
-    
+
     //user variables used to create "ref columns" in the local thread ntuple and also used to fill user data :
     double user_rgauss;
     float user_rbw;
@@ -96,11 +96,11 @@ public:
       m_continue = false;
       m_mutex.unlock();
     }
-    
+
     tools::wroot::imt_ntuple* _ntuple = 0;
-    
+
     std::vector<tools::wroot::branch*> main_branches; //for column wise.
-    
+
     if(m_row_wise) {
       tools::wroot::branch* main_branch = m_main_ntuple.get_row_wise_branch();
       _ntuple = new tools::wroot::mt_ntuple_row_wise(m_out,
@@ -112,7 +112,7 @@ public:
       m_main_ntuple.get_branches(main_branches);
       std::vector<tools::uint32> basket_sizes;
      {tools_vforcit(tools::wroot::branch*,main_branches,it) basket_sizes.push_back((*it)->basket_size());}
-   
+
       _ntuple = new tools::wroot::mt_ntuple_column_wise(m_out,
                                                         main_file.byte_swap(),main_file.compression(),
                                                         m_main_ntuple.dir().seek_directory(),
@@ -123,7 +123,7 @@ public:
     mutex _mutex(m_main_mutex); //and not m_mutex.
 
     bool read_check_row_wise = m_row_wise||(!m_row_wise&&m_row_mode);
-    
+
     unsigned int print_count = 100000;
 
    {tools::rgaussd rg(1,2);
@@ -135,11 +135,11 @@ public:
     unsigned int entries = m_megas*1000000;
     for(unsigned int count=0;count<entries;count++) {
       if(m_verbose) {if(print_count*tools::uint32(count/print_count)==count) m_out << "count " << count << std::endl;}
-      
+
       // fill variables :
       user_rgauss = rg.shoot();
       user_rbw = rbwf.shoot();
-      
+
       if(!tools::num2s(count,stmp)){}
       user_string = "str "+stmp;
 
@@ -150,14 +150,14 @@ public:
       for(unsigned int i=0;i<number;i++) user_vec_d.push_back(rg.shoot());
       //user_vec_d_count += number;
      }
-     
+
      {user_vec_s.clear();
       unsigned int number = read_check_row_wise ? count%5 : (unsigned int)(5*rflat.shoot());
       for(unsigned int i=0;i<number;i++) {
         if(!tools::num2s(i,stmp)){}
         user_vec_s.push_back(stmp);
       }}
-    
+
       if(!_ntuple->add_row(_mutex,main_file)) { //it may lock/unlock when passing a basket to a main_ntuple branch.
         m_out << "ntuple fill failed." << std::endl;
         break;
@@ -169,7 +169,7 @@ public:
     if(!_ntuple->end_fill(_mutex,main_file)) { //important.
       m_out << "end_fill() failed." << std::endl;
     }
-    
+
     delete _ntuple;
 
     m_mutex.lock();
@@ -204,7 +204,7 @@ public:
                  bool a_verbose = false)
   :parent(a_out,a_verbose)
   ,m_nbk(a_nbk)
-  ,m_main_ntuple(a_main_ntuple) 
+  ,m_main_ntuple(a_main_ntuple)
   ,m_row_wise(a_row_wise)
   ,m_row_mode(a_row_mode)
   ,m_nev(a_nev)
@@ -250,7 +250,7 @@ int main(int argc,char** argv) {
 #ifdef TOOLS_MEM
   tools::mem::set_check_by_class(true);{
 #endif //TOOLS_MEM
-    
+
   //////////////////////////////////////////////////////////
   /// args : ///////////////////////////////////////////////
   //////////////////////////////////////////////////////////
@@ -260,14 +260,14 @@ int main(int argc,char** argv) {
 
   bool row_wise = !args.is_arg("-column_wise"); //default is row_wise.
   bool row_mode = args.is_arg("-row_mode");    //if column_wise (to attempt to have a row like storage in column_wise ntuple).
-   
+
   bool read_check_row_wise = row_wise||(!row_wise&&row_mode);
-  
+
   //////////////////////////////////////////////////////////
   /// create a .root file : ////////////////////////////////
   //////////////////////////////////////////////////////////
   std::string file = "mt_ntuple_ref.root";
-  
+
  {unsigned int num_threads;
   args.find<unsigned int>("-threads",num_threads,2);
   unsigned int num_megas;
@@ -276,7 +276,7 @@ int main(int argc,char** argv) {
   args.find<unsigned int>("-basket_size",basket_size,32000);
   unsigned int nev;
   args.find<unsigned int>("-basket_entries",nev,4000);
-  
+
   if(verbose) {
     std::cout << (row_wise?"row_wise":"column_wise") << std::endl;
     if(!row_wise) std::cout << (row_mode?"row_mode":"not row_mode") << std::endl;
@@ -285,7 +285,7 @@ int main(int argc,char** argv) {
     std::cout << "basket_size " << basket_size << std::endl;
     if(!row_wise && row_mode) std::cout << "basket_entries " << nev << std::endl;
   }
-  
+
   tools::wroot::file rfile(std::cout,file);
 #ifdef TOOLS_DONT_HAVE_ZLIB
 #else
@@ -315,7 +315,7 @@ int main(int argc,char** argv) {
   nbk.add_column("count",user_count);
   nbk.add_column("vec_d",user_vec_d);
   nbk.add_column("vec_s",user_vec_s);
-  
+
   tools::wroot::ntuple* main_ntuple = new tools::wroot::ntuple(rfile.dir(),nbk,row_wise); //owned by the directory.
 
   main_ntuple->set_basket_size(basket_size);
@@ -340,7 +340,7 @@ int main(int argc,char** argv) {
   }}
 
   }
-  
+
   rfile.close();}
 
   //////////////////////////////////////////////////////////
@@ -348,13 +348,13 @@ int main(int argc,char** argv) {
   //////////////////////////////////////////////////////////
 
 #include "read_root.icc"
- 
+
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
 
   if(verbose) std::cout << "exit ..." << std::endl;
-  
+
 #ifdef TOOLS_MEM
   }tools::mem::balance(std::cout);
 #endif //TOOLS_MEM

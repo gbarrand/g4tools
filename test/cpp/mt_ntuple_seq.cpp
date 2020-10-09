@@ -73,9 +73,9 @@ int main(int argc,char** argv) {
 
   bool row_wise = !args.is_arg("-column_wise"); //default is row_wise.
   bool row_mode = args.is_arg("-row_mode");    //if column_wise (to attempt to have a row like storage in column_wise ntuple).
-   
+
   bool read_check_row_wise = row_wise||(!row_wise&&row_mode);
-  
+
   //////////////////////////////////////////////////////////
   /// create a .root file : ////////////////////////////////
   //////////////////////////////////////////////////////////
@@ -84,9 +84,9 @@ int main(int argc,char** argv) {
     if(!row_wise) std::cout << (row_mode?"row_mode":"not row_mode") << std::endl;
     if(!row_wise && row_mode) std::cout << "basket_entries " << nev << std::endl;
   }
-  
+
   std::string file = "mt_ntuple_seq.root";
-  
+
  {tools::wroot::file rfile(std::cout,file);
 #ifdef TOOLS_DONT_HAVE_ZLIB
 #else
@@ -101,10 +101,10 @@ int main(int argc,char** argv) {
   /// create a ntuple from a ntuple_booking object. ////////
   //////////////////////////////////////////////////////////
   tools::wroot::ntuple* main_ntuple = 0;
-  
+
   // the booking object :
   tools::ntuple_booking nbk("rg_rbw","Randoms");
-  
+
  {//user variables to create "ref columns" in the main ntuple. (They are not used to fill data) :
   double user_rgauss;
   float user_rbw;
@@ -112,7 +112,7 @@ int main(int argc,char** argv) {
   int user_count;
   std::vector<double> user_vec_d;
   std::vector<std::string> user_vec_s;
-  
+
   nbk.add_column("rgauss",user_rgauss);
   nbk.add_column("rbw",user_rbw);
   nbk.add_column("string",user_string);
@@ -122,7 +122,7 @@ int main(int argc,char** argv) {
 
   main_ntuple = new tools::wroot::ntuple(rfile.dir(),nbk,row_wise); //owned by the directory.
   if(!row_wise) main_ntuple->set_basket_size(basket_size);}
-  
+
   mutex _mutex;
 
  {for(unsigned int ithread=0;ithread<num_threads;ithread++) {
@@ -150,11 +150,11 @@ int main(int argc,char** argv) {
                 << std::endl;
       break;
     }
-    
+
     tools::wroot::imt_ntuple* pntuple = 0;
-    
+
     std::vector<tools::wroot::branch*> main_branches; //for column wise.
-    
+
     if(row_wise) {
       tools::wroot::branch* main_branch = main_ntuple->get_row_wise_branch();
       pntuple = new tools::wroot::mt_ntuple_row_wise(std::cout,
@@ -165,7 +165,7 @@ int main(int argc,char** argv) {
       main_ntuple->get_branches(main_branches);
       std::vector<tools::uint32> basket_sizes;
      {tools_vforcit(tools::wroot::branch*,main_branches,it) basket_sizes.push_back((*it)->basket_size());}
-  
+
       pntuple = new tools::wroot::mt_ntuple_column_wise(std::cout,
                                                         rfile.byte_swap(),rfile.compression(),rfile.dir().seek_directory(),
                                                         main_branches,
@@ -180,28 +180,28 @@ int main(int argc,char** argv) {
     unsigned int user_vec_d_count = 0;
     std::string stmp;
     unsigned int entries = num_megas*1000000;
-    for(unsigned int count=0;count<entries;count++) {    
+    for(unsigned int count=0;count<entries;count++) {
       // fill variables :
       user_rgauss = rg.shoot();
       user_rbw = rbwf.shoot();
-      
+
       if(!tools::num2s(count,stmp)){}
       user_string = "str "+stmp;
 
       user_count = count;
-      
+
      {user_vec_d.clear();
       unsigned int number = read_check_row_wise ? count%100 : (unsigned int)(10*rflat.shoot());
       for(unsigned int i=0;i<number;i++) user_vec_d.push_back(rg.shoot());
       user_vec_d_count += number;}
-    
+
      {user_vec_s.clear();
       unsigned int number = read_check_row_wise ? count%5 : (unsigned int)(5*rflat.shoot());
       for(unsigned int i=0;i<number;i++) {
         if(!tools::num2s(i,stmp)){}
         user_vec_s.push_back(stmp);
       }}
-    
+
       if(!pntuple->add_row(_mutex,rfile)) {
         std::cout << "ntuple fill failed." << std::endl;
         break;
@@ -212,9 +212,9 @@ int main(int argc,char** argv) {
     if(!pntuple->end_fill(_mutex,rfile)) { //important.
       std::cout << "end_fill() failed." << std::endl;
     }
-    
+
     delete pntuple;
-  }}    
+  }}
 
   main_ntuple->merge_number_of_entries();
 
@@ -233,13 +233,13 @@ int main(int argc,char** argv) {
   //////////////////////////////////////////////////////////
   /// read the file : //////////////////////////////////////
   //////////////////////////////////////////////////////////
- 
+
 #include "read_root.icc"
- 
+
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
- 
+
   if(verbose) std::cout << "exit ..." << std::endl;
 
 #ifdef TOOLS_MEM

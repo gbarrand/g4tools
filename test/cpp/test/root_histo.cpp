@@ -237,7 +237,7 @@ static bool write_test_root(std::ostream& a_out,bool a_verbose,to_compare_cern_r
     rfile.close();
     return false;
   }}
-  
+
   rfile.close();
 
   return true;
@@ -293,7 +293,7 @@ static bool read_test_root(std::ostream& a_out,bool a_verbose,const to_compare_c
           << std::endl;
   }
   if(!tools::equal(a_out,__FILE__,__LINE__,h->equals_TH(a_cmp.m_rg,tolerance,::fabs),true)) return false;
-  
+
   if(!tools::equal(a_out,__FILE__,__LINE__,h->title(),a_cmp.rg_title)) return false;
   if(!tools::equal<unsigned int>(a_out,__FILE__,__LINE__,h->all_entries(),a_cmp.rg_all_entries)) return false;
   //if(!tools::equal<unsigned int>(a_out,__FILE__,__LINE__,h->entries(),a_cmp.rg_entries)) return false;
@@ -373,7 +373,7 @@ static bool read_test_root(std::ostream& a_out,bool a_verbose,const to_compare_c
           << std::endl;
   }
   if(!tools::equal(a_out,__FILE__,__LINE__,h->equals_TH(a_cmp.m_rgbw,tolerance,::fabs),true)) return false;
-  
+
   if(!tools::equal(a_out,__FILE__,__LINE__,h->title(),a_cmp.rgbw_title)) return false;
   if(!tools::equal<unsigned int>(a_out,__FILE__,__LINE__,h->all_entries(),a_cmp.rgbw_all_entries)) return false;
   //if(!tools::equal<unsigned int>(a_out,__FILE__,__LINE__,h->entries(),a_cmp.rgbw_entries)) return false;
@@ -403,7 +403,7 @@ static bool read_test_root(std::ostream& a_out,bool a_verbose,const to_compare_c
           << std::endl;
   }
   if(!tools::equal(a_out,__FILE__,__LINE__,h->equals_TH(a_cmp.m_prof2D,tolerance,::fabs),true)) return false;
-  
+
   if(!tools::equal(a_out,__FILE__,__LINE__,h->title(),a_cmp.prof2D_title)) return false;
   if(!tools::equal<unsigned int>(a_out,__FILE__,__LINE__,h->all_entries(),a_cmp.prof2D_all_entries)) return false;
   //if(!tools::equal<unsigned int>(a_out,__FILE__,__LINE__,h->entries(),a_cmp.prof2D_entries)) return false;
@@ -435,7 +435,7 @@ static bool read_test_root(std::ostream& a_out,bool a_verbose,const to_compare_c
           << std::endl;
   }
   if(!tools::equal(a_out,__FILE__,__LINE__,h->equals_TH(a_cmp.m_rggbw,tolerance,::fabs),true)) return false;
-  
+
   if(!tools::equal(a_out,__FILE__,__LINE__,h->title(),a_cmp.rggbw_title)) return false;
   if(!tools::equal<unsigned int>(a_out,__FILE__,__LINE__,h->all_entries(),a_cmp.rggbw_all_entries)) return false;
   //if(!tools::equal<unsigned int>(a_out,__FILE__,__LINE__,h->entries(),a_cmp.rggbw_entries)) return false;
@@ -450,7 +450,7 @@ static bool read_test_root(std::ostream& a_out,bool a_verbose,const to_compare_c
   if(!tools::equal<double>(a_out,__FILE__,__LINE__,h->Szxw(),a_cmp.rggbw_Szxw,tolerance,tools::dfabs)) return false;
   delete h;}
 
-  delete dir; 
+  delete dir;
 
   return true;
 }

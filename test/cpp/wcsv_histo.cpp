@@ -38,7 +38,7 @@ int main(int argc,char** argv) {
   bool verbose = args.is_arg("-verbose");
 
   bool have_header = args.is_arg("-no_header")?false:true;
-  
+
   //////////////////////////////////////////////////////////
   /// create some histos : /////////////////////////////////
   //////////////////////////////////////////////////////////
@@ -125,7 +125,12 @@ int main(int argc,char** argv) {
  {std::ofstream writer("out_wcsv_histo_p2d.csv",std::ios::binary);
   if(writer.fail()) {std::cout << "can't open out_p2d.csv." << std::endl;return EXIT_FAILURE;}
   tools::histo::p2d h("Profile2D",100,-5,5,100,-5,5,-2,2);
-  for(unsigned int count=0;count<entries;count++) h.fill(rg.shoot(),rg.shoot(),rbw.shoot(),1);
+  for(unsigned int count=0;count<entries;count++) {
+    double x = rg.shoot();
+    double y = rg.shoot();
+    double v = rbw.shoot();
+    h.fill(x,y,v,1);
+  }    
   if(verbose) {
     std::cout << "p2d : " << h.title()
               << ", all entries " << h.all_entries()
@@ -140,7 +145,12 @@ int main(int argc,char** argv) {
  {std::ofstream writer("out_wcsv_histo_h3d.csv",std::ios::binary);
   if(writer.fail()) {std::cout << "can't open out_h3d.csv." << std::endl;return EXIT_FAILURE;}
   tools::histo::h3d h("Gauss_Gauss_BW",20,-5,5,20,-5,5,20,-2,2);
-  for(unsigned int count=0;count<entries;count++) h.fill(rg.shoot(),rg.shoot(),rbw.shoot(),0.8);
+  for(unsigned int count=0;count<entries;count++) {
+    double x = rg.shoot();
+    double y = rg.shoot();
+    double z = rbw.shoot();
+    h.fill(x,y,z,0.8);
+  }
   //plotting hints :
   h.add_annotation(tools::histo::key_axis_x_title(),"rand gauss");
   h.add_annotation(tools::histo::key_axis_y_title(),"rand gauss");

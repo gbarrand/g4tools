@@ -219,7 +219,7 @@ static bool test_h2d_proj(std::ostream& a_out,bool a_verbose) {
   if(!tools::equal<double>(a_out,__FILE__,__LINE__,pj->mean(),1,1e-3,tools::dfabs)) return false;
   if(!tools::equal<double>(a_out,__FILE__,__LINE__,pj->rms(),0.5,1e-3,tools::dfabs)) return false;
   delete pj;}
-   
+
  {tools::histo::h1d* pj = tools::histo::projection_y(h,"ProjY");
   if(!pj) return false;
   if(!tools::equal<double>(a_out,__FILE__,__LINE__,pj->mean(),0.5,1e-3,tools::dfabs)) return false;
@@ -261,7 +261,7 @@ static bool test_h2d_proj(std::ostream& a_out,bool a_verbose) {
   //  if(!tools::equal<double>(a_out,__FILE__,__LINE__,pj->mean(),1,1e-3)) return false;
   //  if(!tools::equal<double>(a_out,__FILE__,__LINE__,pj->rms(),0.5,1e-3)) return false;
   delete _p;}
-   
+
  {tools::histo::p1d* _p = tools::histo::profile_y(h,"ProfileY");
   if(!_p) return false;
   //  if(!tools::equal<double>(a_out,__FILE__,__LINE__,pj->mean(),0.5,1e-3)) return false;
@@ -292,7 +292,7 @@ static bool test_h3d_rand(std::ostream& a_out,bool a_verbose) {
   /////////////////////////////////////////////////////////////////////
  {tools::histo::h2d* projection = tools::histo::projection_xy(h,"ProjXY");
   if(!projection) return false;
-    
+
  {tools::histo::h1d* _pj = tools::histo::projection_x(*projection,"ProjX");
   if(!_pj) return false;
   if(!tools::equal<double>(a_out,__FILE__,__LINE__,_pj->mean(),1.0,1e-3,tools::dfabs)) return false;
@@ -306,13 +306,13 @@ static bool test_h3d_rand(std::ostream& a_out,bool a_verbose) {
   delete _pj;}
 
   delete projection;}
-   
+
   /////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////
  {tools::histo::h2d* projection = tools::histo::projection_yz(h,"ProjYZ");
   if(!projection) return false;
-    
+
  {tools::histo::h1d* _pj = tools::histo::projection_y(*projection,"ProjZ");
   if(!_pj) return false;
   if(!tools::equal<double>(a_out,__FILE__,__LINE__,_pj->mean(),1.5,1e-3,tools::dfabs)) return false;
@@ -320,7 +320,7 @@ static bool test_h3d_rand(std::ostream& a_out,bool a_verbose) {
   delete _pj;}
 
   delete projection;}
-   
+
   return true;
 }
 
@@ -405,6 +405,6 @@ bool test_histo(std::ostream& a_out,bool a_verbose) {
   if(!test_sh12d(a_out,a_verbose)) return false;
   if(!test_h1d_rand<tools::histo::sh1d>(a_out,a_verbose)) return false;
   if(!test_h2d_rand<tools::histo::sh2d>(a_out,a_verbose)) return false;
-#endif  
+#endif
   return true;
 }

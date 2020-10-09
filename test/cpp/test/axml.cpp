@@ -109,7 +109,7 @@ static bool write_axml(std::ostream& a_out,bool a_verbose,to_compare_axml& a_cmp
     return false;
   }}
 
- {std::string title = "rgbw";  
+ {std::string title = "rgbw";
   // have XML special characters in the title.
   title += " lower <";
   title += " greater >";
@@ -152,7 +152,7 @@ static bool write_axml(std::ostream& a_out,bool a_verbose,to_compare_axml& a_cmp
   // fill :
   std::string stmp;
   unsigned int ntu_entries = 10000;
-  for(unsigned int count=0;count<ntu_entries;count++) {    
+  for(unsigned int count=0;count<ntu_entries;count++) {
     col_rgauss->fill(rg.shoot());
     col_rbw->fill(rbw.shoot());
     if(!tools::num2s(count,stmp)) {}
@@ -185,8 +185,8 @@ static bool write_axml(std::ostream& a_out,bool a_verbose,to_compare_axml& a_cmp
     // fill :
     std::string stmp;
     tools::histo::h1d h("ntu_rg_rbw_2",100,-2,2);
-    for(unsigned int count=0;count<100;count++) {    
-      double rgauss = rg.shoot(); 
+    for(unsigned int count=0;count<100;count++) {
+      double rgauss = rg.shoot();
       col_rgauss->fill(rgauss);
       h.fill(rgauss);
       col_rbw->fill(rbw.shoot());
@@ -297,9 +297,9 @@ static bool read_axml(std::ostream& a_out,bool a_verbose,const to_compare_axml& 
         std::vector<tools::aida::base_col*>::const_iterator itc;
         for(itc=cols.begin();itc!=cols.end();++itc) {
           tools::aida::aida_base_col* acol = tools::safe_cast<tools::aida::base_col,tools::aida::aida_base_col>(*(*itc));
-          if(acol) {  
+          if(acol) {
             //a_out << "ntuple : col name=" << (*itc)->name() << ", aida_type=" << acol->aida_type() << std::endl;
-          } else {  
+          } else {
             //a_out << "ntuple : col name=" << (*itc)->name() << std::endl;
           }
         }}
@@ -320,14 +320,14 @@ static bool read_axml(std::ostream& a_out,bool a_verbose,const to_compare_axml& 
           unsigned int ntu_entries = 10000;
           for(unsigned int row=0;row<ntu_entries;row++) {
             if(!nt->next()) break;
-            std::string v;  
+            std::string v;
             if(!col->get_entry(v)) {}
             //a_out << "ro  w = " << row << ", string = " << v << std::endl;
             if(row>=(ntu_entries-5)) vs.push_back(v);
           }
           if(!tools::equal(a_out,__FILE__,__LINE__,vs,a_cmp.ntu_rg_rbw_strings)) return false;
-       }}  
-  
+       }}
+
       } else if((*it).name()=="rg_rbw_2") {
         if(a_verbose) a_out << "check ntu = " << (*it).name() << std::endl;
 

@@ -25,7 +25,7 @@ inline bool write_ntuple(std::ostream& a_out,size_t a_thread) {
   file_name = "ntuple_";
   tools::numas(a_thread,file_name);
   file_name += ".hdf5";
-  
+
   unsigned int wentries = 9923;   //it is a prime.
   unsigned int basket_size = 433; //a prime too.
   unsigned int compress = 0;
@@ -33,7 +33,7 @@ inline bool write_ntuple(std::ostream& a_out,size_t a_thread) {
   ///////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////
-  
+
   hid_t file = ::H5Fcreate(file_name.c_str(),H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
   if(file<0) {
     a_out << "thread " << a_thread << " : can't create file " << file_name << std::endl;
@@ -62,12 +62,12 @@ inline bool write_ntuple(std::ostream& a_out,size_t a_thread) {
   nbk.add_column<std::string>("string");wncols++;
   short user_short;
   nbk.add_column<short>("short",user_short);wncols++;
-  
+
   std::vector<float> user_vec_f;
   nbk.add_column<float>("vec_float",user_vec_f);wncols++;
   std::vector<double> user_vec_d;
   nbk.add_column<double>("vec_double",user_vec_d);wncols++;
-  
+
   tools::hdf5::ntuple ntuple(a_out,ntuples,nbk,compress,basket_size);
   if(ntuple.columns().size()!=wncols) {
     a_out << "thread " << a_thread << " :"
@@ -77,7 +77,7 @@ inline bool write_ntuple(std::ostream& a_out,size_t a_thread) {
     ::H5Fclose(file);
     return false;
   }
-  
+
   tools::hdf5::ntuple::column<float>* col_rbw = ntuple.find_column<float>("rbw");
   if(!col_rbw) {
     a_out << "thread " << a_thread << " : column rbw not found." << std::endl;
@@ -92,30 +92,30 @@ inline bool write_ntuple(std::ostream& a_out,size_t a_thread) {
     ::H5Fclose(file);
     return false;
   }
-  
+
   tools::rgaussd vrg(5,2);
-  
+
   tools::rgaussd rg(1,2);
   tools::rbwf rbwf(0,1);
   std::string stmp;
   unsigned int entries_3 = wentries/3;
   unsigned int entries_2_3 = 2*entries_3;
-  for(unsigned int count=0;count<wentries;count++) {    
+  for(unsigned int count=0;count<wentries;count++) {
     double vd = rg.shoot();
     user_rgauss = vd;
     user_short = (short)wentries;
-    
+
     if(!col_rbw->fill(rbwf.shoot())) {
       a_out << "thread " << a_thread << " : col_rbw fill failed." << std::endl;
       break;
     }
-    
+
     if(!tools::num2s(count,stmp)){}
     if(!col_str->fill("str "+stmp)) {
       a_out << "thread " << a_thread << " : col_str fill failed." << std::endl;
       break;
     }
-    
+
    {double dnumber = vrg.shoot();
     size_t number = size_t(dnumber>=0?dnumber:0);
     user_vec_f.resize(number);
@@ -123,7 +123,7 @@ inline bool write_ntuple(std::ostream& a_out,size_t a_thread) {
 
    {double dnumber = vrg.shoot();
     size_t number = size_t(dnumber>=0?dnumber:0);
-    user_vec_d.resize(number);     
+    user_vec_d.resize(number);
     for(size_t i=0;i<number;i++) {
       double v = rg.shoot();
       user_vec_d[i] = v;
@@ -137,13 +137,13 @@ inline bool write_ntuple(std::ostream& a_out,size_t a_thread) {
     if(count==entries_3) ntuple.set_basket_size(613);
     if(count==entries_2_3) ntuple.set_basket_size(827);
   }}
-  
+
   ::H5Gclose(ntuples);
   ::H5Fclose(file);
 
   return true;
 }
-  
+
 class args : public tools::thread_args {
   typedef tools::thread_args parent;
 public:
@@ -201,7 +201,7 @@ protected:
 };
 
 } //app
-  
+
 #include <tools/args>
 #include <iostream>
 #include <cstdlib>
@@ -213,22 +213,22 @@ int main(int argc,char** argv) {
 
 #ifndef H5_HAVE_THREADSAFE
   std::cout << "Your HDF5 lib is not built with H5_HAVE_THREADSAFE." << std::endl;
-  return EXIT_FAILURE;   
-#endif    
+  return EXIT_FAILURE;
+#endif
 
   tools::args args(argc,argv);
 
   bool verbose = args.is_arg("-verbose");
 
   if(verbose) std::cout << "HDF5 version " << H5_PACKAGE_VERSION << std::endl;
-  
+
   unsigned int num_threads;
   args.find<unsigned int>("-threads",num_threads,2);
 
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
-  
+
   if(num_threads) {
     app::threads _threads(std::cout,verbose);
     if(_threads.start(num_threads)) {

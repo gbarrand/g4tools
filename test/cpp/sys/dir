@@ -54,9 +54,9 @@ inline bool create(const std::string& a_name){
   // a_name should be a single directory name, and not a file system path.
   // Then it must not contain : ., .., /, \ etc...
 #ifdef _MSC_VER
-  return (::mkdir(a_name.c_str())==0 ? true : false); 
+  return (::mkdir(a_name.c_str())==0 ? true : false);
 #else
-  return (::mkdir(a_name.c_str(), 0755)==0 ? true : false); 
+  return (::mkdir(a_name.c_str(), 0755)==0 ? true : false);
 #endif
 }
 

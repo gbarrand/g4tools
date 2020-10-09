@@ -57,19 +57,19 @@ int main(int,char**) {
   if(ntu.columns().size()) {
 
     //ntu.write_commented_header(writer);
- 
+
     //::printf("debug : %lu\n",ntu.find_column<unsigned int>("index"));
     //::printf("debug : %lu\n",ntu.find_column_ref<unsigned int>("index"));
 
     // fill :
     char snum[128];
-    for(unsigned int count=0;count<entries;count++) {    
+    for(unsigned int count=0;count<entries;count++) {
       user_index = count;
       user_rgauss = rg.shoot();
       user_rbw = rbw.shoot();
       user_str = "str ";
       if(!tools::numas(count,user_str)){}
-      
+
       // fill vector
       user_vec_int.clear();
       int number = count%5;

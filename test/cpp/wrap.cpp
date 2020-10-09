@@ -12,7 +12,7 @@
 int main(int a_argc,char** a_argv) {
   std::vector<std::string> args;
  {for(int index=0;index<a_argc;index++) args.push_back(a_argv[index]);}
-  
+
   if(args.size()!=3) {
     std::cout << "Two arguments expected." << std::endl;
     return EXIT_FAILURE;
@@ -25,7 +25,7 @@ int main(int a_argc,char** a_argv) {
     std::cout << "out file is the same than in file." << std::endl;
     return EXIT_FAILURE;
   }
-  
+
   std::vector<std::string> in_txt;
   if(!tools::file::read(in_file,in_txt)) {
     std::cout << "Can't read input file \"" << in_file << "\"." << std::endl;
