@@ -447,6 +447,9 @@ int csz__huft_build(unsigned *b, unsigned n, unsigned s, ush *d, ush *e, struct 
   int y;                        /* number of dummy codes added */
   unsigned z;                   /* number of entries in current table */
 
+  r.e = 0;   /*G.Barrand : to quiet Coverity.*/
+  r.b = 0;   /*G.Barrand : to quiet Coverity.*/
+  r.v.t = 0; /*G.Barrand : to quiet Coverity.*/
 
   /* Generate counts for each bit length */
   el = n > 256 ? b[256] : BMAX; /* set length of EOB code, if any */
