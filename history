@@ -1,3 +1,8 @@
+5.2.1 :
+ - fonts : have lato_regular.ttf file and license_font_lato.txt, readme_font_lato.txt texts taken from :
+     https://www.latofonts.com/lato-free-fonts
+ 
+
 5.2.0 :
  //////////////////////////////////////////////////
  /// use google fonts : ///////////////////////////
