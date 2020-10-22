@@ -10,7 +10,7 @@ void plot_file(tools::viewplot& a_viewer,
                unsigned int a_columns, unsigned int a_rows,float a_plotter_scale,const std::string& a_style,
                int a_n,tools::histo::h1d& a_h1,bool a_verbose = false) {
   if(a_verbose)
-    a_viewer.out() << "plot file : file name " << a_filename 
+    a_viewer.out() << "plot file : file name " << a_filename
                    << ", " << a_n << " plots in " << a_columns << "x" << a_rows << ", layout "
   	           << a_style << " ..." << std::endl;
 
@@ -30,7 +30,7 @@ void plot_file(tools::viewplot& a_viewer,
 
     if( a_viewer.plots().current_index() == (plots_per_page-1) ) {
       if(a_verbose)
-        a_viewer.out() << "plot file : file name " << a_filename 
+        a_viewer.out() << "plot file : file name " << a_filename
                        << ", apply HD_style(line_width=3), grid_style()"
                        << ", regions_style(" << a_plotter_scale << ") and write_page() ..."
                        << std::endl;
@@ -45,11 +45,11 @@ void plot_file(tools::viewplot& a_viewer,
       isWriteNeeded = false;
     }
     a_viewer.plots().next();
-  }  
+  }
 
   if ( isWriteNeeded ) {
     if(a_verbose)
-       a_viewer.out() << "plot file : file name " << a_filename 
+       a_viewer.out() << "plot file : file name " << a_filename
                       << ", apply HD_style(line_width=3), grid_style()"
 	              << ", regions_style(" << a_plotter_scale << ") and write_page() ..."
                       << std::endl;
@@ -60,15 +60,15 @@ void plot_file(tools::viewplot& a_viewer,
   }
 
   a_viewer.close_file();
-}  
+}
 
 #include <tools/sg/text_freetype>
 #include <tools/xml/xml_style>
-#include <tools/xml/wrap_viewplot_style> // xml/viewplot.style file embeded in an inline function.
+#include <tools/xml/wrap_viewplot_fonts_google_style> // xml/viewplot.style file embeded in an inline function.
 inline bool load_embedded_styles(tools::xml::styles& a_styles) {
   std::string ss;
   unsigned int linen;
-  const char** lines = viewplot_style(linen);
+  const char** lines = viewplot_fonts_google_style(linen);
   for(unsigned int index=0;index<linen;index++) {
     std::string s = lines[index];
     tools::replace(s,"@@double_quote@@","\"");
@@ -138,7 +138,7 @@ bool test_viewplot_ttf(std::ostream& a_out,bool a_verbose) {
   TOOLS_TEST_FUNC(tools::is_env(s_TOOLS_FONT_PATH()))
 
   bool _remove = true;
-  
+
   bool stop_if_failed = false;
 
   if(!tools::test_with_file(a_out,a_verbose,"out_viewplot_1x2_r_",".ps",_remove,
