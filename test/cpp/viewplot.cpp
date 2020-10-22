@@ -66,11 +66,11 @@ void plot_file(tools::viewplot& a_viewer,
 
 #ifdef TOOLS_USE_EXPAT
 #include <tools/xml/xml_style>
-#include <tools/xml/wrap_viewplot_style> // xml/viewplot.style file embeded in an inline function.
+#include <tools/xml/wrap_viewplot_fonts_google_style> // xml/viewplot.style file embeded in an inline function.
 inline bool load_embeded_styles(tools::xml::styles& a_styles) {
   std::string ss;
   unsigned int linen;
-  const char** lines = viewplot_style(linen);
+  const char** lines = viewplot_fonts_google_style(linen);
   for(unsigned int index=0;index<linen;index++) {
     std::string s = lines[index];
     tools::replace(s,"@@double_quote@@","\"");
