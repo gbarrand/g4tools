@@ -1,3 +1,5 @@
+ - tools/version : rm G4 prefix in cpp macros.
+
 5.0.6 : use Google roboto_bold and lato_regular instead of Microsoft arialbd and helvetica.
  - tools/sg/strings : add roboto_bold, lato_regular.
  - tools/sg/infos_box, textt : add roboto_bold, lato_regular in options for field font.
