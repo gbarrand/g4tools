@@ -1,5 +1,5 @@
 5.2.2 :
- - tools/h2,h3 : get_bin_content : bugfix : have '&' in "get" arguments.
+ - tools/histo/h2,h3 : get_bin_content : bugfix : have '&' in "get" arguments.
    Thanks to Dmitri Konstantinov and Grigory Latyshev for the report.
 
 5.2.1 :
