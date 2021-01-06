@@ -62,7 +62,7 @@ int main(int argc,char** argv) {
 
   //ntu.write_hippo_header();
   if(!ntu.write_commented_header(std::cout)) {
-    std::cout << "problem when writing the commented header (column type unknow?)." << std::endl;
+    std::cout << "problem when writing the commented header (column type unknown?)." << std::endl;
   }
 
   // fill :
