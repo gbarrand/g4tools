@@ -335,7 +335,7 @@ public:
     }
     if(!status) {
       m_out << "PS_IMAGE :"
-            << " problem to retreive some pixel rgb."
+            << " problem to retrieve some pixel rgb."
             << std::endl;
     }
     PS_RESTORE();
