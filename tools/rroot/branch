@@ -942,7 +942,7 @@ protected:
   uint32 m_write_basket;   //  Last basket number written
   uint32 m_entry_number;   // Current entry number (last one filled in this branch)
   uint32 m_read_basket;   //! Current basket number when reading
-  int* fBasketBytes;    //[fMaxBaskets] Lenght of baskets on file
+  int* fBasketBytes;    //[fMaxBaskets] Length of baskets on file
   int* fBasketEntry;    //[fMaxBaskets] Table of first entry in eack basket
   seek* fBasketSeek;    //[fMaxBaskets] Addresses of baskets on file
 };

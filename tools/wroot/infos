@@ -751,7 +751,7 @@ inline void fill_infos_tree(obj_list<streamer_info>& a_infos,std::ostream& a_out
   info->add(new streamer_object("fBaskets","-> List of baskets of this branch",ofs,"TObjArray"));ofs += size_TObjArray;
   ofs += size_INT; //!fNBasketRAM
   ofs += size_POINTER; //!*fBasketRAM
-  info->add(new streamer_basic_pointer("fBasketBytes","[fMaxBaskets] Lenght of baskets on file",ofs,streamer__info::INT,"fMaxBaskets","TBranch",6,"Int_t*"));ofs += size_POINTER;
+  info->add(new streamer_basic_pointer("fBasketBytes","[fMaxBaskets] Length of baskets on file",ofs,streamer__info::INT,"fMaxBaskets","TBranch",6,"Int_t*"));ofs += size_POINTER;
   info->add(new streamer_basic_pointer("fBasketEntry","[fMaxBaskets] Table of first entry in eack basket",ofs,streamer__info::INT,"fMaxBaskets","TBranch",6,"Int_t*"));ofs += size_POINTER;
   info->add(new streamer_basic_pointer("fBasketSeek","[fMaxBaskets] Addresses of baskets on file",ofs,streamer__info::INT,"fMaxBaskets","TBranch",6,"Seek_t*"));ofs += size_POINTER;
   ofs += size_POINTER; //!*fTree
