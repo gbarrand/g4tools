@@ -3286,7 +3286,7 @@ inline std::string value::to_string(const value& aThis){
     if(!nums2s<std::string>(aThis.u.m_array_string->vector(),s)) {}
     return s;
   default:
-    return "unknow"; //it should not happen.
+    return "unknown"; //it should not happen.
   }
 }
 
