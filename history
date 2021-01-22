@@ -1,9 +1,28 @@
+5.3.0 : have test/cpp/polyhedron_X11.cpp, test/cpp/polyhedron_metal.mm.
+ - tools/sg : text_hershey_marker, text_freetype_marker : to handle G4/vis/tools_sg/G4Text.
+ 
+ - tools/sg/gl_manager => tools/sg/GL_manager in the github repository.
+ - tools/lina : mat3, mat3d, mat3f, mat4d, rotd, vec4d.
+ - tools/hep : pbp.icc, polyhedron, polyhedron.icc, sf_polyhedron.
+ - tools/sg : color, polyhedron, tessellate.
+ - tools/carray.
+
+ - tools/X11 : sg_viewer.
+ - test/cpp : build : modifs to build polyhedron_X11 program.
+ - test/cpp : use_X11, use_GLX, use_jpeg, use_png, find_inc, find_lib.
+ - test/cpp : polyhedron_X11.cpp, polyhedron_common.icc
+
+ - tools/Cocoa, tools/metal.
+ - test/cpp : build : modifs to build polyhedron_metal program.
+ - test/cpp : use_metal
+ - test/cpp : polyhedron_metal.mm
+
 5.2.3 :
  - tools/wroot/infos, branch, rroot/branch : Lenght => Length in comments.
  - tools/hatcher.icc : pow, sqrt, tan => std::pow, std::sqrt, std::tan.
  - tools/wps : retreive => retrieve.
  - tools/wcsv_ntuple, value.icc, test/cpp/wcsv_ntuple.cpp : unknow => unkown.
- 
+
 5.2.2 :
  - tools/histo/h2,h3 : get_bin_content : bugfix : have '&' in "get" arguments.
    Thanks to Dmitri Konstantinov and Grigory Latyshev for the report.
