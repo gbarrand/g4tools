@@ -10,8 +10,8 @@ if [ "`uname -r | grep Microsoft`" != "" ] ; then
   on_microsoft_ubuntu=yes
   path_u2w="echo"
 else
-  #path_u2w='cygpath -w -a'
-  path_u2w="echo" # in fact, it works with that.
+  path_u2w='cygpath -w -a'
+  #path_u2w="echo" # in fact, it works with that.
 fi
 
 Is=
@@ -171,6 +171,12 @@ if [ "${compile}" = "yes" ] ; then
     #cl_exe_cmd="${cl_exe_cmd} /d1scalableinclude-" # to bypass casing problems in include paths.
     
     file_cpp="`${path_u2w} ${file_cpp}`"
+  fi
+
+  #  CYGWIN : apps : ../Windows/main.cpp not found. The below permits to pass.
+  #           See also bin_visual in app_header.
+  if [ "`uname -n`" != "PC-PANO" ] ; then # the below option does not exist on my (old) XP with Visual-2009.
+    cl_exe_cmd="${cl_exe_cmd} /d1scalableinclude-"
   fi
 
   if [ "${Is}" != "" ] ; then cl_exe_cmd="${cl_exe_cmd} ${Is}"; fi
