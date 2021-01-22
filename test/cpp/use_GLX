@@ -13,6 +13,7 @@ if [ "${use_GLX}" = "yes" ] ; then
   else
     inc_dirs="/usr/include"
     inc_to_find=GL/glx.h
+    bush_home=.
     . ${bush_home}/find_inc
 
     lib_dirs="/usr/${lib} /usr/lib/x86_64-linux-gnu"

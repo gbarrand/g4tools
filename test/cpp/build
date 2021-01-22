@@ -4,15 +4,17 @@ what=""
 
 build_debug=no
 build_verbose=no
-build_icc=no
-build_clang=no
-build_mem=no
 
+build_mem=no
 build_expat=no
 build_freetype=no
 build_hdf5=no
 build_use_our=   # reverse of the bush -sys_ logic.
 build_parallel=no
+
+build_gnu=no
+build_icc=no
+build_clang=no
 
 build_cl_exe=no
 if [ "`uname | grep CYGWIN`" != "" ] ; then build_cl_exe=yes; fi
@@ -24,8 +26,11 @@ while test $# -ge 1 ; do
     -g) build_debug=yes;      args="${args} $1";;
     -v) build_verbose=yes;    args="${args} $1";;
     -x) build_verbose=yes;    args="${args} $1";;
-    -icc) build_icc=yes;      args="${args} $1";;
-    -clang) build_clang=yes;  args="${args} $1";;
+    
+    -gnu)   build_gnu=yes;build_icc=no;build_clang=no;build_cl_exe=no;  args="${args} $1";;
+    -icc)   build_icc=yes;build_gnu=no;build_clang=no;build_cl_exe=no;  args="${args} $1";;
+    -clang) build_clang=yes;build_gnu=no;build_icc=no;build_cl_exe=no;  args="${args} $1";;
+
     -mem) build_mem=yes;      args="${args} $1";;
 
     -expat)    build_expat=yes;    args="${args} $1";;

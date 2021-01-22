@@ -4,19 +4,18 @@ cc_compiler=cc_not_defined
 if [ ${build_icc} = "yes" ] ; then
   cc_compiler=icc
   cc_linker=icc
+elif [ ${build_gnu} = "yes" ] ; then
+  cc_compiler=gcc
+  cc_linker=gcc
+elif [ ${build_clang} = "yes" ] ; then
+  cc_compiler=clang
+  cc_linker=clang
+elif [ ${build_cl_exe} = "yes" ] ; then
+  cc_compiler=./vc++
+  cc_linker=./vc++
 else
-  if [ ${build_clang} = "yes" ] ; then
-    cc_compiler=clang
-    cc_linker=clang
-  else
-    if [ ${build_cl_exe} = "yes" ] ; then
-      cc_compiler=./vc++
-      cc_linker=./vc++
-    else
-      cc_compiler=cc
-      cc_linker=cc
-    fi
-  fi
+  cc_compiler=cc
+  cc_linker=cc
 fi
 
 ccflags=

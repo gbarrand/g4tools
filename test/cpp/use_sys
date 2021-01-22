@@ -1,13 +1,22 @@
 
+arex=a
+
 if [ `uname` = Darwin ] ; then
   lib=lib
-  shext=dylib
-else
+  shex=dylib
+elif [ "`uname | grep CYGWIN`" != "" ] ; then
+  lib=lib
+  if [ ${build_cl_exe} = "yes" ] ; then
+    shex=lib
+  else
+    shex=dll.a
+  fi
+else    
   if [ `uname -p` = x86_64 ] ; then
     lib=lib64
   else
     lib=lib
   fi
-  shext=so
+  shex=so
 fi
 
