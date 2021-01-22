@@ -28,7 +28,7 @@ class state {
 #endif
 public:
   state()
-  //must be consistent with exlib::sg::viewer::render.
+  //must be consistent with tools::sg::viewer::render.
   :m_ww(0)
   ,m_wh(0)
 
