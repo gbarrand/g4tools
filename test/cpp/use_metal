@@ -1,0 +1,15 @@
+# Copyright (C) 2010, Guy Barrand. All rights reserved.
+# See the file bush.license for terms.
+
+if [ "${use_metal}" = "yes" ] ; then
+
+  if [ `uname` = Darwin ] ; then
+    #cppflags="${cppflags} -std=c++11"
+    cppflags="${cppflags} -mmacosx-version-min=10.9"
+    libs="${libs}  -fobjc-link-runtime -framework Metal -framework MetalKit -framework Cocoa -framework CoreFoundation"
+  else
+    echo 'bush/use/metal : metal not supported on this platform.'
+    exit
+  fi
+
+fi

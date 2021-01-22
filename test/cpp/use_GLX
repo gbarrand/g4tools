@@ -1,0 +1,22 @@
+
+if [ "${use_GLX}" = "yes" ] ; then
+  if [ ${build_cl_exe} = "yes" ] ; then
+    echo 'bush/use/GLX : not available with visual.'
+    exit
+  fi    
+
+  if [ `uname` = Darwin ] ; then
+    # sudo /opt/local/bin/port install mesa (or glxinfo).
+    cppflags="${cppflags} -I/opt/local/include"
+    ccflags="${ccflags} -I/opt/local/include"
+    libs="${libs} /opt/local/lib/libGL.dylib"
+  else
+    inc_dirs="/usr/include"
+    inc_to_find=GL/glx.h
+    . ${bush_home}/find_inc
+
+    lib_dirs="/usr/${lib} /usr/lib/x86_64-linux-gnu"
+    lib_to_find=GL
+    . ${bush_home}/find_lib
+  fi
+fi

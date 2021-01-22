@@ -1,0 +1,66 @@
+
+# NOTE : png uses zlib.
+
+if [ "${use_png}" = "yes" ] ; then
+  if [ ${build_cl_exe} = "yes" ] ; then
+    use_sys_png=no
+    use_our_png=yes
+  else
+    if [ "${build_use_our_png}" = "yes" ] ; then
+      use_sys_png=no
+      use_our_png=yes
+    else
+      use_sys_png=yes
+      use_our_png=no
+    fi
+  fi
+fi
+
+
+if [ "${use_sys_png}" = "yes" ] ; then
+  if [ `uname` = Darwin ] ; then
+    if [ -e /usr/X11/include/png.h ] ; then
+      cppflags="${cppflags} -I/usr/X11/include"
+      libs="${libs} -L/usr/X11/lib -lpng"
+    else
+      if [ -e /opt/local/include/png.h ] ; then
+        cppflags="${cppflags} -I/opt/local/include"
+        libs="${libs} /opt/local/lib/libpng.dylib"
+      else
+        echo "bush/use/png : /opt/local/include/png.h not found. Use our png."
+        use_our_png=yes
+      fi
+    fi
+  else
+    if [ ! -e /usr/include/png.h ] ; then
+      echo "bush/use/png : /usr/include/png.h not found. Use our png."
+      use_our_png=yes
+    else
+      cppflags="${cppflags} -I/usr/include"
+      libs="${libs} -lpng"
+    fi
+  fi
+fi
+
+if [ "${use_our_png}" = "yes" ] ; then
+  if [ `uname` = "Linux" ] ; then
+    # for 64 bits processor it seems that we need the below :
+    if [ `uname -m` = "x86_64" ] ; then
+      cppflags="${cppflags} -DPNG_NO_MMX_CODE"
+    fi
+  fi
+
+  png_home=../../../../inexlib/ourex/png
+  if [ ! -d "${png_home}" ] ; then
+    echo "use_png : can't build the program, png not found at ${png_home}."
+    exit
+  fi
+
+  cflags="${cflags} -DTOOLS_USE_OUREX_PNG -I${png_home}/png"
+  cppflags="${cppflags} -DTOOLS_USE_OUREX_PNG -I${png_home}/png"
+  
+  libs="${libs} ${png_home}/${bin_dir}/libourex_png.a"
+  
+  use_our_zlib=yes
+fi
+

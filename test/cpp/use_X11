@@ -1,0 +1,28 @@
+
+if [ "${use_X11}" = "yes" ] ; then
+  if [ ${build_cl_exe} = "yes" ] ; then
+    echo "bush/use/X11 : cl.exe : not supported."
+    exit
+  fi
+
+  # Must be consitent with Motif (under /opt/local if installed with MacPorts).
+
+  if [ `uname` = Darwin ] ; then
+    inc_dirs="/opt/local/include"
+  else
+    inc_dirs="/usr/X11R6/include /usr/include"
+  fi
+  inc_to_find=X11/X.h
+  bush_home=.
+  . ${bush_home}/find_inc
+
+  if [ `uname` = Darwin ] ; then
+    libs="${libs} /opt/local/lib/libX11.dylib"
+  else
+    lib_dirs="/usr/X11R6/${lib} /usr/${lib} /usr/lib/x86_64-linux-gnu"
+    lib_to_find=X11
+    . ${bush_home}/find_lib
+  fi
+
+fi
+

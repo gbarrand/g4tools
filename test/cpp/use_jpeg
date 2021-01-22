@@ -1,0 +1,48 @@
+
+if [ "${use_jpeg}" = "yes" ] ; then
+  if [ ${build_cl_exe} = "yes" ] ; then
+    use_sys_jpeg=no
+    use_our_jpeg=yes
+  else
+    if [ "${build_use_our_jpeg}" = "yes" ] ; then
+      use_sys_jpeg=no
+      use_our_jpeg=yes
+    else
+      use_sys_jpeg=yes
+      use_our_jpeg=no
+    fi
+  fi
+fi
+
+if [ "${use_sys_jpeg}" = "yes" ] ; then
+  if [ `uname` = Darwin ] ; then
+    if [ ! -e /opt/local/include/jpeglib.h ] ; then
+      echo "bush/use/jpeg : /opt/local/include/jpeglib.h not found. Use our jpeg."
+      use_our_jpeg=yes
+    else
+      cppflags="${cppflags} -I/opt/local/include"
+      libs="${libs} /opt/local/lib/libjpeg.dylib"
+    fi
+  else
+    if [ ! -e /usr/include/jpeglib.h ] ; then
+      echo "bush/use/jpeg : /usr/include/jpeglib.h not found. Use our jpeg."
+      use_our_jpeg=yes
+    else
+      cppflags="${cppflags} -I/usr/include"
+      libs="${libs} -ljpeg"
+    fi
+  fi
+fi
+
+if [ "${use_our_jpeg}" = "yes" ] ; then
+  jpeg_home=../../../../inexlib/ourex/jpeg
+  if [ ! -d "${jpeg_home}" ] ; then
+    echo "use_jpeg : can't build the program, jpeg not found at ${jpeg_home}."
+    exit
+  fi
+
+  cflags="${cflags} -DTOOLS_USE_OUREX_JPEG -I${jpeg_home}/jpeg"
+  cppflags="${cppflags} -DTOOLS_USE_OUREX_JPEG -I${jpeg_home}/jpeg"
+  
+  libs="${libs} ${jpeg_home}/${bin_dir}/libourex_jpeg.a"
+fi
