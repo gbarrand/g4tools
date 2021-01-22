@@ -35,6 +35,9 @@ if [ "${use_our_zlib}" = "yes" ] ; then
   ccflags="${ccflags} -DTOOLS_DONT_HAVE_ZLIB"  
   cppflags="${cppflags} -DTOOLS_DONT_HAVE_ZLIB"
   
+  cflags="${cflags} -DTOOLS_USE_OUREX_ZLIB -I${zlib_home}/include"
+  cppflags="${cppflags} -DTOOLS_USE_OUREX_ZLIB -I${zlib_home}/include"
+  
   libs="${libs} ${zlib_home}/${bin_dir}/libourex_zlib.a"
 
 fi
