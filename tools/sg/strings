@@ -206,6 +206,7 @@ TOOLS_FONT_TTF(lucidagrandebd)
 
 TOOLS_FONT_TTF(roboto_bold)    //free replacement of arialbd
 TOOLS_FONT_TTF(lato_regular)   //free replacement of helvetica
+TOOLS_FONT_TTF(lato_bold)      //free replacement of helveticabd
 
 #undef TOOLS_FONT_TTF
 
