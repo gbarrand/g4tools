@@ -1,0 +1,9 @@
+# Copyright (C) 2010, Guy Barrand. All rights reserved.
+# See the file bush.license for terms.
+
+if [ "${use_Windows}" = "yes" ] ; then
+  if [ ${build_cl_exe} = "yes" ] ; then
+    libs="${libs} gdi32.lib user32.lib wsock32.lib"
+    #libs="${libs} shell32.lib"
+  fi
+fi

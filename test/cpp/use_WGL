@@ -1,0 +1,8 @@
+# Copyright (C) 2010, Guy Barrand. All rights reserved.
+# See the file bush.license for terms.
+
+if [ "${use_WGL}" = "yes" ] ; then
+  if [ ${build_cl_exe} = "yes" ] ; then
+    libs="${libs} opengl32.lib"
+  fi
+fi
