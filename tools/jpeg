@@ -9,7 +9,7 @@
 //#define TOOLS_JPEG_OUT_ERR
 
 extern "C" { //Needed on Windows.
-#ifdef TOOLS_USE_NATIVE_JPEG
+#ifndef TOOLS_USE_OUREX_JPEG
 #include <jpeglib.h>
 #else
 #include <ourex_jpeglib.h> //enforce ourex jpeg
