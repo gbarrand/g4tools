@@ -4,7 +4,7 @@
 #ifndef tools_hplot
 #define tools_hplot
 
-// Used in exlib::sg::axis.
+// Used in tools::sg::axis.
 //
 // Code extracted from ROOT-4.03.02/root/graf/stc/TGaxis.cxx.
 // Itself built from code extracted from HPLOT.
