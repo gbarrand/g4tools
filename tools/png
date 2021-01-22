@@ -11,7 +11,7 @@
 #include <tools/sout>
 #include <tools/mnmx>
 
-#ifdef TOOLS_USE_NATIVE_PNG
+#ifndef TOOLS_USE_OUREX_PNG
 #include <png.h>
 #else
 #include <ourex_png.h> //enforce ourex png
