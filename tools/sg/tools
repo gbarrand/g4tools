@@ -4,16 +4,10 @@
 #ifndef tools_sg_tools
 #define tools_sg_tools
 
-#include "enums"
-#include "strings"
 #include "separator"
 #include "matrix"
 #include "text_hershey"
 #include "base_freetype"
-#include "vertices"
-#include "markers"
-
-#include "../lina/vec3f"
 
 #include <cstdio> //sscanf
 //#include <sstream>
