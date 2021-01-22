@@ -1906,7 +1906,7 @@ public:
 
   bool add_lines_xy(size_t a_floatn,const float* a_xys,bool a_stop = false){
     //lines = segments.  Each point having only (x,y) (no z).
-    //used in exlib::sg::[text_freetype, text_hershey].
+    //used in tools::sg::[text_freetype, text_hershey].
 
     size_t num = a_floatn/2;
 
