@@ -116,7 +116,7 @@ public:
   }
 };
 
-//exa exlib::sg::entries.mf_vec<entry_type>
+//exa tools::sg::entries.mf_vec<entry_type>
 
 template <class T>
 class mf_enum : public bmf<T> {
