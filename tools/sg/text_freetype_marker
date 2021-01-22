@@ -1,0 +1,231 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_sg_text_freetype_marker
+#define tools_sg_text_freetype_marker
+
+#include "text_freetype"
+
+namespace tools {
+namespace sg {
+
+class text_freetype_marker : public text_freetype {
+  TOOLS_NODE(text_freetype_marker,tools::sg::text_freetype_marker,text_freetype)
+public:
+  virtual bool draw_in_frame_buffer() const {return true;}
+
+  virtual void render(tools::sg::render_action& a_action) {
+    if(touched()) {
+      update_sg(a_action.out(),font.touched(),a_action.state());
+      reset_touched();
+    }
+
+    const tools::sg::state& state = a_action.state();
+
+    a_action.set_lighting(false); //Same logic as Inventor SoLightModel.model = BASE_COLOR.
+    a_action.set_depth_test(false);
+
+         if(m_wndg==wndg_ccw) a_action.set_winding(tools::sg::winding_ccw);
+    else if(m_wndg==wndg_cw) a_action.set_winding(tools::sg::winding_cw);
+
+    float x,y,z;
+    a_action.projected_origin(x,y,z);
+
+    a_action.load_matrices_to_identity();
+
+    float zz = 0;
+
+    ///////////////////////////////////////////////////////////
+    /// lines /////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+   {tools_vforcit(line_t,m_lines,it) {
+      const line_t& item = *it;
+      size_t pos = item.first;
+      size_t num = item.second;
+      if(!num) continue;
+      const float* data = tools::vec_data<float>(m_xys)+pos;
+      float* vp = _trans3(num,data,x,y,zz); //have an extra z for Windows GL.
+      if(vp) {
+        a_action.draw_vertex_array(tools::gl::line_strip(),num*3,vp);
+        delete [] vp;
+      }
+    }}
+
+
+    ///////////////////////////////////////////////////////////
+    /// triangles /////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+   {tools_vforcit(gl_triangle_t,m_triangles,it) {
+      const std::pair<GLUenum,triangle_t>& item = *it;
+      size_t pos = item.second.first;
+      size_t num = item.second.second;
+      if(!num) continue;
+      //a_out << "tools::sg::text_freetype_marker::render :"
+      //      << " num points " << num
+      //      << std::endl;
+
+      const float* data = tools::vec_data<float>(m_xys)+pos;
+      float* vp = _trans3(num,data,x,y,zz); //have an extra z for Windows GL.
+      if(vp) {
+        a_action.draw_vertex_array((*it).first,num*3,vp);
+        delete [] vp;
+      }
+    }}
+
+    a_action.load_matrices_from_state();
+
+    a_action.set_depth_test(state.m_GL_DEPTH_TEST);
+    a_action.set_lighting(state.m_GL_LIGHTING);
+    a_action.set_winding(state.m_winding);
+
+  }
+
+  virtual void pick(tools::sg::pick_action& a_action) {
+    if(touched()) {
+      update_sg(a_action.out(),font.touched(),a_action.state());
+      reset_touched();
+    }
+
+    float x,y,z;
+    a_action.projected_origin(x,y,z);
+
+    a_action.set_matrices_to_identity();
+
+    ///////////////////////////////////////////////////////////
+    /// lines /////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+
+   {tools_vforcit(line_t,m_lines,it) {
+      const line_t& item = *it;
+      size_t pos = item.first;
+      size_t num = item.second;
+      if(!num) continue;
+
+      const float* data = tools::vec_data<float>(m_xys)+pos;
+      float* vp = _trans2(num,data,x,y);
+      if(!vp) continue;
+
+      if(a_action.add__line_strip_xy(*this,2*num,vp,true)) {
+        delete [] vp;
+        a_action.set_matrices_from_state();
+        return;
+      }
+
+      delete [] vp;
+    }}
+
+
+    ///////////////////////////////////////////////////////////
+    /// triangles /////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+   {tools_vforcit(gl_triangle_t,m_triangles,it) {
+      const std::pair<GLUenum,triangle_t>& item = *it;
+      size_t pos = item.second.first;
+      size_t num = item.second.second;
+      if(!num) continue;
+
+      const float* data = tools::vec_data<float>(m_xys)+pos;
+      float* vp = _trans2(num,data,x,y);
+      if(!vp) continue;
+      if(a_action.add__primitive_xy(*this,item.first,2*num,vp,true)){
+        delete [] vp;
+        a_action.set_matrices_from_state();
+        return;
+      }
+      delete [] vp;
+    }}
+
+    a_action.set_matrices_from_state();
+  }
+
+  virtual void bbox(tools::sg::bbox_action& a_action) {
+    if(touched()) {
+      update_sg(a_action.out(),font.touched(),a_action.state());
+      reset_touched();
+    }
+    a_action.add_one_point(0,0,0);
+/*
+   {tools_vforcit(line_t,m_lines,it) {
+      const line_t& item = *it;
+      size_t num = item.second;
+      const float* data = tools::vec_data<float>(m_xys)+item.first;
+
+      float px,py,pz;
+      float* pos = (float*)data;
+      for(size_t index=0;index<num;index++) {
+        px = *pos;pos++;
+        py = *pos;pos++;
+        pz = 0;
+        a_action.add_one_point(px,py,pz);
+      }
+
+    }}
+
+    ///////////////////////////////////////////////////////////
+    /// triangles /////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+   {tools_vforcit(gl_triangle_t,m_triangles,it) {
+      const std::pair<GLUenum,triangle_t>& item = *it;
+      size_t num = item.second.second;
+      const float* data = tools::vec_data<float>(m_xys)+item.second.first;
+
+      float px,py,pz;
+      float* pos = (float*)data;
+      for(size_t index=0;index<num;index++) {
+        px = *pos;pos++;
+        py = *pos;pos++;
+        pz = 0;
+        a_action.add_one_point(px,py,pz);
+      }
+    }}
+*/
+  }
+
+public:
+  text_freetype_marker():parent(){
+    height = 10; //pixels
+  }
+  virtual ~text_freetype_marker(){}
+public:
+  text_freetype_marker(const text_freetype_marker& a_from):parent(a_from) {}
+  text_freetype_marker& operator=(const text_freetype_marker& a_from){parent::operator=(a_from);return *this;}
+protected:
+  void update_sg(std::ostream& a_out,bool a_load_font,const tools::sg::state& a_state) {
+    float sy = 2.0f*float(height.value())/float(a_state.m_wh); //in [-1,1]
+    float old_height = height.value();
+    height.value_no_cmp(sy);
+    //update_what what = lines;
+    //if(modeling==tools::sg::font_filled) what = faces_and_lines;
+    parent::update_sg(a_out,a_load_font);
+    height.value_no_cmp(old_height);
+  }
+
+  float* _trans3(size_t a_num,const float* a_data,float a_x,float a_y,float a_z) {
+    float* vp = new float[a_num*3];
+    if(!vp) return 0;
+    float* pos = vp;
+    float* pda = (float*)a_data;
+    for(size_t index=0;index<a_num;index++){
+      *pos = *pda + a_x;pos++;pda++;
+      *pos = *pda + a_y;pos++;pda++;
+      *pos = a_z;pos++;
+    }
+    return vp;
+  }
+  float* _trans2(size_t a_num,const float* a_data,float a_x,float a_y) {
+    float* vp = new float[a_num*2];
+    if(!vp) return 0;
+    float* pos = vp;
+    float* pda = (float*)a_data;
+    for(size_t index=0;index<a_num;index++){
+      *pos = *pda + a_x;pos++;pda++;
+      *pos = *pda + a_y;pos++;pda++;
+    }
+    return vp;
+  }
+};
+
+}}
+
+#endif
+
