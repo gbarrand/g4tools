@@ -1,0 +1,31 @@
+
+if [ "${inc_dirs}" = "" ] ; then
+  echo 'bush/find_inc : variable inc_dirs not defined.'
+  exit
+fi
+
+if [ "${inc_to_find}" = "" ] ; then
+  echo 'bush/find_inc : variable inc_to_find not defined.'
+  exit
+fi
+
+find_inc_home=
+for item in ${inc_dirs} ; do
+  if [ -f ${item}/${inc_to_find} ] ; then
+    find_inc_home=${item}
+    break
+  fi
+done
+
+if [ "${find_inc_home}" = "" ] ; then
+  echo "bush/find_inc : ${inc_to_find} not found under directories :"
+  echo "  ${inc_dirs}"
+  exit
+fi
+
+if [ "${build_verbose}" = "yes" ] ; then
+  echo "bush/find_inc : ${inc_to_find}.${shex} found under ${find_inc_home}."
+fi
+
+cppflags="${cppflags} -I${find_inc_home}"
+ccflags="${ccflags} -I${find_inc_home}"

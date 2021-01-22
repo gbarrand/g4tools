@@ -1,0 +1,56 @@
+
+if [ "${lib_dirs}" = "" ] ; then
+  echo 'bush/find_lib : variable lib_dirs not defined.'
+  exit
+fi
+
+if [ "${lib_to_find}" = "" ] ; then
+  echo 'bush/find_lib : variable lib_to_find not defined.'
+  exit
+fi
+
+find_lib_home=
+find_lib_shex=no
+for item in ${lib_dirs} ; do
+  if [ -f ${item}/lib${lib_to_find}.${shex} ] ; then
+    find_lib_home=${item}
+    find_lib_shex=yes
+    break
+  fi
+  if [ -f ${item}/lib${lib_to_find}.${arex} ] ; then
+    find_lib_home=${item}
+    find_lib_shex=no
+    break
+  fi
+done
+
+if [ "${find_lib_home}" = "" ] ; then
+  echo "bush/find_lib : lib${lib_to_find}.${shex} or lib${lib_to_find}.${arex} not found under directories :"
+  echo "  ${lib_dirs}"
+  exit
+fi
+
+if [ "${build_verbose}" = "yes" ] ; then
+  if [ "${find_lib_shex}" = "yes" ] ; then
+    echo "bush/find_lib : lib${lib_to_find}.${shex} found under ${find_lib_home}."
+  else
+    echo "bush/find_lib : lib${lib_to_find}.${arex} found under ${find_lib_home}."
+  fi
+fi
+
+if [ "${use_archive}" = "yes" ] ; then
+  if [ ${find_lib_shex} = yes ] ; then
+    if [ "${build_verbose}" = "yes" ] ; then
+      echo "bush/find_lib : use_archive=yes but lib${lib_to_find}.${arex} not found. Continue with shared lib."
+    fi
+    libs="${libs} -L${find_lib_home} -l${lib_to_find}"
+  else
+    libs="${libs} ${find_lib_home}/lib${lib_to_find}.${arex}"
+  fi
+else
+  if [ ${find_lib_shex} = yes ] ; then
+    libs="${libs} -L${find_lib_home} -l${lib_to_find}"
+  else
+    libs="${libs} ${find_lib_home}/lib${lib_to_find}.${arex}"
+  fi
+fi
