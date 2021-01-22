@@ -53,6 +53,8 @@ else
       if [ `uname` != Darwin ] ; then
         # now the default compiler is clang that does not support -ansi.
         G4_cppflags="${G4_cppflags} -ansi"
+      else	
+        G4_cppflags="${G4_cppflags} -Wno-variadic-macros" # for /opt/local/include/X11/Xfuncproto.h.
       fi
       G4_cppflags="${G4_cppflags} -Wshadow"
     fi
