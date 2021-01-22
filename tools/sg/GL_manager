@@ -527,7 +527,7 @@ public:
   static unsigned char* get_rgbs(unsigned int a_w,unsigned int a_h) {
     unsigned char* rgbas = get_rgbas(a_w,a_h);
     if(!rgbas) return 0;
-    unsigned char* rgbs = inlib::_4s_to_3s<unsigned char,unsigned int>(rgbas,a_w,a_h);
+    unsigned char* rgbs = tools::_4s_to_3s<unsigned char,unsigned int>(rgbas,a_w,a_h);
     delete [] rgbas;
     return rgbs;
   }

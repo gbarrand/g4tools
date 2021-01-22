@@ -15,7 +15,7 @@ namespace tools {
 namespace sg {
 
 class GL_action : public tools::sg::render_action {
-  TOOLS_ACTION(GL_action,exlib::sg::GL_action,tools::sg::render_action)
+  TOOLS_ACTION(GL_action,tools::sg::GL_action,tools::sg::render_action)
 public:
   virtual void draw_vertex_array(tools::gl::mode_t a_mode,size_t a_floatn,const float* a_xyzs){
     size_t num = a_floatn/3;
@@ -430,7 +430,7 @@ public:
     tools::mat4f to_check(a_mtx);
     to_check.no_translate();
     float fepsilon = 1e-10;
-    if(!normal_matrix.equal_prec(to_check,fepsilon,inlib::ffabs)) {
+    if(!normal_matrix.equal_prec(to_check,fepsilon,tools::ffabs)) {
       mat_dump(m_out,"problem with normal_matrix ",normal_matrix);
       mat_dump(m_out,"expected",to_check);
     }
