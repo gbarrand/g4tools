@@ -22,8 +22,12 @@ fi
 ccflags=
 if [ ${build_cl_exe} = "yes" ] ; then
 
+  ./check_app cl.exe 'cl.exe not found. You have to setup VisualC++.'
+  use_status=$?;if [ ${use_status} != 0 ] ; then exit ${use_status};fi
+
+  if [ "${build_verbose}" = "yes" ] ; then ccflags="${ccflags} -verbose"; fi
+  
  #ccflags="${ccflags} -DWIN32" 
-  echo dummy > /dev/null
 
 else
 
