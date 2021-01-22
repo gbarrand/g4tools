@@ -23,6 +23,11 @@ cppflags=
 G4_cppflags=
 if [ ${build_cl_exe} = "yes" ] ; then
 
+  ./check_app cl.exe 'cl.exe not found. You have to setup VisualC++.'
+  use_status=$?;if [ ${use_status} != 0 ] ; then exit ${use_status};fi
+
+  if [ "${build_verbose}" = "yes" ] ; then cppflags="${cppflags} -verbose"; fi
+  
   #cppflags="${cppflags} -DWIN32" 
 
   if [ ${build_mem} = "yes" ] ; then
