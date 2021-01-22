@@ -1,0 +1,104 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#include <tools/mem>
+
+#include <tools/sg/separator>
+#include <tools/sg/head_light>
+#include <tools/sg/ortho>
+#include <tools/sg/matrix>
+#include <tools/sg/color>
+#include <tools/sg/polyhedron>
+
+#include <tools/mathd>
+#include <tools/mathf>
+
+/////////////////////////////////////////////////////
+/// main ////////////////////////////////////////////
+/////////////////////////////////////////////////////
+#include <tools/args>
+#include <iostream>
+#include <cstdlib>
+
+int main(int argc,char** argv) {
+
+#ifdef TOOLS_MEM
+  tools::mem::set_check_by_class(true);{
+#endif
+
+  tools::args args(argc,argv);
+
+  bool verbose = args.is_arg("-verbose");
+
+  //////////////////////////////////////////////////////////
+  /// create scene graph ///////////////////////////////////
+  //////////////////////////////////////////////////////////
+  tools::sg::separator* sep = new tools::sg::separator;
+
+  tools::sg::ortho* camera = new tools::sg::ortho;
+  camera->position.value(tools::vec3f(0,0,5));
+  camera->height.value(10);
+  camera->znear.value(0.1);
+  camera->zfar.value(100);
+  sep->add(camera);
+
+ {tools::sg::head_light* light = new tools::sg::head_light;
+  light->direction = tools::vec3f(1,-1,-10);
+  //light->on = false;
+  sep->add(light);}
+
+ {tools::sg::matrix* m = new tools::sg::matrix;
+  m->set_rotate(0,1,0,tools::fhalf_pi()/2.0f);
+  m->mul_rotate(1,0,0,tools::fhalf_pi()/2.0f);
+  sep->add(m);}
+
+  tools::sg::color* color = new tools::sg::color();
+  color->rgb = tools::colorf_green();
+  sep->add(color); //sg takes ownership of color.
+
+  // A Tube with a transverse hole :
+  tools::hep::polyhedron_tubs tubs_1(0.7,1.5,2,0,tools::two_pi());
+  tools::hep::polyhedron_tubs tubs_2(  0,0.5,4,0,tools::two_pi());
+  tubs_2.Transform(tools::rotd(tools::vec3d(0,1,0),tools::half_pi()),
+                   tools::vec3d(0,0,0));
+  tools::hep::polyhedron op = tubs_1.subtract(tubs_2);
+
+  tools::sg::polyhedron* node = new tools::sg::polyhedron();
+  //node->ph =
+  //  tools::hep::polyhedron_sphere(0.9,1,0,tools::two_pi(),0,tools::pi());
+  node->ph = op;
+  //node->solid = false;
+  //node->reduced_wire_frame = false;
+  sep->add(node);
+
+  //////////////////////////////////////////////////////////
+  /// create graphics system ///////////////////////////////
+  //////////////////////////////////////////////////////////
+
+  tools::TOOLS_SCREEN_MGR::session session(std::cout);
+  if(!session.is_valid()) return EXIT_FAILURE;
+
+  //////////////////////////////////////////////////////////
+  /// create the viewer, set the scene graph ///////////////
+  //////////////////////////////////////////////////////////
+  tools::TOOLS_SCREEN_MGR::sg_viewer viewer(session,0,0,400,200,"win 1");
+  if(!viewer.has_window()) return EXIT_FAILURE;
+
+  viewer.sg().add(sep); //give sep ownership to the viewer.
+
+  viewer.show();
+
+  //////////////////////////////////////////////////////////
+  /// steer the graphics ///////////////////////////////////
+  //////////////////////////////////////////////////////////
+  session.steer();
+
+#ifdef TOOLS_MEM
+  }tools::mem::balance(std::cout);
+  std::cout << "polyhedron_<driver> : (mem) exit..." << std::endl;
+#else
+  if(verbose) std::cout << "polyhedron_<driver> : exit..." << std::endl;
+#endif
+
+  return EXIT_SUCCESS;
+}
