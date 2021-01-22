@@ -163,6 +163,12 @@ if [ ${exa} = "polyhedron_X11" ] ; then
   use_X11=yes
 fi
 
+if [ ${exa} = "polyhedron_Windows" ] ; then
+  cppflags="${cppflags} -I../../tools/Windows"
+  use_WGL=yes
+  use_Windows=yes
+fi
+
 if [ ${exa} = "polyhedron_metal" ] ; then
   use_metal=yes
 fi
@@ -223,6 +229,9 @@ fi
 #////////////////////////////////////////////////////////
 . ./use_GLX
 . ./use_X11
+
+. ./use_WGL
+. ./use_Windows
 
 . ./use_metal
 
