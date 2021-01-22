@@ -61,6 +61,7 @@ if [ ${build_verbose} = "yes" ] ; then set -x;fi
 exa=`basename ${what}`
 
 exa=`echo ${exa} | sed -e 's:.cpp::g'`
+exa=`echo ${exa} | sed -e 's:.mm::g'`
 exa=`echo ${exa} | sed -e 's:./::g'`
 
 echo "build ${exa}..."
@@ -156,6 +157,25 @@ fi
 if [ ${exa} = "cern_root_read_rg_rbw" ] ; then
   use_cern_root=yes    
 fi
+
+if [ ${exa} = "polyhedron_X11" ] ; then
+  use_GLX=yes
+  use_X11=yes
+fi
+
+if [ ${exa} = "polyhedron_metal" ] ; then
+  use_metal=yes
+fi
+
+if [ ${exa} = "gui_polyhedron_X11" ] ; then
+  use_jpeg=yes
+  use_png=yes
+  use_freetype=yes
+  use_GLX=yes
+  use_X11=yes
+  use_zlib=yes
+fi
+
 if [ ${exa} = "utest" ] ; then    
   if [ ${build_cl_exe} = "yes" ] ; then
     cppflags="${cppflags} -bigobj"
@@ -198,10 +218,20 @@ fi
 
 . ./use_cern_root
 
+#////////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////
+. ./use_GLX
+. ./use_X11
+
+. ./use_metal
+
 . ./use_freetype
 . ./use_expat
 . ./use_mpi
 . ./use_hdf5
+. ./use_jpeg
+. ./use_png
 . ./use_zlib
 . ./use_thread
 . ./use_dl
@@ -220,12 +250,24 @@ for file in ${cfiles} ; do
   objs="${objs} ${obj}"
 done
 
-cppfiles="${cppfiles} ${exa}.cpp"
+if [ ${exa} = "polyhedron_metal" ] ; then
+  mmfiles="${mmfiles} ${exa}.mm"
+else
+  cppfiles="${cppfiles} ${exa}.cpp"
+fi
 
 for file in ${cppfiles} ; do
   oname=`basename ${file}`
   obj="./${oname}.o"
   eval ${cpp_compiler} -c ${cppflags} -o ${obj} ${file}
+  use_status=$?;if [ ${use_status} != 0 ] ; then exit ${use_status};fi
+  objs="${objs} ${obj}"
+done
+
+for file in ${mmfiles} ; do
+  oname=`basename ${file}`
+  obj="./${oname}.o"
+  eval ${cpp_compiler} -x objective-c++ -c ${cppflags} ${mmflags} -o ${obj} ${file}
   use_status=$?;if [ ${use_status} != 0 ] ; then exit ${use_status};fi
   objs="${objs} ${obj}"
 done
