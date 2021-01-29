@@ -1,4 +1,4 @@
-5.3.0 : have test/cpp/polyhedron_X11.cpp, test/cpp/polyhedron_metal.mm.
+5.3.0 : have test/cpp/polyhedron_X11.cpp, test/cpp/polyhedron_Windows.cpp, test/cpp/polyhedron_metal.mm.
  - tools/sg : text_hershey_marker, text_freetype_marker : to handle G4/vis/tools_sg/G4Text.
  
  - tools/sg/gl_manager => tools/sg/GL_manager in the github repository.
