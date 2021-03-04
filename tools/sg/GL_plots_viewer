@@ -8,7 +8,7 @@
 
 #include <tools/sg/plots_viewer>
 
-#include "text_freetype"
+#include <tools/sg/base_freetype>
 
 #include "GL_manager"
 #include "GL_action"
@@ -45,10 +45,10 @@ public:
   }
 
 public:
-  GL_plots_viewer(std::ostream& a_out,
+  GL_plots_viewer(std::ostream& a_out,const tools::sg::base_freetype& a_ttf,
                   unsigned int a_cols = 1,unsigned int a_rows = 1,
                   unsigned int a_width = 500,unsigned int a_height = 500)
-  :parent(a_out,m_ttf,a_cols,a_rows,a_width,a_height)
+  :parent(a_out,a_ttf,a_cols,a_rows,a_width,a_height)
   ,m_gl_mgr(a_out)
   {}
   virtual ~GL_plots_viewer(){
@@ -68,7 +68,6 @@ public:
   }
 protected:
   GL_manager m_gl_mgr;
-  sg::text_freetype m_ttf;
 };
 
 }}

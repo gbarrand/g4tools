@@ -84,9 +84,10 @@ inline unsigned char* read_FILE(FILE* a_file,unsigned int& a_width,unsigned int&
 
   ::png_read_info(png_ptr,info_ptr);
 
-  int width = info_ptr->width;
-  int height = info_ptr->height;
-  int bpp = info_ptr->width?info_ptr->rowbytes/info_ptr->width:0;
+  png_uint_32 width = ::png_get_image_width(png_ptr,info_ptr);
+  png_uint_32 height = ::png_get_image_height(png_ptr,info_ptr);
+  png_uint_32 rowbytes = ::png_get_rowbytes(png_ptr,info_ptr);
+  int bpp = width?rowbytes/width:0;
 
   if((width<=0)||(height<=0)||(bpp<=0)) {
     ::png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
@@ -112,7 +113,7 @@ inline unsigned char* read_FILE(FILE* a_file,unsigned int& a_width,unsigned int&
     return 0;
   }
 
-  unsigned char* buffer = new unsigned char[info_ptr->rowbytes * height];
+  unsigned char* buffer = new unsigned char[rowbytes * height];
   if(!buffer) {
     ::png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
     a_height = 0;
@@ -122,10 +123,10 @@ inline unsigned char* read_FILE(FILE* a_file,unsigned int& a_width,unsigned int&
   }
 
  {png_bytep* row_pointers = new png_bytep[height];
-  png_byte* pos = buffer+info_ptr->rowbytes*(height-1);
+  png_byte* pos = buffer+rowbytes*(height-1);
   for(int y=0;y<height;y++) {
     row_pointers[y] = pos;
-    pos -= info_ptr->rowbytes;
+    pos -= rowbytes;
   }
   ::png_read_image(png_ptr,row_pointers);
   delete [] row_pointers;}
@@ -252,10 +253,14 @@ inline bool write_FILE(FILE* a_file,unsigned char* a_buffer,unsigned int a_width
     return false;
   }
 
-  if(::setjmp(png_ptr->jmpbuf)) {
+  if(::setjmp(png_jmpbuf(png_ptr))) {
     ::png_destroy_write_struct(&png_ptr,&info_ptr);
     return false;
   }
+
+#ifndef Z_DEFAULT_COMPRESSION
+#define Z_DEFAULT_COMPRESSION  (-1)
+#endif
 
   ::png_init_io(png_ptr,a_file);
   ::png_set_compression_level(png_ptr,Z_DEFAULT_COMPRESSION);
@@ -343,15 +348,15 @@ inline bool infos_FILE(FILE* a_file,unsigned int& a_width,unsigned int& a_height
   ::png_set_sig_bytes(png_ptr,8);
   ::png_read_info(png_ptr,info_ptr);
 
-  int width = info_ptr->width;
-  int height = info_ptr->height;
-  a_bpp = info_ptr->width?info_ptr->rowbytes/info_ptr->width:0;
-
+  png_uint_32 width = ::png_get_image_width(png_ptr,info_ptr);
+  png_uint_32 height = ::png_get_image_height(png_ptr,info_ptr);
+  png_uint_32 rowbytes = ::png_get_rowbytes(png_ptr,info_ptr);
+  a_bpp = width?rowbytes/width:0;
+  
   ::png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
 
   a_width = width;
   a_height = height;
-  //a_bpp = bpp; //avoid the clobbered -W warning.
 
   return true;
 }
