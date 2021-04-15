@@ -4,6 +4,7 @@
 #include <tools/sg/plots>
 
 #include <tools/viewplot>
+#include <tools/put_env>
 
 void plot_file(tools::viewplot& a_viewer,
                const std::string& a_filename,
@@ -133,7 +134,7 @@ bool test_viewplot_ttf(std::ostream& a_out,bool a_verbose) {
   }
 
   if(!tools::is_env(s_TOOLS_FONT_PATH())) {
-    TOOLS_TEST_FUNC(tools::putenv(s_TOOLS_FONT_PATH(),"."))
+    TOOLS_TEST_FUNC(tools::put_env(s_TOOLS_FONT_PATH(),"."))
   }
   TOOLS_TEST_FUNC(tools::is_env(s_TOOLS_FONT_PATH()))
 

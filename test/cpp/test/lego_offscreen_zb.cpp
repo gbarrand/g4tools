@@ -5,6 +5,7 @@
 
 #include <tools/sg/zb_action>
 #include <tools/wps>
+#include <tools/put_env>
 
 #include <tools/test>
 

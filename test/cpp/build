@@ -103,7 +103,8 @@ if [ ${build_hdf5}     = yes ] ; then use_hdf5=yes;fi
 #fi
 
 cppflags="${cppflags} -I../.."
-cppflags="${cppflags} -I../g4tools/include" # if within G4.
+cppflags="${cppflags} -I../include"          # if g4tools within G4 source/externals.
+#cppflags="${cppflags} -I../g4tools/include" # if g4tools within G4 source/analysis.
 
 cppflags="${cppflags} -DNDEBUG"
 
@@ -121,10 +122,12 @@ if [ ${exa} = "mpi_ntuple" ] ; then
   use_mpi=yes
 fi
 
-if [ ${exa} = "rroot" -o ${exa} = "rxrayfluo" ] ; then
+if [ ${exa} = "rroot" ] ; then
   use_zlib=yes
-  if [ -f ../g4tools/src/csz_inflate.cc ] ; then
-    cfiles="${cfiles} ../g4tools/src/csz_inflate.cc"
+  if [ -f ../src/csz_inflate.cc ] ; then    # g4tools under G4/src/externals
+    cfiles="${cfiles} ../src/csz_inflate.cc"
+ #elif [ -f ../g4tools/src/csz_inflate.cc ] ; then      # g4tools under G4/src/analysis
+ #  cfiles="${cfiles} ../g4tools/src/csz_inflate.cc"
   else
     cfiles="${cfiles} ../../src/csz_inflate.cc"
   fi

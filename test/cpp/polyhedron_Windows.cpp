@@ -2,8 +2,8 @@
 // See the file tools.license for terms.
 
 
-#define TOOLS_SCREEN_MGR Windows
-
 #include <tools/Windows/sg_viewer>
+
+#define TOOLS_SCREEN_MGR Windows
 
 #include "polyhedron_common.icc"

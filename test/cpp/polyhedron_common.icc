@@ -1,8 +1,9 @@
 // Copyright (C) 2010, Guy Barrand. All rights reserved.
 // See the file tools.license for terms.
 
-#include <tools/mem>
-
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
 #include <tools/sg/separator>
 #include <tools/sg/head_light>
 #include <tools/sg/ortho>
@@ -13,26 +14,7 @@
 #include <tools/mathd>
 #include <tools/mathf>
 
-/////////////////////////////////////////////////////
-/// main ////////////////////////////////////////////
-/////////////////////////////////////////////////////
-#include <tools/args>
-#include <iostream>
-#include <cstdlib>
-
-int main(int argc,char** argv) {
-
-#ifdef TOOLS_MEM
-  tools::mem::set_check_by_class(true);{
-#endif
-
-  tools::args args(argc,argv);
-
-  bool verbose = args.is_arg("-verbose");
-
-  //////////////////////////////////////////////////////////
-  /// create scene graph ///////////////////////////////////
-  //////////////////////////////////////////////////////////
+tools::sg::separator* create_scene_graph() {
   tools::sg::separator* sep = new tools::sg::separator;
 
   tools::sg::ortho* camera = new tools::sg::ortho;
@@ -71,17 +53,46 @@ int main(int argc,char** argv) {
   //node->reduced_wire_frame = false;
   sep->add(node);
 
+  return sep;
+}  
+
+/////////////////////////////////////////////////////
+/// main ////////////////////////////////////////////
+/////////////////////////////////////////////////////
+#include <tools/args>
+#include <iostream>
+#include <cstdlib>
+
+int main(int argc,char** argv) {
+
+#ifdef TOOLS_MEM
+  tools::mem::set_check_by_class(true);{
+#endif
+
+  tools::args args(argc,argv);
+
+  bool verbose = args.is_arg("-verbose");
+
+  //////////////////////////////////////////////////////////
+  /// create scene graph ///////////////////////////////////
+  //////////////////////////////////////////////////////////
+  tools::sg::separator* sep = create_scene_graph();
+
   //////////////////////////////////////////////////////////
   /// create graphics system ///////////////////////////////
   //////////////////////////////////////////////////////////
-
+#ifdef TOOLS_SESSION_ARGGC
+  tools::TOOLS_SCREEN_MGR::session session(std::cout,argc,argv);
+#else
   tools::TOOLS_SCREEN_MGR::session session(std::cout);
+#endif
   if(!session.is_valid()) return EXIT_FAILURE;
 
   //////////////////////////////////////////////////////////
   /// create the viewer, set the scene graph ///////////////
   //////////////////////////////////////////////////////////
-  tools::TOOLS_SCREEN_MGR::sg_viewer viewer(session,0,0,400,200,"win 1");
+  std::string title = std::string("polyhedron_")+TOOLS_CPP_TO_STRING(TOOLS_SCREEN_MGR);
+  tools::TOOLS_SCREEN_MGR::sg_viewer viewer(session,0,0,400,200,title);
   if(!viewer.has_window()) return EXIT_FAILURE;
 
   viewer.sg().add(sep); //give sep ownership to the viewer.
@@ -94,6 +105,7 @@ int main(int argc,char** argv) {
   session.steer();
 
 #ifdef TOOLS_MEM
+  verbose = false;
   }tools::mem::balance(std::cout);
   std::cout << "polyhedron_<driver> : (mem) exit..." << std::endl;
 #else
