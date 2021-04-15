@@ -15,10 +15,12 @@ public:
   virtual bool draw_in_frame_buffer() const {return true;}
 
   virtual void render(tools::sg::render_action& a_action) {
-    if(touched()) {
+   {bool _color_touched = color_touched(a_action.state());
+    bool _char_height_touched = char_height_touched(a_action.state());
+    if(touched()||_color_touched||_char_height_touched) {
       update_sg(a_action.out(),font.touched(),a_action.state());
       reset_touched();
-    }
+    }}
 
     const tools::sg::state& state = a_action.state();
 
@@ -30,10 +32,9 @@ public:
 
     float x,y,z;
     a_action.projected_origin(x,y,z);
+    float zz = 0;
 
     a_action.load_matrices_to_identity();
-
-    float zz = 0;
 
     ///////////////////////////////////////////////////////////
     /// lines /////////////////////////////////////////////////
@@ -50,7 +51,6 @@ public:
         delete [] vp;
       }
     }}
-
 
     ///////////////////////////////////////////////////////////
     /// triangles /////////////////////////////////////////////
@@ -72,6 +72,31 @@ public:
       }
     }}
 
+    ///////////////////////////////////////////////////////////
+    /// bitmap ////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+    if(m_bitmaps.size()) {
+      tools::mat4f _m;
+      _m.set_translate(x,y,zz);
+      a_action.load_model_matrix(_m);
+
+#if defined(ANDROID) /*|| TARGET_OS_IPHONE*/
+      // we do not have transparent texture here (see also gl/tex_img() that does img/4-bytes => img/3-bytes) :
+     {tools::sg::state& _state = a_action.state();
+      tools::colorf old_color = _state.m_color;
+      _state.m_color = tools::colorf_white();
+      a_action.color4f(_state.m_color);
+      m_bitmaps.render(a_action);
+      _state.m_color = old_color;
+      a_action.color4f(_state.m_color);}
+#else
+      m_bitmaps.render(a_action);
+#endif
+    }
+
+    ///////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
     a_action.load_matrices_from_state();
 
     a_action.set_depth_test(state.m_GL_DEPTH_TEST);
@@ -81,13 +106,15 @@ public:
   }
 
   virtual void pick(tools::sg::pick_action& a_action) {
-    if(touched()) {
+   {bool _char_height_touched = char_height_touched(a_action.state());
+    if(touched()||_char_height_touched) {
       update_sg(a_action.out(),font.touched(),a_action.state());
       reset_touched();
-    }
+    }}
 
     float x,y,z;
     a_action.projected_origin(x,y,z);
+    float zz = 0;
 
     a_action.set_matrices_to_identity();
 
@@ -135,14 +162,26 @@ public:
       delete [] vp;
     }}
 
+    ///////////////////////////////////////////////////////////
+    /// bitmap ////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+    if(m_bitmaps.size()) {
+      a_action.model_matrix().set_translate(x,y,zz);
+      m_bitmaps.pick(a_action);
+    }
+    
+    ///////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
     a_action.set_matrices_from_state();
   }
 
   virtual void bbox(tools::sg::bbox_action& a_action) {
-    if(touched()) {
+   {bool _char_height_touched = char_height_touched(a_action.state());
+    if(touched()||_char_height_touched) {
       update_sg(a_action.out(),font.touched(),a_action.state());
       reset_touched();
-    }
+    }}
     a_action.add_one_point(0,0,0);
 /*
    {tools_vforcit(line_t,m_lines,it) {
@@ -178,6 +217,11 @@ public:
         a_action.add_one_point(px,py,pz);
       }
     }}
+    
+    ///////////////////////////////////////////////////////////
+    /// bitmap ////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+    m_bitmaps.bbox(a_action);
 */
   }
 
@@ -191,6 +235,7 @@ public:
   text_freetype_marker& operator=(const text_freetype_marker& a_from){parent::operator=(a_from);return *this;}
 protected:
   void update_sg(std::ostream& a_out,bool a_load_font,const tools::sg::state& a_state) {
+    if(!a_state.m_wh) {parent::update_sg(a_out,a_load_font);return;}
     float sy = 2.0f*float(height.value())/float(a_state.m_wh); //in [-1,1]
     float old_height = height.value();
     height.value_no_cmp(sy);

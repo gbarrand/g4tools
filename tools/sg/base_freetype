@@ -56,9 +56,7 @@ public:
 
   ,font("")
   ,front_face(winding_ccw)
-  ,modeling(font_filled) //font_outline
-  //,modeling(font_outline)
-  //,modeling(font_pixmap)
+  ,modeling(font_filled)
   ,unitext()
   //,font_dirs()
   {

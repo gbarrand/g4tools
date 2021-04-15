@@ -8,14 +8,16 @@
 #include <windowsx.h>
 #include <wingdi.h>
 
+#include <tools/sg/device_interactor>
+#include <tools/sg/keys>
+//#include <tools/log_file>
+
+#include <string>
+
 #if defined(_MSC_VER) && _MSC_VER < 1900
 #else
 #define TOOLS_WINDOWS_TOUCH
 #endif
-
-#include <string>
-
-//#include <tools/log_file>
 
 namespace tools {
 namespace Windows {
@@ -56,10 +58,11 @@ class glarea {
 public:
   virtual void resize(unsigned int,unsigned int){}
   virtual void paint(unsigned int a_w,unsigned int a_h) {}
+  virtual void close(){}
+  
   virtual void left_button_up(unsigned int a_x,unsigned int a_y) {}
   virtual void left_button_down(unsigned int a_x,unsigned int a_y) {}
   virtual void mouse_move(unsigned int a_x,unsigned int a_y,bool) {}
-  virtual void close(){}
 public:
   glarea(HWND a_parent)
   :m_parent(a_parent)
@@ -67,6 +70,7 @@ public:
   ,m_context(0)
   ,m_HDC(0)
   ,m_touch_available(false)
+  ,m_interactor(0)
   {
     register_class();
     // The WS_BORDER is needed. Else probleme of size at startup.
@@ -117,13 +121,14 @@ public:
       m_hwnd = 0;
     }
   }
-public:
+protected:
   glarea(const glarea& a_from)
   :m_parent(a_from.m_parent)
   ,m_hwnd(0)
   ,m_context(0)
   ,m_HDC(0)
   ,m_touch_available(a_from.m_touch_available)
+  ,m_interactor(0)
   {
     if(!m_parent) return;
     register_class();
@@ -190,6 +195,8 @@ public:
     }
     EndPaint(m_hwnd,&ps);
   }
+public:
+  void set_device_interactor(tools::sg::device_interactor* a_interactor) {m_interactor = a_interactor;} //we do not have ownership.
 protected:
   bool is_touch_event() {
 #ifdef TOOLS_WINDOWS_TOUCH
@@ -214,45 +221,84 @@ protected:
     }return 0;
     case WM_PAINT:{
       glarea* _this = (glarea*)::GetWindowLongPtr(a_hwnd,GWLP_USERDATA);
-      if(_this) {
-        _this->wm_paint();
-      }
+      if(_this) _this->wm_paint();
     }return 0;
+
+    case WM_KEYDOWN:{
+      glarea* _this = (glarea*)::GetWindowLongPtr(a_hwnd,GWLP_USERDATA);
+      if(_this) {
+        if(_this->m_interactor) {
+          tools::sg::key_down_event event(_this->convert(a_wparam));
+          _this->m_interactor->key_press(event);
+        }
+      }	
+    } return 0;
+    case WM_KEYUP:{
+      glarea* _this = (glarea*)::GetWindowLongPtr(a_hwnd,GWLP_USERDATA);
+      if(_this) {
+        if(_this->m_interactor) {
+          tools::sg::key_up_event event(_this->convert(a_wparam));
+          _this->m_interactor->key_release(event);
+        }
+      }	
+    } return 0;
+
     case WM_LBUTTONDOWN:{
       glarea* _this = (glarea*)::GetWindowLongPtr(a_hwnd,GWLP_USERDATA);
       if(_this) {
-        RECT rect;
-        //::GetWindowRect(hwnd,&rect); ???
-        ::GetClientRect(a_hwnd,&rect);
-        unsigned int h = rect.bottom-rect.top;
-        //::printf("debug : WM_LBUTTONDOWN : %d %d\n",LOWORD(a_lparam),h-HIWORD(a_lparam));
-        if(!_this->is_touch_event()) _this->left_button_down(LOWORD(a_lparam),h-HIWORD(a_lparam));
+        if(_this->m_interactor) {
+          tools::sg::mouse_down_event event(LOWORD(a_lparam),HIWORD(a_lparam));
+          _this->m_interactor->mouse_press(event);
+        } else {
+          RECT rect;
+          ::GetClientRect(a_hwnd,&rect);
+          unsigned int h = rect.bottom-rect.top;
+          if(!_this->is_touch_event()) _this->left_button_down(LOWORD(a_lparam),h-HIWORD(a_lparam));
+        }
       }
     }return 0;
     case WM_LBUTTONUP:{
       glarea* _this = (glarea*)::GetWindowLongPtr(a_hwnd,GWLP_USERDATA);
       if(_this) {
-        RECT rect;
-        ::GetClientRect(a_hwnd,&rect);
-        unsigned int h = rect.bottom-rect.top;
-        //::printf("debug : WM_LBUTTONUP : %d %d\n",LOWORD(a_lparam),h-HIWORD(a_lparam));
-	if(!_this->is_touch_event()) _this->left_button_up(LOWORD(a_lparam),h-HIWORD(a_lparam));
+        if(_this->m_interactor) {
+          tools::sg::mouse_up_event event(LOWORD(a_lparam),HIWORD(a_lparam));
+          _this->m_interactor->mouse_release(event);
+        } else {
+          RECT rect;
+          ::GetClientRect(a_hwnd,&rect);
+          unsigned int h = rect.bottom-rect.top;
+	  if(!_this->is_touch_event()) _this->left_button_up(LOWORD(a_lparam),h-HIWORD(a_lparam));
+        }
       }
     } return 0;
     case WM_MOUSEMOVE:{
-      WPARAM state = a_wparam;
-      bool ldown = ((state & MK_LBUTTON)==MK_LBUTTON)?true:false;
-
       glarea* _this = (glarea*)::GetWindowLongPtr(a_hwnd,GWLP_USERDATA);
       if(_this) {
-        RECT rect;
-        ::GetClientRect(a_hwnd,&rect);
-        unsigned int h = rect.bottom-rect.top;
-        //::printf("debug : WM_MOUSEMOVE : %d %d\n",LOWORD(a_lparam),h-HIWORD(a_lparam));
-        if(!_this->is_touch_event()) _this->mouse_move(LOWORD(a_lparam),h-HIWORD(a_lparam),ldown);
+        if(_this->m_interactor) {
+          tools::sg::mouse_move_event event(LOWORD(a_lparam),HIWORD(a_lparam),0,0,false);
+          _this->m_interactor->mouse_move(event);
+        } else {
+          WPARAM state = a_wparam;
+          bool ldown = ((state & MK_LBUTTON)==MK_LBUTTON)?true:false;	
+          RECT rect;
+          ::GetClientRect(a_hwnd,&rect);
+          unsigned int h = rect.bottom-rect.top;
+          if(!_this->is_touch_event()) _this->mouse_move(LOWORD(a_lparam),h-HIWORD(a_lparam),ldown);
+        }
       }
 
     }return 0;
+    
+    case WM_MOUSEWHEEL:{
+      glarea* _this = (glarea*)::GetWindowLongPtr(a_hwnd,GWLP_USERDATA);
+      if(_this) {
+        if(_this->m_interactor) {
+          tools::sg::wheel_rotate_event event(GET_WHEEL_DELTA_WPARAM(a_wparam));
+	  _this->m_interactor->wheel_rotate(event);
+        }	  
+      }	
+    } return 0;
+      
 #ifdef TOOLS_WINDOWS_TOUCH
     case WM_TOUCH:{
       glarea* _this = (glarea*)::GetWindowLongPtr(a_hwnd,GWLP_USERDATA);
@@ -354,11 +400,17 @@ protected:
     ::SetWindowLongPtr(a_hwnd,GWLP_USERDATA,LONG_PTR(NULL));
   }
 protected:
+  tools::key_code convert(WPARAM a_key) {
+    if(a_key==VK_SHIFT) return tools::sg::key_shift();
+    return (tools::key_code)a_key;
+  }
+protected:
   HWND m_parent;
   HWND m_hwnd;
   HGLRC m_context;
   HDC m_HDC;
   bool m_touch_available;
+  tools::sg::device_interactor* m_interactor;
 };
 
 }}

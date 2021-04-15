@@ -37,75 +37,56 @@ public:
   ,m_WM_DELETE_WINDOW_atom(None)
   ,m_SESSION_EXIT_STEER_atom(None)
   {
-    if(!initialize()) {} //throw
+    //NOTE : macOS : XOpenDisplay leaks 128 bytes.
+    m_display = ::XOpenDisplay(NULL);
+    if(!m_display) {
+      m_out << "tools::X11::base_session::base_session : can't open display." << std::endl;
+      return;
+    }
+
+    int monitors = ::XScreenCount(m_display);
+    if(int(m_monitor)>=monitors) {
+      m_out << "tools::X11::base_session::base_session : bad monitor index "
+            << m_monitor << ". (#monitors " << monitors << ")." << std::endl;
+      ::XCloseDisplay(m_display);
+      m_display = 0;
+      return;
+    }
+
+    m_WM_DELETE_WINDOW_atom = ::XInternAtom(m_display,"WM_DELETE_WINDOW",False);
+    if(m_WM_DELETE_WINDOW_atom==None) {
+      m_out << "tools::X11::base_session::base_session : can't create WM_DELETE_WINDOW Atom." << std::endl;
+      ::XCloseDisplay(m_display);
+      m_display = 0;
+      return;
+    }
+
+    m_SESSION_EXIT_STEER_atom = ::XInternAtom(m_display,"TOOLS_X11_SESSION_EXIT_STEER",False);
+    if(m_SESSION_EXIT_STEER_atom==None) {
+      m_out << "tools::X11::base_session::base_session :"
+            << " can't create TOOLS_X11_SESSION_EXIT_STEER Atom." << std::endl;
+      ::XCloseDisplay(m_display);
+      m_display = 0;
+      return;
+    }
   }
   virtual ~base_session() {
     clear_dispatchers();
-    finalize();
+    if(m_display) ::XCloseDisplay(m_display);
+    m_display = 0;
     //std::cout << "debug : ~base_session" << std::endl;
   }
-public:
+protected:
   base_session(const base_session& a_from)
   :m_out(a_from.m_out)
   ,m_monitor(a_from.m_monitor)
   ,m_display(0)
   ,m_WM_DELETE_WINDOW_atom(None)
   ,m_SESSION_EXIT_STEER_atom(None)
-  {
-    copy_dispatchers(a_from.m_dispatchers);
-    if(!initialize()) {} //throw
-  }
+  {}
   base_session& operator=(const base_session& a_from){
     if(&a_from==this) return *this;
-    m_monitor = a_from.m_monitor;
-    clear_dispatchers();
-    finalize();
-    copy_dispatchers(a_from.m_dispatchers);
-    if(!initialize()) {} //throw
     return *this;
-  }
-protected:
-  bool initialize() {
-    if(m_display) return true; //done.
-
-    //NOTE : macOS : XOpenDisplay leaks 128 bytes.
-    m_display = ::XOpenDisplay(NULL);
-    if(!m_display) {
-      m_out << "tools::X11::base_session::initialize : can't open display." << std::endl;
-      return false;
-    }
-
-    int monitors = ::XScreenCount(m_display);
-    if(int(m_monitor)>=monitors) {
-      m_out << "tools::X11::base_session::initialize : bad monitor index " << m_monitor << ". (#monitors " << monitors << ")." << std::endl;
-      ::XCloseDisplay(m_display);
-      m_display = 0;
-      return false;
-    }
-
-    m_WM_DELETE_WINDOW_atom = ::XInternAtom(m_display,"WM_DELETE_WINDOW",False);
-    if(m_WM_DELETE_WINDOW_atom==None) {
-      m_out << "tools::X11::base_session::initialize : can't create/get WM_DELETE_WINDOW Atom." << std::endl;
-      ::XCloseDisplay(m_display);
-      m_display = 0;
-      return false;
-    }
-
-    m_SESSION_EXIT_STEER_atom = ::XInternAtom(m_display,"TOOLS_X11_SESSION_EXIT_STEER",False);
-    if(m_SESSION_EXIT_STEER_atom==None) {
-      m_out << "tools::X11::base_session::initialize : can't create/get TOOLS_X11_SESSION_EXIT_STEER Atom." << std::endl;
-      ::XCloseDisplay(m_display);
-      m_display = 0;
-      return false;
-    }
-
-    return true;
-  }
-
-  void finalize() {
-    if(!m_display) return;
-    ::XCloseDisplay(m_display);
-    m_display = 0;
   }
 public:
   std::ostream& out() const {return m_out;}
@@ -405,13 +386,6 @@ protected:
       delete obj;
     }
     m_dispatchers.clear();
-  }
-
-  void copy_dispatchers(const std::vector<dispatcher*>& a_from) {
-    clear_dispatchers();
-    tools_vforcit(dispatcher*,a_from,it) {
-      m_dispatchers.push_back((*it)->copy());
-    }
   }
 
 protected:

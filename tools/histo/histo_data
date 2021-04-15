@@ -8,7 +8,7 @@
 #include <map> //for annotations
 
 #include "axes"
-#include "../lina/eqT"
+#include "../eqT"
 //#include "../vmanip" //vequ
 
 namespace tools {

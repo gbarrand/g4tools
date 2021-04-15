@@ -295,6 +295,38 @@ public:
     position.value(pos);
   }
 
+  bool look_at(const vec3f& a_dir,const vec3f& a_up) {
+    vec3f z = -a_dir;
+    vec3f y = a_up;
+    vec3f x;y.cross(z,x);
+
+    // recompute y to create a valid coordinate system
+    z.cross(x,y);
+
+    // normalize x and y to create an orthonormal coord system
+    if(!x.normalize()) return false;
+    if(!y.normalize()) return false;
+    if(!z.normalize()) return false;
+
+    // create a rotation matrix
+    mat4f rot;
+    rot.set_identity();
+    rot.set_value(0,0,x[0]);
+    rot.set_value(1,0,x[1]);
+    rot.set_value(2,0,x[2]);
+
+    rot.set_value(0,1,y[0]);
+    rot.set_value(1,1,y[1]);
+    rot.set_value(2,1,y[2]);
+
+    rot.set_value(0,2,z[0]);
+    rot.set_value(1,2,z[1]);
+    rot.set_value(2,2,z[2]);
+
+    orientation.value().set_value(rot);
+    return true;
+  }
+
   //NOTE : print is a Python keyword.
   void dump(std::ostream& a_out) {
     a_out << " znear " << znear.value() << std::endl;

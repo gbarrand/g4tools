@@ -14,7 +14,7 @@ class session : public Cocoa::session {
 public:
   session(std::ostream& a_out):parent(a_out){}
   virtual ~session() {}
-public:
+protected:
   session(const session& a_from):parent(a_from) {}
   session& operator=(const session&){return *this;}
 };

@@ -39,7 +39,7 @@ namespace metal {
 
 class sg_viewer : public ui_viewer {
   typedef ui_viewer parent;
-private:
+public:
   virtual void win_render() { //ui_viewer::win_render()
     if(!m_ww) return;
     if(!m_wh) return;

@@ -687,7 +687,7 @@ protected:
   }
 
   void unichar2sg(unichar a_unichar,sg::base_freetype& a_node){
-    if(m_wf) a_node.modeling = sg::font_outline;  //else font_filled, font_pixmap.
+    if(m_wf) a_node.modeling = sg::font_outline;
 
     a_node.font = sg::font_stixgeneral_otf();
 

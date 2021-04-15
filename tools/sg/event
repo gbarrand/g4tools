@@ -104,36 +104,36 @@ protected:
   unsigned int m_h;
 };
 
-class down_event : public event {
+class mouse_down_event : public event {
   typedef event parent;
 public:
 #ifdef TOOLS_SG_EVENT_ID_CAST
   static cid id_class() {return parent::id_class()+2;}
   virtual void* cast(cid a_class) const {
-    if(void* p = cmp_cast<down_event>(this,a_class)) return p;
+    if(void* p = cmp_cast<mouse_down_event>(this,a_class)) return p;
     return 0;
   }
 #else
-  TOOLS_SCLASS(tools::sg::down_event)
+  TOOLS_SCLASS(tools::sg::mouse_down_event)
   virtual void* cast(const std::string& a_class) const {
-    if(void* p = cmp_cast<down_event>(this,a_class)) {return p;}
+    if(void* p = cmp_cast<mouse_down_event>(this,a_class)) {return p;}
     return 0;
   }
 #endif
-  virtual event* copy() const {return new down_event(*this);}
+  virtual event* copy() const {return new mouse_down_event(*this);}
 public:
-  down_event(int a_x,int a_y) //signed because of wall.
+  mouse_down_event(int a_x,int a_y) //signed because of wall.
   :m_x(a_x)
   ,m_y(a_y)
   {}
-  virtual ~down_event(){}
+  virtual ~mouse_down_event(){}
 public:
-  down_event(const down_event& a_from)
+  mouse_down_event(const mouse_down_event& a_from)
   :event(a_from)
   ,m_x(a_from.m_x)
   ,m_y(a_from.m_y)
   {}
-  down_event& operator=(const down_event& a_from){
+  mouse_down_event& operator=(const mouse_down_event& a_from){
     event::operator=(a_from);
     m_x = a_from.m_x;
     m_y = a_from.m_y;
@@ -147,36 +147,36 @@ protected:
   int m_y;
 };
 
-class up_event : public event {
+class mouse_up_event : public event {
   typedef event parent;
 public:
 #ifdef TOOLS_SG_EVENT_ID_CAST
   static cid id_class() {return parent::id_class()+3;}
   virtual void* cast(cid a_class) const {
-    if(void* p = cmp_cast<up_event>(this,a_class)) return p;
+    if(void* p = cmp_cast<mouse_up_event>(this,a_class)) return p;
     return 0;
   }
 #else
-  TOOLS_SCLASS(tools::sg::up_event)
+  TOOLS_SCLASS(tools::sg::mouse_up_event)
   virtual void* cast(const std::string& a_class) const {
-    if(void* p = cmp_cast<up_event>(this,a_class)) {return p;}
+    if(void* p = cmp_cast<mouse_up_event>(this,a_class)) {return p;}
     return 0;
   }
 #endif
-  virtual event* copy() const {return new up_event(*this);}
+  virtual event* copy() const {return new mouse_up_event(*this);}
 public:
-  up_event(int a_x,int a_y) //signed because of wall.
+  mouse_up_event(int a_x,int a_y) //signed because of wall.
   :m_x(a_x)
   ,m_y(a_y)
   {}
-  virtual ~up_event(){}
+  virtual ~mouse_up_event(){}
 public:
-  up_event(const up_event& a_from)
+  mouse_up_event(const mouse_up_event& a_from)
   :event(a_from)
   ,m_x(a_from.m_x)
   ,m_y(a_from.m_y)
   {}
-  up_event& operator=(const up_event& a_from){
+  mouse_up_event& operator=(const mouse_up_event& a_from){
     event::operator=(a_from);
     m_x = a_from.m_x;
     m_y = a_from.m_y;
@@ -190,36 +190,36 @@ protected:
   int m_y;
 };
 
-class move_event : public event {
+class mouse_move_event : public event {
   typedef event parent;
 public:
 #ifdef TOOLS_SG_EVENT_ID_CAST
   static cid id_class() {return parent::id_class()+4;}
   virtual void* cast(cid a_class) const {
-    if(void* p = cmp_cast<move_event>(this,a_class)) return p;
+    if(void* p = cmp_cast<mouse_move_event>(this,a_class)) return p;
     return 0;
   }
 #else
-  TOOLS_SCLASS(tools::sg::move_event)
+  TOOLS_SCLASS(tools::sg::mouse_move_event)
   virtual void* cast(const std::string& a_class) const {
-    if(void* p = cmp_cast<move_event>(this,a_class)) {return p;}
+    if(void* p = cmp_cast<mouse_move_event>(this,a_class)) {return p;}
     return 0;
   }
 #endif
-  virtual event* copy() const {return new move_event(*this);}
+  virtual event* copy() const {return new mouse_move_event(*this);}
 public:
-  move_event(int a_x,int a_y, //signed because of wall.
-             int a_ox,int a_oy,
-             bool a_touch) //for sliders.
+  mouse_move_event(int a_x,int a_y, //signed because of wall.
+                   int a_ox,int a_oy,
+                   bool a_touch) //for sliders.
   :m_x(a_x)
   ,m_y(a_y)
   ,m_ox(a_ox)
   ,m_oy(a_oy)
   ,m_touch(a_touch)
   {}
-  virtual ~move_event(){}
+  virtual ~mouse_move_event(){}
 public:
-  move_event(const move_event& a_from)
+  mouse_move_event(const mouse_move_event& a_from)
   :event(a_from)
   ,m_x(a_from.m_x)
   ,m_y(a_from.m_y)
@@ -227,7 +227,7 @@ public:
   ,m_oy(a_from.m_oy)
   ,m_touch(a_from.m_touch)
   {}
-  move_event& operator=(const move_event& a_from){
+  mouse_move_event& operator=(const mouse_move_event& a_from){
     event::operator=(a_from);
     m_x = a_from.m_x;
     m_y = a_from.m_y;
@@ -309,6 +309,120 @@ protected:
   bool m_some_found;
 };
 
+class key_down_event : public event {
+  typedef event parent;
+public:
+#ifdef TOOLS_SG_EVENT_ID_CAST
+  static cid id_class() {return parent::id_class()+6;}
+  virtual void* cast(cid a_class) const {
+    if(void* p = cmp_cast<key_down_event>(this,a_class)) return p;
+    return 0;
+  }
+#else
+  TOOLS_SCLASS(tools::sg::key_down_event)
+  virtual void* cast(const std::string& a_class) const {
+    if(void* p = cmp_cast<key_down_event>(this,a_class)) {return p;}
+    return 0;
+  }
+#endif
+  virtual event* copy() const {return new key_down_event(*this);}
+public:
+  key_down_event(key_code a_key)
+  :m_key(a_key)
+  {}
+  virtual ~key_down_event(){}
+public:
+  key_down_event(const key_down_event& a_from)
+  :event(a_from)
+  ,m_key(a_from.m_key)
+  {}
+  key_down_event& operator=(const key_down_event& a_from){
+    event::operator=(a_from);
+    m_key = a_from.m_key;
+    return *this;
+  }
+public:
+  key_code key() const {return m_key;}
+protected:
+  key_code m_key;
+};
+
+class key_up_event : public event {
+  typedef event parent;
+public:
+#ifdef TOOLS_SG_EVENT_ID_CAST
+  static cid id_class() {return parent::id_class()+7;}
+  virtual void* cast(cid a_class) const {
+    if(void* p = cmp_cast<key_up_event>(this,a_class)) return p;
+    return 0;
+  }
+#else
+  TOOLS_SCLASS(tools::sg::key_up_event)
+  virtual void* cast(const std::string& a_class) const {
+    if(void* p = cmp_cast<key_up_event>(this,a_class)) {return p;}
+    return 0;
+  }
+#endif
+  virtual event* copy() const {return new key_up_event(*this);}
+public:
+  key_up_event(key_code a_key)
+  :m_key(a_key)
+  {}
+  virtual ~key_up_event(){}
+public:
+  key_up_event(const key_up_event& a_from)
+  :event(a_from)
+  ,m_key(a_from.m_key)
+  {}
+  key_up_event& operator=(const key_up_event& a_from){
+    event::operator=(a_from);
+    m_key = a_from.m_key;
+    return *this;
+  }
+public:
+  key_code key() const {return m_key;}
+protected:
+  key_code m_key;
+};
+
+class wheel_rotate_event : public event {
+  typedef event parent;
+public:
+#ifdef TOOLS_SG_EVENT_ID_CAST
+  static cid id_class() {return parent::id_class()+8;}
+  virtual void* cast(cid a_class) const {
+    if(void* p = cmp_cast<wheel_rotate_event>(this,a_class)) return p;
+    return 0;
+  }
+#else
+  TOOLS_SCLASS(tools::sg::wheel_rotate_event)
+  virtual void* cast(const std::string& a_class) const {
+    if(void* p = cmp_cast<wheel_rotate_event>(this,a_class)) {return p;}
+    return 0;
+  }
+#endif
+  virtual event* copy() const {return new wheel_rotate_event(*this);}
+public:
+  wheel_rotate_event(int a_angle)
+  :m_angle(a_angle)
+  {}
+  virtual ~wheel_rotate_event(){}
+public:
+  wheel_rotate_event(const wheel_rotate_event& a_from)
+  :event(a_from)
+  ,m_angle(a_from.m_angle)
+  {}
+  wheel_rotate_event& operator=(const wheel_rotate_event& a_from){
+    event::operator=(a_from);
+    m_angle = a_from.m_angle;
+    return *this;
+  }
+public:
+  int angle() const {return m_angle;}
+protected:
+  int m_angle;
+};
+
 #ifdef TOOLS_SG_EVENT_ID_CAST
 template <class FROM,class TO> inline TO* event_cast(FROM& a_o) {return id_cast<FROM,TO>(a_o);}
 template <class FROM,class TO> inline const TO* event_cast(const FROM& a_o) {return id_cast<FROM,TO>(a_o);}
@@ -319,8 +433,8 @@ template <class FROM,class TO> inline const TO* event_cast(const FROM& a_o) {ret
 
 inline bool get_event_xy(const sg::event& a_event,int& a_x,int& a_y) {
   typedef sg::event evt_t;
-  typedef sg::up_event up_evt_t;
-  typedef sg::down_event dn_evt_t;
+  typedef sg::mouse_up_event up_evt_t;
+  typedef sg::mouse_down_event dn_evt_t;
   if(const dn_evt_t* devt = event_cast<evt_t,dn_evt_t>(a_event)) {
     a_x = devt->x();
     a_y = devt->y();

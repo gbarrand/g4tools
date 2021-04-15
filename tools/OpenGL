@@ -22,10 +22,10 @@
 #include <windows.h>
 #include <GL/gl.h>
 #elif __APPLE__
-#ifdef BUSH_USE_AGL
-#include <OpenGL/gl.h> //Cocoa
-#else
+#ifdef TOOLS_USE_GL_GL_H
 #include <GL/gl.h>  //Macports X11 GL.
+#else
+#include <OpenGL/gl.h> //Apple/OpenGL.
 #endif
 #else
 #include <GL/gl.h>

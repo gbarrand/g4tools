@@ -70,7 +70,7 @@ struct error_mgr {
 typedef struct error_mgr* error_ptr;
 
 extern "C" {
-inline void exlib_jpeg_error_exit(j_common_ptr cinfo){
+inline void tools_jpeg_error_exit(j_common_ptr cinfo){
   error_ptr myerr = (error_ptr) cinfo->err;
   //(*cinfo->err->output_message) (cinfo);
   //printf("debug : error_exit\n");
@@ -86,7 +86,7 @@ inline bool infos_file(FILE* a_file,unsigned int& a_width,unsigned int& a_height
   struct error_mgr jerr;
 
   cinfo.err = ::jpeg_std_error(&jerr.pub);
-  jerr.pub.error_exit = exlib_jpeg_error_exit;
+  jerr.pub.error_exit = tools_jpeg_error_exit;
   if(::setjmp(jerr.setjmp_buffer)) {
     //printf("debug : out of setjmp\n");
     a_width = 0;
@@ -120,7 +120,7 @@ inline unsigned char* read_file(FILE* a_file,unsigned int& a_width,unsigned int&
   struct error_mgr jerr;
 
   cinfo.err = ::jpeg_std_error(&jerr.pub);
-  jerr.pub.error_exit = exlib_jpeg_error_exit;
+  jerr.pub.error_exit = tools_jpeg_error_exit;
   if(::setjmp(jerr.setjmp_buffer)) {
 #ifdef TOOLS_JPEG_OUT_ERR
     ::printf("tools::jpeg::read_file : out of setjmp\n");
@@ -344,7 +344,7 @@ inline unsigned char* read_part(std::ostream& a_out,
   struct error_mgr jerr;
 
   cinfo.err = ::jpeg_std_error(&jerr.pub);
-  jerr.pub.error_exit = exlib_jpeg_error_exit;
+  jerr.pub.error_exit = tools_jpeg_error_exit;
   if(::setjmp(jerr.setjmp_buffer)) {
     //printf("debug : out of setjmp\n");
     ::fclose(file);
@@ -622,7 +622,7 @@ public:
 //    }
 //
 //    m_cinfo.err = ::jpeg_std_error(&m_jerr.pub);
-//    m_jerr.pub.error_exit = exlib_jpeg_exlib_jpeg_exlib_jpeg_error_exit;
+//    m_jerr.pub.error_exit = tools_jpeg_tools_jpeg_tools_jpeg_error_exit;
 //    if(::setjmp(m_jerr.setjmp_buffer)) {
 //      m_out << "tools::jpeg::jpeg_data::open :"
 //            << " setjmp failed." << a_file

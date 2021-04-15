@@ -1075,7 +1075,7 @@ protected:
       m_face = 0;
       return false;
     }
-    m_scale = height.value()/float(wchar);
+    m_scale = height.value()/float(hchar);
 
     FT_Pos face_height = m_face->size->metrics.height; //FT_Pos (long)
     //::printf("debug : face_height %lu\n",face_height);

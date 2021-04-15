@@ -47,7 +47,7 @@ inline void vec_sub(const T* a_1,const T* a_2,T* a_res,unsigned int a_number) {
 }
 */
 
-#include "eqT"
+#include "../eqT"
 
 #include <cstddef> //size_t
 

@@ -13,7 +13,6 @@ namespace Qt {
 
 class plots_glarea : public QGLWidget {
   typedef QGLWidget parent;
-  Q_OBJECT
 public:
   virtual void initialieGL() {}
   virtual void resizeGL(int a_w,int a_h){
@@ -27,18 +26,15 @@ public:
   //virtual void paintGL();
   virtual void paintGL() {
 #if QT_VERSION < 0x050000
-    //::printf("debug : exlib::Qt::plots_glarea::paintGL %d %d\n",width(),height());
+    //::printf("debug : tools::Qt::plots_glarea::paintGL %d %d\n",width(),height());
     m_viewer.set_size(width(),height());
 #else
-    //::printf("debug : exlib::Qt::plots_glarea::paintGL %d %d\n",m_width,m_height);
+    //::printf("debug : tools::Qt::plots_glarea::paintGL %d %d\n",m_width,m_height);
     m_viewer.set_size(m_width,m_height);
 #endif
     m_viewer.render();
   }
 
-  virtual void mousePressEvent(QMouseEvent*){}
-  virtual void mouseReleaseEvent(QMouseEvent*){}
-  virtual void mouseMoveEvent(QMouseEvent*){}
 public:
   plots_glarea(QWidget* a_parent,tools::sg::GL_plots_viewer& a_viewer):parent(a_parent),m_viewer(a_viewer){}
   virtual ~plots_glarea(){}

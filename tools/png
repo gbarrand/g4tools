@@ -124,7 +124,7 @@ inline unsigned char* read_FILE(FILE* a_file,unsigned int& a_width,unsigned int&
 
  {png_bytep* row_pointers = new png_bytep[height];
   png_byte* pos = buffer+rowbytes*(height-1);
-  for(int y=0;y<height;y++) {
+  for(png_uint_32 y=0;y<height;y++) {
     row_pointers[y] = pos;
     pos -= rowbytes;
   }

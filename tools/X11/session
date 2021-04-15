@@ -34,46 +34,17 @@ public:
   ,m_ctx(0)
   ,m_colormap(0)
   {
-    if(!initialize_gl()) {} //throw
-  }
-  virtual ~session() {
-    finalize_gl();
-    //std::cout << "debug : ~session" << std::endl;
-  }
-public:
-  session(const session& a_from)
-  :parent(a_from)
-  ,m_vinfo(0)
-  ,m_ctx(0)
-  ,m_colormap(0)
-  {
-    if(!initialize_gl()) {} //throw
-  }
-  session& operator=(const session& a_from){
-    if(&a_from==this) return *this;
-    parent::operator=(a_from);
-    finalize_gl();
-    if(!initialize_gl()) {} //throw
-    return *this;
-  }
-protected:
-  bool initialize_gl() {
-    if(!m_display) {
-      m_display = 0;
-      m_vinfo = 0;
-      m_ctx = 0;
-      return false;
-    }
+    if(!m_display) return;
 
    {int glxMajor, glxMinor;
     ::glXQueryVersion(m_display,&glxMajor,&glxMinor);
     if(glxMajor<=0) {
-      m_out << "tools::X11::session::initialize : bad GLX-Version " << glxMajor << "." << glxMinor << std::endl;
+      m_out << "tools::X11::session::session : bad GLX-Version " << glxMajor << "." << glxMinor << std::endl;
       ::XCloseDisplay(m_display);
       m_display = 0;
       m_vinfo = 0;
       m_ctx = 0;
-      return false;
+      return;
     }}
 
     static const int atbs_alpha[] = {
@@ -107,35 +78,35 @@ protected:
 
       m_vinfo = ::glXChooseVisual(m_display,m_monitor,(int*)atbs);
       if(!m_vinfo) {
-        m_out << "tools::X11::session::initialize :"
+        m_out << "tools::X11::session::session :"
               << " can't choose a visual on screen " <<  m_monitor << "."
               << std::endl;
         ::XCloseDisplay(m_display);
         m_display = 0;
         m_vinfo = 0;
         m_ctx = 0;
-        return false;
+        return;
       }
     }
 
     m_ctx = ::glXCreateContext(m_display,m_vinfo,NULL,GL_TRUE);
     if(!m_ctx) {
-      m_out << "tools::X11::session::initialize :"
+      m_out << "tools::X11::session::session :"
             << " can't create a glX context with direct rendering."
             << std::endl;
       m_ctx = ::glXCreateContext(m_display,m_vinfo,NULL,GL_FALSE);
       if(!m_ctx) {
-        m_out << "tools::X11::session::initialize :"
+        m_out << "tools::X11::session::session :"
               << " can't create a glX context."
               << std::endl;
         ::XCloseDisplay(m_display);
         m_display = 0;
         m_vinfo = 0;
         m_ctx = 0;
-        return false;
+        return;
       }
   //} else {
-      //m_out << "tools::X11::session::initialize :"
+      //m_out << "tools::X11::session::session :"
       //      << " glX context with direct rendering created."
       //      << std::endl;
     }
@@ -144,31 +115,44 @@ protected:
     m_colormap = ::XCreateColormap(m_display,::XRootWindow(m_display,m_monitor),m_vinfo->visual,AllocNone);
     //m_colormap = ::XDefaultColormap(m_display,m_monitor);
     if(m_colormap==0L) {
-      m_out << "tools::X11::session::initialize : XCreateColormap failed." << std::endl;
+      m_out << "tools::X11::session::session : XCreateColormap failed." << std::endl;
       ::XCloseDisplay(m_display);
       m_display = 0;
       m_vinfo = 0;
       m_ctx = 0;
-      return false;
+      return;
     }
-
-    return true;
   }
-
-  void finalize_gl() {
-    if(!m_display) return;
-    if(m_ctx) {
-      ::glXDestroyContext(m_display,m_ctx);
-      m_ctx = 0;
+  virtual ~session() {
+    if(m_display) {
+      if(m_ctx) {
+        ::glXDestroyContext(m_display,m_ctx);
+        m_ctx = 0;
+      }
+      if(m_colormap) {
+        ::XFreeColormap(m_display,m_colormap);
+        m_colormap = 0;
+      }
+      ::XCloseDisplay(m_display);
+      m_display = 0;
     }
     if(m_vinfo) {
       ::XFree(m_vinfo);
       m_vinfo = 0;
     }
-    if(m_colormap) {
-      ::XFreeColormap(m_display,m_colormap);
-      m_colormap = 0;
-    }
+    //std::cout << "debug : ~session" << std::endl;
+  }
+protected:
+  session(const session& a_from)
+  :parent(a_from)
+  ,m_vinfo(0)
+  ,m_ctx(0)
+  ,m_colormap(0)
+  {}
+  session& operator=(const session& a_from){
+    if(&a_from==this) return *this;
+    parent::operator=(a_from);
+    return *this;
   }
 public:
   GLXContext context() const {return m_ctx;}

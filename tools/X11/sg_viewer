@@ -12,6 +12,8 @@
 
 #include "simple_dispatcher"
 
+namespace tools{namespace sg{class device_interactor;}}
+
 namespace tools {
 namespace X11 {
 
@@ -98,6 +100,8 @@ public:
     }
   }
 
+public:
+  void set_device_interactor(tools::sg::device_interactor*) {}
 protected:
   session& m_session;
   Window m_win;

@@ -16,7 +16,7 @@ class session {
 public:
   session(std::ostream& a_out):m_out(a_out){}
   virtual ~session() {}
-public:
+protected:
   session(const session& a_from):m_out(a_from.m_out){}
   session& operator=(const session&){return *this;}
 public:

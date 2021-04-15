@@ -36,7 +36,7 @@ class Component {
   typedef std::vector< std::pair<Callback,void*> > Callbacks;
   typedef std::pair<std::string,Callbacks> NamedCallbacks;
 #ifdef TOOLS_MEM
-  TOOLS_SCLASS(exlib::WinTk::Component)
+  TOOLS_SCLASS(tools::WinTk::Component)
 #endif
 public:
   Component(const std::string& aType):fType(aType),fWindow(0),fParent(0){

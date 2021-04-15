@@ -19,9 +19,9 @@ public:
 }}
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED <= 1050
-@interface exlib_Cocoa_session_app_delegate : NSObject {
+@interface tools_Cocoa_session_app_delegate : NSObject {
 #else
-@interface exlib_Cocoa_session_app_delegate : NSObject<NSApplicationDelegate> {
+@interface tools_Cocoa_session_app_delegate : NSObject<NSApplicationDelegate> {
 #endif
   NSApplication* m_app;
   tools::Cocoa::isession* m_session;
@@ -32,7 +32,7 @@ public:
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)a_app;
 - (void)set_session:(tools::Cocoa::isession*)a_session;
 @end
-@implementation exlib_Cocoa_session_app_delegate
+@implementation tools_Cocoa_session_app_delegate
 - (id)init:(NSApplication*)a_app {
   if(self = [super init]) {}
   m_app = a_app;
@@ -62,17 +62,83 @@ class session : public virtual isession {
 public:
   virtual void terminate() {}
 public:
-  session(std::ostream& a_out):m_out(a_out),m_pool(0),m_app(0),m_to_exit(false) {initialize();}
+  session(std::ostream& a_out)
+  :m_out(a_out),m_pool(0),m_app(0),m_to_exit(false)
+  {
+    m_pool = [[NSAutoreleasePool alloc] init];
+    m_app = [NSApplication sharedApplication];
+
+    tools_Cocoa_session_app_delegate* app_del = [[tools_Cocoa_session_app_delegate alloc] init:m_app];
+    [m_app setDelegate:app_del];
+    [app_del set_session:this];
+
+    [m_app setActivationPolicy:NSApplicationActivationPolicyRegular]; //so that change of NSCursor works.
+    //[m_app activateIgnoringOtherApps:YES]; //done in the app_delegate, so that menu works at startup.
+
+   {id menubar = [[NSMenu new] autorelease];
+    id appMenuItem = [[NSMenuItem new] autorelease];
+    [menubar addItem:appMenuItem];
+    id appMenu = [[NSMenu new] autorelease];
+    id appName = [[NSProcessInfo processInfo] processName];
+    id quitTitle = [@"Quit " stringByAppendingString:appName];
+    id quitMenuItem = [[[NSMenuItem alloc] initWithTitle:quitTitle action:@selector(terminate:) keyEquivalent:@"q"] autorelease];
+    [appMenu addItem:quitMenuItem];
+    [appMenuItem setSubmenu:appMenu];
+    [m_app setMainMenu:menubar];}
+  }
   virtual ~session() {
     [m_pool release];
   }
-public:
-  session(const session& a_from):parent(a_from),m_out(a_from.m_out),m_pool(0),m_app(0),m_to_exit(false) {initialize();}
+protected:
+  session(const session& a_from):parent(a_from),m_out(a_from.m_out),m_pool(0),m_app(0),m_to_exit(false) {}
   session& operator=(const session&){return *this;}
 public:
   std::ostream& out() const {return m_out;}
   bool is_valid() const {return true;}
+  bool steer() {
+    if(!m_app) return false;
+    m_to_exit = false;
+    NSDate* date = [NSDate distantFuture]; //it will permit to block on the below.
+    while(!m_to_exit) {
+      NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= 1060   //macarts.
+      NSEvent* event = [m_app nextEventMatchingMask:NSAnyEventMask
+#else
+      NSEvent* event = [m_app nextEventMatchingMask:NSEventMaskAny
+#endif
+                             untilDate:date inMode:NSDefaultRunLoopMode dequeue:YES];
+      if(event) {
+        [m_app sendEvent:event];
+        [m_app updateWindows];
+      }
+      [pool release];
+    }
+    return true;
+  }
 
+  bool sync() {
+    if(!m_app) return false;
+    NSDate* date = [NSDate distantPast];   //not blocking.
+  //NSDate* date = [NSDate distantFuture]; //blocking.
+    while(true) {
+      NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= 1060   //macarts.
+      NSEvent* event = [m_app nextEventMatchingMask:NSAnyEventMask
+#else
+      NSEvent* event = [m_app nextEventMatchingMask:NSEventMaskAny
+#endif
+                             untilDate:date inMode:NSDefaultRunLoopMode dequeue:YES];
+      if(event) {
+        [m_app sendEvent:event];
+        [m_app updateWindows];
+      }
+      [pool release];
+      if(!event) break;
+    }
+    return true;
+  }
+
+public:
   NSWindow* create_window(const char* a_title,int a_x,int a_y,unsigned int a_width,unsigned int a_height) {
     if(!m_app) return 0L;
 
@@ -128,49 +194,6 @@ public:
     }
   }
 
-  bool steer() {
-    if(!m_app) return false;
-    m_to_exit = false;
-    NSDate* date = [NSDate distantFuture]; //it will permit to block on the below.
-    while(!m_to_exit) {
-      NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= 1060   //macarts.
-      NSEvent* event = [m_app nextEventMatchingMask:NSAnyEventMask
-#else
-      NSEvent* event = [m_app nextEventMatchingMask:NSEventMaskAny
-#endif
-                             untilDate:date inMode:NSDefaultRunLoopMode dequeue:YES];
-      if(event) {
-        [m_app sendEvent:event];
-        [m_app updateWindows];
-      }
-      [pool release];
-    }
-    return true;
-  }
-
-  bool sync() {
-    if(!m_app) return false;
-    NSDate* date = [NSDate distantPast];   //not blocking.
-  //NSDate* date = [NSDate distantFuture]; //blocking.
-    while(true) {
-      NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= 1060   //macarts.
-      NSEvent* event = [m_app nextEventMatchingMask:NSAnyEventMask
-#else
-      NSEvent* event = [m_app nextEventMatchingMask:NSEventMaskAny
-#endif
-                             untilDate:date inMode:NSDefaultRunLoopMode dequeue:YES];
-      if(event) {
-        [m_app sendEvent:event];
-        [m_app updateWindows];
-      }
-      [pool release];
-      if(!event) break;
-    }
-    return true;
-  }
-
   void show_window(NSWindow* a_window){
     if(!m_app) return;
     [a_window makeKeyAndOrderFront:m_app];
@@ -178,28 +201,6 @@ public:
   }
 
 public: //not in SWIG.
-  void initialize() {
-    m_pool = [[NSAutoreleasePool alloc] init];
-    m_app = [NSApplication sharedApplication];
-
-    exlib_Cocoa_session_app_delegate* app_del = [[exlib_Cocoa_session_app_delegate alloc] init:m_app];
-    [m_app setDelegate:app_del];
-    [app_del set_session:this];
-
-    [m_app setActivationPolicy:NSApplicationActivationPolicyRegular]; //so that change of NSCursor works.
-    //[m_app activateIgnoringOtherApps:YES]; //done in the app_delegate, so that menu works at startup.
-
-   {id menubar = [[NSMenu new] autorelease];
-    id appMenuItem = [[NSMenuItem new] autorelease];
-    [menubar addItem:appMenuItem];
-    id appMenu = [[NSMenu new] autorelease];
-    id appName = [[NSProcessInfo processInfo] processName];
-    id quitTitle = [@"Quit " stringByAppendingString:appName];
-    id quitMenuItem = [[[NSMenuItem alloc] initWithTitle:quitTitle action:@selector(terminate:) keyEquivalent:@"q"] autorelease];
-    [appMenu addItem:quitMenuItem];
-    [appMenuItem setSubmenu:appMenu];
-    [m_app setMainMenu:menubar];}
-  }
   void set_to_exit() {m_to_exit = true;}
   bool to_exit() const {return m_to_exit;}
 protected:
