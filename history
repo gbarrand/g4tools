@@ -1,3 +1,24 @@
+5.4.0 : more windowing material for the G4/vis/ToolsSG drivers.
+ - tools/[Qt,Xt,Windows] : interactor interface logic.
+ - tools/sg/device_interactor, keys : to handle key/mouse/wheel events.
+ - tools/sg/event : key_up_event, key_down_event, wheel_rotate_event.
+ - tools/lina/eqT : remove since duplicated with tools/eqT.
+ - tools/sg/text_freetype_marker : handle font_pixmap modeling.
+ - tools/OpenGL : BUSH_USE_AGL => TOOLS_USE_AGL. To be able to enforce the usage of Apple/OpenGL on macOS.
+ - tools/Cocoa/session.hm, sg_viewer.hm. For Geant4/G4ToolsSGCocoaGLES driver.
+ - tools/Qt/session, sg_viewer. For Geant4/G4ToolsSGQtGLES driver.
+ - tools/Xt/session, sg_viewer. For Geant4/G4ToolsSGXtGLES driver.
+ - tools/Xt/OpenGLArea : have a C++ version of the C OpenGLArea widget.
+ - tools/Xt/OpenGLArea.h, OpenGLAreaP.h, OpenGLArea.c : remove.
+ - tools/Windows/sg_viewer : have a win_render() method.
+ - tools/app, sys/dir : to be able to build macOS .app for examples doing UI and vis with Cocoa
+   and AGL or Metal.
+ - tools/get_env : have "get env" things in a dedicated file.
+ - tools/log_file, sys/process : to help debuggin macOS .app applications.
+ - test/build : have 'cppflags="${cppflags} -I../include"' for g4tools within G4 source/externals.
+ - test/cpp/rxrayfluo.cpp, build : rm this program (since it needs a xrayfluo.root file not delivered with g4tools).
+ - test/cpp/test/fonts_microsoft : rm directory.
+
 5.3.1 :
  - tools/png : use png_get_image_[width,height] methods. Then it works with recent png libs.
  - toos/sg/GL_plots_viewer : pass the ttf factory in constructor.
