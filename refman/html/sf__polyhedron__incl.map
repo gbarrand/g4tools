@@ -1,0 +1,35 @@
+<map id="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/hep/sf_polyhedron" name="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/hep/sf_polyhedron">
+<area shape="rect" id="node1" title=" " alt="" coords="618,5,832,61"/>
+<area shape="rect" id="node2" href="$bsf.html" title=" " alt="" coords="140,109,209,136"/>
+<area shape="rect" id="node12" href="$hep_2polyhedron.html" title=" " alt="" coords="564,109,652,136"/>
+<area shape="rect" id="node30" href="$typedefs.html" title=" " alt="" coords="951,333,1035,360"/>
+<area shape="rect" id="node31" href="$iwbuf.html" title=" " alt="" coords="823,259,902,285"/>
+<area shape="rect" id="node32" href="$irbuf.html" title=" " alt="" coords="926,259,999,285"/>
+<area shape="rect" id="node33" href="$_h_e_a_d_e_r.html" title=" " alt="" coords="82,184,171,211"/>
+<area shape="rect" id="node3" href="$field.html" title=" " alt="" coords="11,184,58,211"/>
+<area shape="rect" id="node4" title=" " alt="" coords="251,483,322,509"/>
+<area shape="rect" id="node5" href="$scast.html" title=" " alt="" coords="41,259,105,285"/>
+<area shape="rect" id="node11" href="$_s___s_t_r_i_n_g.html" title=" " alt="" coords="502,333,602,360"/>
+<area shape="rect" id="node6" href="$safe__cast.html" title=" " alt="" coords="34,333,112,360"/>
+<area shape="rect" id="node8" href="$rcmp.html" title=" " alt="" coords="288,333,340,360"/>
+<area shape="rect" id="node7" href="$cid.html" title=" " alt="" coords="54,408,92,435"/>
+<area shape="rect" id="node9" title=" " alt="" coords="702,408,756,435"/>
+<area shape="rect" id="node10" title=" " alt="" coords="304,408,365,435"/>
+<area shape="rect" id="node13" href="$vec3d.html" title=" " alt="" coords="598,259,692,285"/>
+<area shape="rect" id="node16" title=" " alt="" coords="365,333,424,360"/>
+<area shape="rect" id="node17" title=" " alt="" coords="766,333,825,360"/>
+<area shape="rect" id="node18" href="$rotd.html" title=" " alt="" coords="386,184,466,211"/>
+<area shape="rect" id="node29" href="$polyhedron_8icc.html" title=" " alt="" coords="646,184,754,211"/>
+<area shape="rect" id="node14" href="$vec3.html" title=" " alt="" coords="464,408,514,435"/>
+<area shape="rect" id="node15" title=" " alt="" coords="382,557,447,584"/>
+<area shape="rect" id="node19" href="$qrot.html" title=" " alt="" coords="529,259,574,285"/>
+<area shape="rect" id="node20" href="$vec4d.html" title=" " alt="" coords="346,259,403,285"/>
+<area shape="rect" id="node22" href="$mat3d.html" title=" " alt="" coords="262,259,321,285"/>
+<area shape="rect" id="node27" href="$mat4d.html" title=" " alt="" coords="180,259,238,285"/>
+<area shape="rect" id="node21" href="$vec4.html" title=" " alt="" coords="389,408,440,435"/>
+<area shape="rect" id="node23" href="$mat3.html" title=" " alt="" coords="212,333,264,360"/>
+<area shape="rect" id="node24" href="$mat.html" title=" " alt="" coords="184,408,228,435"/>
+<area shape="rect" id="node25" href="$_m_a_t_c_o_m.html" title=" " alt="" coords="146,483,227,509"/>
+<area shape="rect" id="node26" href="$eq_t.html" title=" " alt="" coords="158,557,214,584"/>
+<area shape="rect" id="node28" href="$mat4.html" title=" " alt="" coords="136,333,188,360"/>
+</map>

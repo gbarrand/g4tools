@@ -1,0 +1,7 @@
+<map id="tools::sg::plotprim" name="tools::sg::plotprim">
+<area shape="rect" id="node1" title=" " alt="" coords="5,93,132,120"/>
+<area shape="rect" id="node2" href="$classtools_1_1sg_1_1plottable__box.html" title=" " alt="" coords="180,5,339,32"/>
+<area shape="rect" id="node3" href="$classtools_1_1sg_1_1plottable__ellipse.html" title=" " alt="" coords="195,57,324,98"/>
+<area shape="rect" id="node4" href="$classtools_1_1sg_1_1plottable__img.html" title=" " alt="" coords="180,123,339,149"/>
+<area shape="rect" id="node5" href="$classtools_1_1sg_1_1plottable__text.html" title=" " alt="" coords="180,173,339,200"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/wroot/mpi_protocol" name="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/wroot/mpi_protocol">
+<area shape="rect" id="node1" title=" " alt="" coords="99,5,261,76"/>
+<area shape="rect" id="node2" href="$mpi__send__basket.html" title=" " alt="" coords="99,124,261,195"/>
+<area shape="rect" id="node3" href="$mpi__basket__add.html" title=" " alt="" coords="99,243,261,313"/>
+<area shape="rect" id="node4" href="$mpi__ntuple__column__wise.html" title=" " alt="" coords="5,361,168,432"/>
+<area shape="rect" id="node5" href="$mpi__ntuple__row__wise.html" title=" " alt="" coords="192,361,355,432"/>
+</map>

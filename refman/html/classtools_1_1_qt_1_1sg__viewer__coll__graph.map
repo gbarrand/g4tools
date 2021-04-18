@@ -1,0 +1,16 @@
+<map id="tools::Qt::sg_viewer" name="tools::Qt::sg_viewer">
+<area shape="rect" id="node1" title=" " alt="" coords="333,515,471,541"/>
+<area shape="rect" id="node2" href="$classtools_1_1sg_1_1_g_l__viewer.html" title=" " alt="" coords="328,336,471,363"/>
+<area shape="rect" id="node11" href="$classtools_1_1_qt_1_1glarea.html" title=" " alt="" coords="201,425,317,452"/>
+<area shape="rect" id="node3" href="$classtools_1_1sg_1_1viewer.html" title=" " alt="" coords="245,247,362,273"/>
+<area shape="rect" id="node4" href="$classtools_1_1colorf.html" title=" " alt="" coords="131,157,222,184"/>
+<area shape="rect" id="node5" href="$classtools_1_1vec4f.html" title=" " alt="" coords="132,81,221,108"/>
+<area shape="rect" id="node6" href="$classtools_1_1vec4.html" title=" " alt="" coords="110,5,243,32"/>
+<area shape="rect" id="node7" href="$classtools_1_1sg_1_1group.html" title=" " alt="" coords="247,157,360,184"/>
+<area shape="rect" id="node8" href="$classtools_1_1sg_1_1node.html" title=" " alt="" coords="249,81,358,108"/>
+<area shape="rect" id="node9" href="$classtools_1_1sg_1_1_g_l__manager.html" title=" " alt="" coords="390,247,547,273"/>
+<area shape="rect" id="node10" href="$classtools_1_1sg_1_1render__manager.html" title=" " alt="" coords="384,157,561,184"/>
+<area shape="rect" id="node12" title=" " alt="" coords="5,336,97,363"/>
+<area shape="rect" id="node13" href="$classtools_1_1sg_1_1device__interactor.html" title=" " alt="" coords="121,336,301,363"/>
+<area shape="rect" id="node14" href="$classtools_1_1_qt_1_1session.html" title=" " alt="" coords="440,425,564,452"/>
+</map>

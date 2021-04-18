@@ -1,0 +1,14 @@
+<map id="tools::sg::win_action" name="tools::sg::win_action">
+<area shape="rect" id="node1" title=" " alt="" coords="168,144,311,171"/>
+<area shape="rect" id="node3" href="$classtools_1_1sg_1_1matrix__action.html" title=" " alt="" coords="359,144,517,171"/>
+<area shape="rect" id="node2" href="$classtools_1_1sg_1_1action.html" title=" " alt="" coords="5,144,120,171"/>
+<area shape="rect" id="node4" href="$classtools_1_1sg_1_1bbox__action.html" title=" " alt="" coords="570,5,721,32"/>
+<area shape="rect" id="node5" href="$classtools_1_1sg_1_1event__action.html" title=" " alt="" coords="568,56,723,83"/>
+<area shape="rect" id="node6" href="$classtools_1_1sg_1_1get__matrix__action.html" title=" " alt="" coords="575,107,716,149"/>
+<area shape="rect" id="node7" href="$classtools_1_1sg_1_1pick__action.html" title=" " alt="" coords="573,173,718,200"/>
+<area shape="rect" id="node8" href="$classtools_1_1sg_1_1render__action.html" title=" " alt="" coords="565,224,725,251"/>
+<area shape="rect" id="node12" href="$classtools_1_1sg_1_1visible__action.html" title=" " alt="" coords="587,275,703,317"/>
+<area shape="rect" id="node9" href="$classtools_1_1sg_1_1gl2ps__action.html" title=" " alt="" coords="773,173,927,200"/>
+<area shape="rect" id="node10" href="$classtools_1_1sg_1_1_g_l__action.html" title=" " alt="" coords="780,224,920,251"/>
+<area shape="rect" id="node11" href="$classtools_1_1sg_1_1zb__action.html" title=" " alt="" coords="782,275,918,301"/>
+</map>

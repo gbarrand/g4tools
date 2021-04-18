@@ -1,0 +1,11 @@
+<map id="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/wps" name="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/wps">
+<area shape="rect" id="node1" title=" " alt="" coords="93,5,246,61"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,109,59,136"/>
+<area shape="rect" id="node3" title=" " alt="" coords="155,184,210,211"/>
+<area shape="rect" id="node4" title=" " alt="" coords="134,109,205,136"/>
+<area shape="rect" id="node5" title=" " alt="" coords="229,109,291,136"/>
+<area shape="rect" id="node6" href="$sprintf.html" title=" " alt="" coords="315,109,373,136"/>
+<area shape="rect" id="node7" href="$snpf.html" title=" " alt="" coords="321,184,367,211"/>
+<area shape="rect" id="node8" title=" " alt="" coords="269,259,334,285"/>
+<area shape="rect" id="node9" title=" " alt="" coords="358,259,415,285"/>
+</map>

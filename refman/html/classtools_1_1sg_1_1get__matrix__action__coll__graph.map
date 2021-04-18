@@ -1,0 +1,19 @@
+<map id="tools::sg::get_matrix_action" name="tools::sg::get_matrix_action">
+<area shape="rect" id="node1" title=" " alt="" coords="624,660,765,701"/>
+<area shape="rect" id="node2" href="$classtools_1_1sg_1_1matrix__action.html" title=" " alt="" coords="459,571,618,597"/>
+<area shape="rect" id="node3" href="$classtools_1_1sg_1_1win__action.html" title=" " alt="" coords="428,495,571,521"/>
+<area shape="rect" id="node4" href="$classtools_1_1sg_1_1action.html" title=" " alt="" coords="442,391,557,417"/>
+<area shape="rect" id="node5" href="$classtools_1_1sg_1_1states.html" title=" " alt="" coords="272,495,386,521"/>
+<area shape="rect" id="node6" href="$classtools_1_1sg_1_1state.html" title=" " alt="" coords="190,391,298,417"/>
+<area shape="rect" id="node7" href="$classtools_1_1colorf.html" title=" " alt="" coords="118,236,209,263"/>
+<area shape="rect" id="node8" href="$classtools_1_1vec4f.html" title=" " alt="" coords="100,81,190,108"/>
+<area shape="rect" id="node11" href="$classtools_1_1qrot.html" title=" " alt="" coords="182,171,310,212"/>
+<area shape="rect" id="node9" href="$classtools_1_1vec4.html" title=" " alt="" coords="78,5,212,32"/>
+<area shape="rect" id="node10" href="$classtools_1_1rotf.html" title=" " alt="" coords="226,287,304,313"/>
+<area shape="rect" id="node12" href="$classtools_1_1mat4f.html" title=" " alt="" coords="564,287,654,313"/>
+<area shape="rect" id="node13" href="$classtools_1_1mat4.html" title=" " alt="" coords="541,178,677,205"/>
+<area shape="rect" id="node14" href="$classtools_1_1mat.html" title=" " alt="" coords="538,81,680,108"/>
+<area shape="rect" id="node15" href="$classtools_1_1vec3f.html" title=" " alt="" coords="351,287,440,313"/>
+<area shape="rect" id="node16" href="$classtools_1_1vec3.html" title=" " alt="" coords="334,178,468,205"/>
+<area shape="rect" id="node17" href="$classtools_1_1sg_1_1node.html" title=" " alt="" coords="732,571,841,597"/>
+</map>

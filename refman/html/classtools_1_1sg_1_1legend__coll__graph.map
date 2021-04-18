@@ -1,0 +1,43 @@
+<map id="tools::sg::legend" name="tools::sg::legend">
+<area shape="rect" id="node1" title=" " alt="" coords="1576,487,1695,514"/>
+<area shape="rect" id="node2" href="$classtools_1_1sg_1_1back__area.html" title=" " alt="" coords="1341,204,1482,231"/>
+<area shape="rect" id="node3" href="$classtools_1_1sg_1_1node.html" title=" " alt="" coords="368,255,477,282"/>
+<area shape="rect" id="node15" href="$classtools_1_1sg_1_1group.html" title=" " alt="" coords="716,255,829,282"/>
+<area shape="rect" id="node19" href="$classtools_1_1sg_1_1base__text.html" title=" " alt="" coords="1051,788,1188,815"/>
+<area shape="rect" id="node4" href="$classtools_1_1sg_1_1sf__vec.html" title=" " alt="" coords="1051,10,1188,52"/>
+<area shape="rect" id="node5" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="705,12,841,53"/>
+<area shape="rect" id="node6" href="$classtools_1_1sg_1_1field.html" title=" " alt="" coords="188,599,292,626"/>
+<area shape="rect" id="node11" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="350,422,495,448"/>
+<area shape="rect" id="node13" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="341,125,504,166"/>
+<area shape="rect" id="node17" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="528,163,673,190"/>
+<area shape="rect" id="node21" href="$classtools_1_1sg_1_1bmf.html" title=" " alt="" coords="357,1018,488,1060"/>
+<area shape="rect" id="node23" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="361,822,484,864"/>
+<area shape="rect" id="node26" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="361,705,484,746"/>
+<area shape="rect" id="node29" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="357,953,488,994"/>
+<area shape="rect" id="node31" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="346,888,499,929"/>
+<area shape="rect" id="node33" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="537,512,664,553"/>
+<area shape="rect" id="node35" href="$classtools_1_1sg_1_1bmf.html" title=" " alt="" coords="351,1084,495,1125"/>
+<area shape="rect" id="node37" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="361,574,484,616"/>
+<area shape="rect" id="node39" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="361,640,485,681"/>
+<area shape="rect" id="node41" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="349,472,497,499"/>
+<area shape="rect" id="node7" href="$classtools_1_1colorf.html" title=" " alt="" coords="377,19,468,46"/>
+<area shape="rect" id="node8" href="$classtools_1_1vec4f.html" title=" " alt="" coords="195,19,285,46"/>
+<area shape="rect" id="node9" href="$classtools_1_1vec4.html" title=" " alt="" coords="5,19,139,46"/>
+<area shape="rect" id="node10" href="$classtools_1_1sg_1_1sf.html" title=" " alt="" coords="704,388,841,415"/>
+<area shape="rect" id="node12" href="$classtools_1_1sg_1_1sf.html" title=" " alt="" coords="872,90,1027,132"/>
+<area shape="rect" id="node14" href="$classtools_1_1sg_1_1separator.html" title=" " alt="" coords="1051,255,1187,282"/>
+<area shape="rect" id="node16" href="$classtools_1_1sg_1_1sf.html" title=" " alt="" coords="1051,154,1188,180"/>
+<area shape="rect" id="node18" href="$classtools_1_1sg_1_1base__freetype.html" title=" " alt="" coords="1329,788,1493,815"/>
+<area shape="rect" id="node20" href="$classtools_1_1sg_1_1mf__string.html" title=" " alt="" coords="706,1026,839,1052"/>
+<area shape="rect" id="node22" href="$classtools_1_1sg_1_1sf__enum.html" title=" " alt="" coords="707,804,838,845"/>
+<area shape="rect" id="node24" href="$classtools_1_1sg_1_1bsf__enum.html" title=" " alt="" coords="354,771,491,798"/>
+<area shape="rect" id="node25" href="$classtools_1_1sg_1_1sf__enum.html" title=" " alt="" coords="707,738,838,780"/>
+<area shape="rect" id="node28" href="$classtools_1_1sg_1_1sf__enum.html" title=" " alt="" coords="707,934,838,976"/>
+<area shape="rect" id="node30" href="$classtools_1_1sg_1_1sf__enum.html" title=" " alt="" coords="707,869,838,910"/>
+<area shape="rect" id="node36" href="$classtools_1_1sg_1_1sf__enum.html" title=" " alt="" coords="701,608,844,649"/>
+<area shape="rect" id="node38" href="$classtools_1_1sg_1_1sf__enum.html" title=" " alt="" coords="697,673,848,714"/>
+<area shape="rect" id="node40" href="$classtools_1_1sg_1_1sf__enum.html" title=" " alt="" coords="707,490,838,532"/>
+<area shape="rect" id="node27" href="$classtools_1_1sg_1_1gstos.html" title=" " alt="" coords="1064,738,1175,764"/>
+<area shape="rect" id="node32" href="$classtools_1_1sg_1_1sf__string.html" title=" " alt="" coords="1055,564,1184,591"/>
+<area shape="rect" id="node34" href="$classtools_1_1sg_1_1mf__std__vec.html" title=" " alt="" coords="876,1084,1023,1125"/>
+</map>

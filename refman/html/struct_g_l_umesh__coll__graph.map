@@ -1,0 +1,8 @@
+<map id="GLUmesh" name="GLUmesh">
+<area shape="rect" id="node1" title=" " alt="" coords="5,325,88,352"/>
+<area shape="rect" id="node2" href="$struct_g_l_uvertex.html" title=" " alt="" coords="33,7,119,33"/>
+<area shape="rect" id="node3" href="$struct_g_l_uhalf_edge.html" title=" " alt="" coords="82,113,185,140"/>
+<area shape="rect" id="node4" href="$struct_g_l_uface.html" title=" " alt="" coords="137,227,212,254"/>
+<area shape="rect" id="node5" href="$struct_active_region.html" title=" " alt="" coords="290,227,390,254"/>
+<area shape="rect" id="node6" href="$struct_dict_node.html" title=" " alt="" coords="376,113,453,140"/>
+</map>

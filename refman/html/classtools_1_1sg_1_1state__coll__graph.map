@@ -1,0 +1,13 @@
+<map id="tools::sg::state" name="tools::sg::state">
+<area shape="rect" id="node1" title=" " alt="" coords="175,391,283,417"/>
+<area shape="rect" id="node2" href="$classtools_1_1colorf.html" title=" " alt="" coords="118,236,209,263"/>
+<area shape="rect" id="node3" href="$classtools_1_1vec4f.html" title=" " alt="" coords="95,81,184,108"/>
+<area shape="rect" id="node6" href="$classtools_1_1qrot.html" title=" " alt="" coords="177,171,305,212"/>
+<area shape="rect" id="node4" href="$classtools_1_1vec4.html" title=" " alt="" coords="73,5,206,32"/>
+<area shape="rect" id="node5" href="$classtools_1_1rotf.html" title=" " alt="" coords="226,287,304,313"/>
+<area shape="rect" id="node7" href="$classtools_1_1mat4f.html" title=" " alt="" coords="352,287,442,313"/>
+<area shape="rect" id="node8" href="$classtools_1_1mat4.html" title=" " alt="" coords="329,178,465,205"/>
+<area shape="rect" id="node9" href="$classtools_1_1mat.html" title=" " alt="" coords="326,81,468,108"/>
+<area shape="rect" id="node10" href="$classtools_1_1vec3f.html" title=" " alt="" coords="494,287,583,313"/>
+<area shape="rect" id="node11" href="$classtools_1_1vec3.html" title=" " alt="" coords="489,178,622,205"/>
+</map>

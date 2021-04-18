@@ -1,0 +1,20 @@
+<map id="tools::sg::pick_action" name="tools::sg::pick_action">
+<area shape="rect" id="node1" title=" " alt="" coords="362,675,507,701"/>
+<area shape="rect" id="node2" href="$classtools_1_1sg_1_1matrix__action.html" title=" " alt="" coords="187,578,346,605"/>
+<area shape="rect" id="node3" href="$classtools_1_1sg_1_1win__action.html" title=" " alt="" coords="42,495,185,521"/>
+<area shape="rect" id="node4" href="$classtools_1_1sg_1_1action.html" title=" " alt="" coords="56,391,171,417"/>
+<area shape="rect" id="node5" href="$classtools_1_1sg_1_1states.html" title=" " alt="" coords="209,495,324,521"/>
+<area shape="rect" id="node6" href="$classtools_1_1sg_1_1state.html" title=" " alt="" coords="203,391,311,417"/>
+<area shape="rect" id="node7" href="$classtools_1_1colorf.html" title=" " alt="" coords="5,236,96,263"/>
+<area shape="rect" id="node8" href="$classtools_1_1vec4f.html" title=" " alt="" coords="89,81,178,108"/>
+<area shape="rect" id="node11" href="$classtools_1_1qrot.html" title=" " alt="" coords="171,171,299,212"/>
+<area shape="rect" id="node9" href="$classtools_1_1vec4.html" title=" " alt="" coords="67,5,200,32"/>
+<area shape="rect" id="node10" href="$classtools_1_1rotf.html" title=" " alt="" coords="189,287,267,313"/>
+<area shape="rect" id="node12" href="$classtools_1_1mat4f.html" title=" " alt="" coords="345,287,436,313"/>
+<area shape="rect" id="node13" href="$classtools_1_1mat4.html" title=" " alt="" coords="323,178,459,205"/>
+<area shape="rect" id="node14" href="$classtools_1_1mat.html" title=" " alt="" coords="319,81,462,108"/>
+<area shape="rect" id="node15" href="$classtools_1_1vec3f.html" title=" " alt="" coords="490,287,579,313"/>
+<area shape="rect" id="node16" href="$classtools_1_1vec3.html" title=" " alt="" coords="483,178,616,205"/>
+<area shape="rect" id="node17" href="$classtools_1_1sg_1_1primitive__visitor.html" title=" " alt="" coords="370,571,499,612"/>
+<area shape="rect" id="node18" href="$classtools_1_1sg_1_1node.html" title=" " alt="" coords="524,578,633,605"/>
+</map>

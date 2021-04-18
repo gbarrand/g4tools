@@ -1,0 +1,15 @@
+<map id="tools::sg::tessellate" name="tools::sg::tessellate">
+<area shape="rect" id="node1" title=" " alt="" coords="329,516,465,543"/>
+<area shape="rect" id="node2" href="$struct_g_l_utesselator.html" title=" " alt="" coords="344,427,451,453"/>
+<area shape="rect" id="node3" href="$struct_g_l_uvertex.html" title=" " alt="" coords="59,7,144,33"/>
+<area shape="rect" id="node4" href="$struct_g_l_uhalf_edge.html" title=" " alt="" coords="177,113,279,140"/>
+<area shape="rect" id="node13" href="$struct_g_l_umesh.html" title=" " alt="" coords="119,337,201,364"/>
+<area shape="rect" id="node5" href="$struct_g_l_uface.html" title=" " alt="" coords="232,227,307,254"/>
+<area shape="rect" id="node6" href="$struct_active_region.html" title=" " alt="" coords="435,227,535,254"/>
+<area shape="rect" id="node7" href="$struct_dict_node.html" title=" " alt="" coords="544,113,621,140"/>
+<area shape="rect" id="node8" href="$struct_dict.html" title=" " alt="" coords="595,287,640,313"/>
+<area shape="rect" id="node9" href="$struct_priority_q.html" title=" " alt="" coords="623,337,697,364"/>
+<area shape="rect" id="node10" href="$struct_p_qnode.html" title=" " alt="" coords="662,227,733,254"/>
+<area shape="rect" id="node11" href="$struct_p_qhandle_elem.html" title=" " alt="" coords="757,227,869,254"/>
+<area shape="rect" id="node12" href="$struct_cached_vertex.html" title=" " alt="" coords="721,337,828,364"/>
+</map>

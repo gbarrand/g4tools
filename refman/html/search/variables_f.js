@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['rasterpos_12691',['rasterpos',['../structtools___g_l2_p_scontext.html#a4985d811c1acb91d9ef566a3784f51a0',1,'tools_GL2PScontext']]],
+  ['reason_12692',['reason',['../structtools_1_1_xt_1_1_xo_any_callback_struct.html#a416532f6b5f9cef263c24ecd075f735e',1,'tools::Xt::XoAnyCallbackStruct']]],
+  ['reduced_5fwire_5fframe_12693',['reduced_wire_frame',['../classtools_1_1sg_1_1polyhedron.html#aa55d4dd27a3e64c0ca1128e8d4a43cf0',1,'tools::sg::polyhedron']]],
+  ['reltolerance_12694',['relTolerance',['../struct_g_l_utesselator.html#a3ec0ff45fa89b3a8c57467efded5cf1e',1,'GLUtesselator']]],
+  ['render_12695',['render',['../struct_face_count.html#ab7f6e5c284250b174a033c1359d3a65f',1,'FaceCount']]],
+  ['rgb_12696',['rgb',['../classtools_1_1sg_1_1color.html#a22afb55231c873872c88c6852d3ca4a0',1,'tools::sg::color']]],
+  ['rgba_12697',['rgba',['../structtools___g_l2_p_svertex.html#a34f8a6d722786dcbdc8d46682bf830a7',1,'tools_GL2PSvertex']]],
+  ['rgbas_12698',['rgbas',['../classtools_1_1sg_1_1atb__vertices.html#ac773ffc7a807fce4f4c099077b21075b',1,'tools::sg::atb_vertices']]],
+  ['rhjust_12699',['rhjust',['../classtools_1_1sg_1_1infos__box.html#a00f5e1107fe373c22a9cdff0ccb45304',1,'tools::sg::infos_box::rhjust()'],['../classtools_1_1sg_1_1legend.html#afd9c1a52f011fdc1ef66c7ff627eb3fd',1,'tools::sg::legend::rhjust()']]],
+  ['right_5faxis_5fvisible_12700',['right_axis_visible',['../classtools_1_1sg_1_1plotter.html#a0a67f17d1c91675994c727d12cdb3053',1,'tools::sg::plotter']]],
+  ['right_5fmargin_12701',['right_margin',['../classtools_1_1sg_1_1plots.html#a52376083cc9cb99db902a9918f006549',1,'tools::sg::plots::right_margin()'],['../classtools_1_1sg_1_1plotter.html#a031c48110ba2589ea5b6b84b2d7b2f7b',1,'tools::sg::plotter::right_margin()']]],
+  ['rotated_12702',['rotated',['../classtools_1_1sg_1_1text__style.html#a30afe923ee5571711eee7b8959bcbe0a',1,'tools::sg::text_style']]],
+  ['rotation_5fsteps_12703',['rotation_steps',['../classtools_1_1sg_1_1style.html#a68151d1a38528ecc215b875170f2d821',1,'tools::sg::style']]],
+  ['rows_12704',['rows',['../classtools_1_1sg_1_1plots.html#ad6197676ec9959ebb8e1ce05f9f0f0fd',1,'tools::sg::plots']]],
+  ['rstrings_12705',['rstrings',['../classtools_1_1sg_1_1infos__box.html#acbaba5eec55014cea194ed0654ff3d1a',1,'tools::sg::infos_box']]],
+  ['rx_12706',['rx',['../classtools_1_1sg_1_1ellipse.html#a1b62c5634d302b59e32395de99c86153',1,'tools::sg::ellipse']]],
+  ['ry_12707',['ry',['../classtools_1_1sg_1_1ellipse.html#a52c395ebc34a29b44d2832443c895072',1,'tools::sg::ellipse']]]
+];

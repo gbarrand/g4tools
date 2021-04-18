@@ -1,0 +1,52 @@
+<map id="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/sg/base_camera" name="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/sg/base_camera">
+<area shape="rect" id="node1" title=" " alt="" coords="1492,5,1694,61"/>
+<area shape="rect" id="node2" href="$node.html" title=" " alt="" coords="911,184,963,211"/>
+<area shape="rect" id="node19" href="$sf__vec3f.html" title=" " alt="" coords="844,109,916,136"/>
+<area shape="rect" id="node32" href="$sf__vec4f.html" title=" " alt="" coords="1152,109,1224,136"/>
+<area shape="rect" id="node35" href="$sf__rotf.html" title=" " alt="" coords="1028,184,1086,211"/>
+<area shape="rect" id="node38" href="$render__action.html" title=" " alt="" coords="1586,184,1690,211"/>
+<area shape="rect" id="node42" href="$pick__action.html" title=" " alt="" coords="1727,109,1816,136"/>
+<area shape="rect" id="node46" href="$event__action.html" title=" " alt="" coords="1503,259,1600,285"/>
+<area shape="rect" id="node48" href="$visible__action.html" title=" " alt="" coords="1840,109,1943,136"/>
+<area shape="rect" id="node49" href="$enums.html" title=" " alt="" coords="1967,109,2030,136"/>
+<area shape="rect" id="node50" href="$mathf.html" title=" " alt="" coords="2077,109,2144,136"/>
+<area shape="rect" id="node3" href="$field.html" title=" " alt="" coords="680,408,727,435"/>
+<area shape="rect" id="node7" href="$search__action.html" title=" " alt="" coords="528,259,634,285"/>
+<area shape="rect" id="node9" href="$_h_e_a_d_e_r.html" title=" " alt="" coords="170,408,259,435"/>
+<area shape="rect" id="node11" href="$write__action.html" title=" " alt="" coords="149,259,242,285"/>
+<area shape="rect" id="node12" href="$read__action.html" title=" " alt="" coords="360,259,452,285"/>
+<area shape="rect" id="node14" href="$get__matrix__action.html" title=" " alt="" coords="1160,259,1287,285"/>
+<area shape="rect" id="node16" href="$node__desc.html" title=" " alt="" coords="896,259,983,285"/>
+<area shape="rect" id="node18" href="$forit.html" title=" " alt="" coords="1210,408,1266,435"/>
+<area shape="rect" id="node4" title=" " alt="" coords="1234,483,1304,509"/>
+<area shape="rect" id="node5" href="$scast.html" title=" " alt="" coords="484,483,548,509"/>
+<area shape="rect" id="node6" href="$_s___s_t_r_i_n_g.html" title=" " alt="" coords="983,483,1083,509"/>
+<area shape="rect" id="node8" href="$action.html" title=" " alt="" coords="186,333,243,360"/>
+<area shape="rect" id="node10" title=" " alt="" coords="1077,408,1136,435"/>
+<area shape="rect" id="node13" href="$ifield__factory.html" title=" " alt="" coords="319,333,416,360"/>
+<area shape="rect" id="node15" href="$matrix__action.html" title=" " alt="" coords="1614,333,1716,360"/>
+<area shape="rect" id="node17" href="$field__desc.html" title=" " alt="" coords="1182,333,1265,360"/>
+<area shape="rect" id="node20" href="$sf__vec.html" title=" " alt="" coords="824,184,884,211"/>
+<area shape="rect" id="node29" href="$vec3f.html" title=" " alt="" coords="1409,333,1462,360"/>
+<area shape="rect" id="node21" href="$sf.html" title=" " alt="" coords="834,259,872,285"/>
+<area shape="rect" id="node28" href="$words.html" title=" " alt="" coords="266,259,336,285"/>
+<area shape="rect" id="node22" href="$bsf.html" title=" " alt="" coords="684,333,724,360"/>
+<area shape="rect" id="node23" href="$iwbuf.html" title=" " alt="" coords="838,333,916,360"/>
+<area shape="rect" id="node24" href="$irbuf.html" title=" " alt="" coords="940,333,1014,360"/>
+<area shape="rect" id="node25" href="$stype.html" title=" " alt="" coords="748,333,814,360"/>
+<area shape="rect" id="node26" title=" " alt="" coords="1038,333,1108,360"/>
+<area shape="rect" id="node27" title=" " alt="" coords="594,333,659,360"/>
+<area shape="rect" id="node30" href="$vec3.html" title=" " alt="" coords="1341,408,1392,435"/>
+<area shape="rect" id="node31" title=" " alt="" coords="1466,408,1525,435"/>
+<area shape="rect" id="node33" href="$vec4f.html" title=" " alt="" coords="1486,333,1540,360"/>
+<area shape="rect" id="node34" href="$vec4.html" title=" " alt="" coords="1629,408,1680,435"/>
+<area shape="rect" id="node36" href="$rotf.html" title=" " alt="" coords="1058,259,1136,285"/>
+<area shape="rect" id="node37" href="$qrot.html" title=" " alt="" coords="1340,333,1385,360"/>
+<area shape="rect" id="node39" href="$glprims.html" title=" " alt="" coords="1676,259,1752,285"/>
+<area shape="rect" id="node40" href="$vdata.html" title=" " alt="" coords="1828,259,1894,285"/>
+<area shape="rect" id="node41" href="$colorf.html" title=" " alt="" coords="1414,259,1479,285"/>
+<area shape="rect" id="node43" href="$primitive__visitor.html" title=" " alt="" coords="1715,184,1828,211"/>
+<area shape="rect" id="node44" href="$plane.html" title=" " alt="" coords="1904,184,1994,211"/>
+<area shape="rect" id="node45" href="$vmanip.html" title=" " alt="" coords="1791,333,1867,360"/>
+<area shape="rect" id="node47" href="$event.html" title=" " alt="" coords="1550,408,1604,435"/>
+</map>

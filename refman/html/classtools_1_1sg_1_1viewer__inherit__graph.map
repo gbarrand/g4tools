@@ -1,0 +1,12 @@
+<map id="tools::sg::viewer" name="tools::sg::viewer">
+<area shape="rect" id="node1" title=" " alt="" coords="5,123,123,149"/>
+<area shape="rect" id="node2" href="$classtools_1_1metal_1_1ui__viewer.html" title=" " alt="" coords="171,72,324,99"/>
+<area shape="rect" id="node3" href="$classtools_1_1sg_1_1_g_l__viewer.html" title=" " alt="" coords="176,123,319,149"/>
+<area shape="rect" id="node8" href="$classtools_1_1sg_1_1plots__viewer.html" title=" " alt="" coords="171,232,324,259"/>
+<area shape="rect" id="node4" href="$classtools_1_1_qt_1_1sg__viewer.html" title=" " alt="" coords="377,5,516,32"/>
+<area shape="rect" id="node5" href="$classtools_1_1_windows_1_1sg__viewer.html" title=" " alt="" coords="380,57,513,98"/>
+<area shape="rect" id="node6" href="$classtools_1_1_x11_1_1sg__viewer.html" title=" " alt="" coords="372,123,521,149"/>
+<area shape="rect" id="node7" href="$classtools_1_1_xt_1_1sg__viewer.html" title=" " alt="" coords="378,173,515,200"/>
+<area shape="rect" id="node9" href="$classtools_1_1sg_1_1_g_l__plots__viewer.html" title=" " alt="" coords="381,225,513,266"/>
+<area shape="rect" id="node10" href="$classtools_1_1viewplot.html" title=" " alt="" coords="394,291,499,317"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="tools::aida::aida_col_ntu" name="tools::aida::aida_col_ntu">
+<area shape="rect" id="node1" title="some special column that can&#39;t be done with aida_col&lt;T&gt; ////" alt="" coords="16,185,181,212"/>
+<area shape="rect" id="node2" href="$classtools_1_1aida_1_1base__col.html" title=" " alt="" coords="5,81,149,108"/>
+<area shape="rect" id="node3" href="$classtools_1_1aida_1_1ntuple.html" title=" " alt="" coords="174,81,301,108"/>
+<area shape="rect" id="node4" href="$classtools_1_1aida_1_1base__ntu.html" title=" " alt="" coords="165,5,310,32"/>
+</map>

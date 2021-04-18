@@ -1,0 +1,13 @@
+<map id="tools::sg::ellipse" name="tools::sg::ellipse">
+<area shape="rect" id="node1" title=" " alt="" coords="195,409,312,436"/>
+<area shape="rect" id="node2" href="$classtools_1_1sg_1_1node.html" title=" " alt="" coords="5,269,115,295"/>
+<area shape="rect" id="node3" href="$classtools_1_1curve.html" title=" " alt="" coords="139,269,229,295"/>
+<area shape="rect" id="node4" href="$classtools_1_1mat4f.html" title=" " alt="" coords="135,165,225,191"/>
+<area shape="rect" id="node5" href="$classtools_1_1mat4.html" title=" " alt="" coords="112,81,248,108"/>
+<area shape="rect" id="node6" href="$classtools_1_1mat.html" title=" " alt="" coords="109,5,251,32"/>
+<area shape="rect" id="node7" href="$classtools_1_1sg_1_1sf.html" title=" " alt="" coords="254,269,391,295"/>
+<area shape="rect" id="node8" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="250,165,395,191"/>
+<area shape="rect" id="node9" href="$classtools_1_1sg_1_1field.html" title=" " alt="" coords="360,81,464,108"/>
+<area shape="rect" id="node11" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="420,157,583,199"/>
+<area shape="rect" id="node10" href="$classtools_1_1sg_1_1sf.html" title=" " alt="" coords="420,261,575,303"/>
+</map>

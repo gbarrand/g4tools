@@ -1,0 +1,23 @@
+<map id="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/columns" name="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/columns">
+<area shape="rect" id="node1" title=" " alt="" coords="160,5,313,61"/>
+<area shape="rect" id="node2" href="$vmanip.html" title=" " alt="" coords="391,184,456,211"/>
+<area shape="rect" id="node5" href="$forit.html" title=" " alt="" coords="76,109,120,136"/>
+<area shape="rect" id="node6" href="$sout.html" title=" " alt="" coords="5,109,52,136"/>
+<area shape="rect" id="node8" href="$schar.html" title=" " alt="" coords="144,109,199,136"/>
+<area shape="rect" id="node9" href="$strip.html" title=" " alt="" coords="171,184,217,211"/>
+<area shape="rect" id="node10" href="$words.html" title=" " alt="" coords="241,184,299,211"/>
+<area shape="rect" id="node11" href="$value.html" title=" " alt="" coords="511,109,565,136"/>
+<area shape="rect" id="node3" title=" " alt="" coords="319,259,378,285"/>
+<area shape="rect" id="node4" title=" " alt="" coords="403,259,473,285"/>
+<area shape="rect" id="node7" title=" " alt="" coords="204,333,259,360"/>
+<area shape="rect" id="node12" href="$array.html" title=" " alt="" coords="480,184,532,211"/>
+<area shape="rect" id="node13" href="$typedefs.html" title=" " alt="" coords="549,259,621,285"/>
+<area shape="rect" id="node14" href="$num2s.html" title=" " alt="" coords="608,184,671,211"/>
+<area shape="rect" id="node20" href="$b2s.html" title=" " alt="" coords="323,184,367,211"/>
+<area shape="rect" id="node21" href="$value_8icc.html" title=" " alt="" coords="695,184,768,211"/>
+<area shape="rect" id="node15" href="$sprintf.html" title=" " alt="" coords="645,259,703,285"/>
+<area shape="rect" id="node19" title=" " alt="" coords="728,259,793,285"/>
+<area shape="rect" id="node16" href="$snpf.html" title=" " alt="" coords="651,333,697,360"/>
+<area shape="rect" id="node17" title=" " alt="" coords="599,408,664,435"/>
+<area shape="rect" id="node18" title=" " alt="" coords="688,408,745,435"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/wroot/base_pntuple" name="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/wroot/base_pntuple">
+<area shape="rect" id="node1" title=" " alt="" coords="279,5,449,76"/>
+<area shape="rect" id="node2" href="$base__pntuple__column__wise.html" title=" " alt="" coords="183,124,353,195"/>
+<area shape="rect" id="node5" href="$base__pntuple__row__wise.html" title=" " alt="" coords="377,124,546,195"/>
+<area shape="rect" id="node3" href="$mpi__ntuple__column__wise.html" title=" " alt="" coords="5,243,168,313"/>
+<area shape="rect" id="node4" href="$mt__ntuple__column__wise.html" title=" " alt="" coords="193,243,349,313"/>
+<area shape="rect" id="node6" href="$mpi__ntuple__row__wise.html" title=" " alt="" coords="377,243,540,313"/>
+<area shape="rect" id="node7" href="$mt__ntuple__row__wise.html" title=" " alt="" coords="565,243,721,313"/>
+</map>

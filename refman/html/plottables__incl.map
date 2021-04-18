@@ -1,0 +1,22 @@
+<map id="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/sg/plottables" name="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/sg/plottables">
+<area shape="rect" id="node1" title=" " alt="" coords="374,5,553,61"/>
+<area shape="rect" id="node2" href="$plottable.html" title=" " alt="" coords="221,109,293,136"/>
+<area shape="rect" id="node10" href="$enums.html" title=" " alt="" coords="501,109,564,136"/>
+<area shape="rect" id="node11" href="$colorf.html" title=" " alt="" coords="360,109,425,136"/>
+<area shape="rect" id="node18" href="$img.html" title=" " alt="" coords="480,184,535,211"/>
+<area shape="rect" id="node20" href="$typedefs.html" title=" " alt="" coords="588,109,672,136"/>
+<area shape="rect" id="node3" title=" " alt="" coords="209,333,264,360"/>
+<area shape="rect" id="node4" href="$scast.html" title=" " alt="" coords="159,184,223,211"/>
+<area shape="rect" id="node9" href="$_s___s_t_r_i_n_g.html" title=" " alt="" coords="320,259,420,285"/>
+<area shape="rect" id="node5" href="$safe__cast.html" title=" " alt="" coords="5,259,84,285"/>
+<area shape="rect" id="node7" href="$rcmp.html" title=" " alt="" coords="160,259,212,285"/>
+<area shape="rect" id="node6" href="$cid.html" title=" " alt="" coords="25,333,64,360"/>
+<area shape="rect" id="node8" title=" " alt="" coords="385,333,446,360"/>
+<area shape="rect" id="node12" href="$vec4f.html" title=" " alt="" coords="353,184,432,211"/>
+<area shape="rect" id="node13" href="$vec4.html" title=" " alt="" coords="629,259,679,285"/>
+<area shape="rect" id="node16" title=" " alt="" coords="237,259,295,285"/>
+<area shape="rect" id="node17" title=" " alt="" coords="445,259,503,285"/>
+<area shape="rect" id="node14" title=" " alt="" coords="667,333,732,360"/>
+<area shape="rect" id="node15" title=" " alt="" coords="572,333,643,360"/>
+<area shape="rect" id="node19" href="$mnmx.html" title=" " alt="" coords="703,259,762,285"/>
+</map>

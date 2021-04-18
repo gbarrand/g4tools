@@ -1,0 +1,25 @@
+<map id="tools::sg::perspective" name="tools::sg::perspective">
+<area shape="rect" id="node1" title=" " alt="" coords="1644,119,1791,145"/>
+<area shape="rect" id="node2" href="$classtools_1_1sg_1_1base__camera.html" title=" " alt="" coords="1435,195,1595,221"/>
+<area shape="rect" id="node3" href="$classtools_1_1sg_1_1node.html" title=" " alt="" coords="1197,235,1306,261"/>
+<area shape="rect" id="node4" href="$classtools_1_1sg_1_1sf.html" title=" " alt="" coords="1183,96,1320,123"/>
+<area shape="rect" id="node5" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="825,96,971,123"/>
+<area shape="rect" id="node6" href="$classtools_1_1sg_1_1field.html" title=" " alt="" coords="431,121,535,148"/>
+<area shape="rect" id="node9" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="649,332,801,359"/>
+<area shape="rect" id="node17" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="649,29,801,56"/>
+<area shape="rect" id="node21" href="$classtools_1_1sg_1_1bsf.html" title=" " alt="" coords="995,184,1133,211"/>
+<area shape="rect" id="node7" href="$classtools_1_1sg_1_1sf__vec3f.html" title=" " alt="" coords="1187,336,1316,363"/>
+<area shape="rect" id="node8" href="$classtools_1_1sg_1_1sf__vec.html" title=" " alt="" coords="1001,329,1127,370"/>
+<area shape="rect" id="node10" href="$classtools_1_1vec3f.html" title=" " alt="" coords="438,332,527,359"/>
+<area shape="rect" id="node11" href="$classtools_1_1vec3.html" title=" " alt="" coords="188,332,321,359"/>
+<area shape="rect" id="node12" href="$classtools_1_1mat4f.html" title=" " alt="" coords="1206,285,1297,312"/>
+<area shape="rect" id="node13" href="$classtools_1_1mat4.html" title=" " alt="" coords="996,277,1132,304"/>
+<area shape="rect" id="node14" href="$classtools_1_1mat.html" title=" " alt="" coords="654,277,797,304"/>
+<area shape="rect" id="node15" href="$classtools_1_1sg_1_1sf__vec4f.html" title=" " alt="" coords="1187,5,1316,32"/>
+<area shape="rect" id="node16" href="$classtools_1_1sg_1_1sf__vec.html" title=" " alt="" coords="1001,6,1127,47"/>
+<area shape="rect" id="node18" href="$classtools_1_1vec4f.html" title=" " alt="" coords="210,81,299,108"/>
+<area shape="rect" id="node23" href="$classtools_1_1qrot.html" title=" " alt="" coords="419,189,547,230"/>
+<area shape="rect" id="node19" href="$classtools_1_1vec4.html" title=" " alt="" coords="5,81,139,108"/>
+<area shape="rect" id="node20" href="$classtools_1_1sg_1_1sf__rotf.html" title=" " alt="" coords="1193,184,1309,211"/>
+<area shape="rect" id="node22" href="$classtools_1_1rotf.html" title=" " alt="" coords="687,205,764,232"/>
+</map>

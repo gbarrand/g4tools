@@ -1,0 +1,11 @@
+<map id="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/sg/sf_vec4f" name="/Users/barrand/private/dev/softinex/g4tools/g4tools/tools/sg/sf_vec4f">
+<area shape="rect" id="node1" title=" " alt="" coords="353,5,525,61"/>
+<area shape="rect" id="node2" href="$base__camera.html" title=" " alt="" coords="337,109,540,165"/>
+<area shape="rect" id="node3" href="$ortho.html" title=" " alt="" coords="265,213,418,269"/>
+<area shape="rect" id="node9" href="$perspective.html" title=" " alt="" coords="442,213,633,269"/>
+<area shape="rect" id="node4" href="$plots__viewer.html" title=" " alt="" coords="123,317,319,373"/>
+<area shape="rect" id="node8" href="$set__plotter__camera.html" title=" " alt="" coords="343,317,579,373"/>
+<area shape="rect" id="node5" href="$_g_l__plots__viewer.html" title=" " alt="" coords="5,421,227,477"/>
+<area shape="rect" id="node7" href="$viewplot.html" title=" " alt="" coords="251,421,405,477"/>
+<area shape="rect" id="node6" href="$plots__glarea.html" title=" " alt="" coords="19,525,213,581"/>
+</map>
