@@ -46,32 +46,32 @@ BODY {
 	margin-right: 20px;
 	margin-left: 20px;
 }
-TD.indexkey { 
-   background-color: #eeeeff; 
-   font-weight: bold; 
-   padding-right  : 10px; 
-   padding-top    : 2px; 
-   padding-left   : 10px; 
-   padding-bottom : 2px; 
-   margin-left    : 0px; 
-   margin-right   : 0px; 
-   margin-top     : 2px; 
-   margin-bottom  : 2px  
+TD.indexkey {
+   background-color: #eeeeff;
+   font-weight: bold;
+   padding-right  : 10px;
+   padding-top    : 2px;
+   padding-left   : 10px;
+   padding-bottom : 2px;
+   margin-left    : 0px;
+   margin-right   : 0px;
+   margin-top     : 2px;
+   margin-bottom  : 2px
 }
-TD.indexvalue { 
-   background-color: #eeeeff; 
-   font-style: italic; 
-   padding-right  : 10px; 
-   padding-top    : 2px; 
-   padding-left   : 10px; 
-   padding-bottom : 2px; 
-   margin-left    : 0px; 
-   margin-right   : 0px; 
-   margin-top     : 2px; 
-   margin-bottom  : 2px  
+TD.indexvalue {
+   background-color: #eeeeff;
+   font-style: italic;
+   padding-right  : 10px;
+   padding-top    : 2px;
+   padding-left   : 10px;
+   padding-bottom : 2px;
+   margin-left    : 0px;
+   margin-right   : 0px;
+   margin-top     : 2px;
+   margin-bottom  : 2px
 }
 TR.memlist {
-   background-color: #f0f0f0; 
+   background-color: #f0f0f0;
 }
 P.formulaDsp { text-align: center; }
 IMG.formulaDsp { }
