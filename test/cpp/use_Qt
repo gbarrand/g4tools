@@ -1,0 +1,232 @@
+# Copyright (C) 2010, Guy Barrand. All rights reserved.
+# See the file bush.license for terms.
+
+if [ "${use_Qt}" = "yes" ] ; then
+
+  bush_home=.
+
+  Qt_ld_library_path=
+  moc_exe=
+
+  if [ "`uname | grep CYGWIN`" != "" ] ; then
+
+    if [ ${build_cl_exe} = "yes" ] ; then
+     #Qt_home="${c_drive}/Qt/5.12.3/msvc2017_64"
+      Qt_home="${c_drive}/Qt/5.15.2/msvc2019_64"
+      if [ ! -d ${Qt_home} ] ; then
+        echo "bush/use/Qt : Qt not found under ${Qt_home}."
+        exit
+      fi
+
+      Qt_inc="${Qt_home}/include"
+
+      . ${bush_home}/cppflags_add_std_cxx11
+      cppflags="${cppflags} -I${Qt_inc}"
+
+      Qt_lib="${Qt_home}/lib"
+
+      # if including as : #include <qobject.h>  # used in ourex/g4vis.
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtCore"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtGui"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtWidgets"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtOpenGL"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtPrintSupport"
+
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/Qt3DCore"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/Qt3DExtras"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/Qt3DRender"
+
+      libs="${libs} ${Qt_lib}/Qt53DRender.lib"
+      libs="${libs} ${Qt_lib}/Qt53DExtras.lib"
+      libs="${libs} ${Qt_lib}/Qt53DCore.lib"
+
+      libs="${libs} ${Qt_lib}/Qt5OpenGL.lib"
+      libs="${libs} ${Qt_lib}/Qt5Widgets.lib"
+      libs="${libs} ${Qt_lib}/Qt5Gui.lib"
+      libs="${libs} ${Qt_lib}/Qt5Core.lib"
+
+      Qt_ld_library_path="${Qt_lib}"
+
+     #moc_exe="${Qt_home}/bin/moc.exe"
+      moc_exe="${bush_home}/qt_moc_vc"
+
+    elif [ -d /usr/include/qt5/QtCore ] ; then
+      # the cygwin Qt5 had been built with cygwin/g++ and with cygwin/X11.
+
+      Qt_home=/usr
+
+      Qt_inc="${Qt_home}/include/qt5"
+
+      . ${bush_home}/cppflags_add_std_cxx11
+      cppflags="${cppflags} -I${Qt_inc}"
+
+      # if including as : #include <qobject.h>  # used in ourex/g4vis.
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtCore"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtGui"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtWidgets"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtOpenGL"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtPrintSupport"
+
+      Qt_lib="${c_drive}/cygwin64/lib"	
+
+      libs="${libs} ${Qt_lib}/libQt5OpenGL.dll.a"
+      libs="${libs} ${Qt_lib}/libQt5Widgets.dll.a"
+      libs="${libs} ${Qt_lib}/libQt5Gui.dll.a"
+      libs="${libs} ${Qt_lib}/libQt5Core.dll.a"
+
+      Qt_ld_library_path="${Qt_lib}"
+
+      moc_exe="${Qt_home}/lib/qt5/bin/moc.exe"
+
+    fi
+
+  elif [ `uname` = Darwin ] ; then
+
+    if [ -d /opt/local/libexec/qt5/include/QtUiTools ] ; then
+  
+      Qt_home=/opt/local/libexec/qt5
+
+      Qt_frameworks="${Qt_home}/lib"
+      
+      . ${bush_home}/cppflags_add_std_cxx11
+      cppflags="${cppflags} -F${Qt_frameworks}"
+  
+      # if including as : #include <qobject.h>  # used in ourex/g4vis.
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_home}/lib/QtCore.framework/Headers"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_home}/lib/QtGui.framework/Headers"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_home}/lib/QtWidgets.framework/Headers"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_home}/lib/QtOpenGL.framework/Headers"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_home}/lib/QtPrintSupport.framework/Headers"
+  
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_home}/lib/Qt3DCore.framework/Headers"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_home}/lib/Qt3DExtras.framework/Headers"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_home}/lib/Qt3DRender.framework/Headers"
+  
+      libs="${libs} -framework Qt3DRender -framework Qt3DExtras -framework Qt3DCore"
+  
+      libs="${libs} -F${Qt_frameworks} -framework QtOpenGL"
+      libs="${libs} -framework QtGui -framework QtCore"
+      libs="${libs} -framework QtWidgets"
+
+      moc_exe="${Qt_home}/bin/moc"
+
+    elif [ -d /opt/local/libexec/qt4/include/Qt ] ; then
+  
+      Qt_home=/opt/local/libexec/qt4
+  
+      cppflags="${cppflags} -I${Qt_home}/include"
+  
+      # if including as : #include <qobject.h>  # used in ourex/g4vis.
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_home}/Library/Frameworks/QtCore.framework/Headers"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_home}/Library/Frameworks/QtGui.framework/Headers"
+      Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_home}/Library/Frameworks/QtOpenGL.framework/Headers"
+
+      libs="${libs} ${Qt_home}/lib/libQtOpenGL.dylib"
+      libs="${libs} ${Qt_home}/lib/libQtGui.dylib"
+      libs="${libs} ${Qt_home}/lib/libQtCore.dylib"
+
+      moc_exe="${Qt_home}/bin/moc"
+  
+      #Qt_ld_library_path="${Qt_home}/lib"
+  
+    elif [ -d /Library/Frameworks/QtCore.framework ] ; then
+  
+      cppflags="${cppflags} -F/Library/Frameworks"
+  
+      libs="${libs} -F/Library/Frameworks -framework QtOpenGL"
+      libs="${libs} -framework QtGui -framework QtCore"
+  
+      moc_exe=/usr/bin/moc
+  
+    fi
+
+  elif [ -d /usr/include/qt5 ] ; then  #ostackc
+    Qt_home=/usr
+
+    Qt_inc="${Qt_home}/include/qt5"
+
+    . ${bush_home}/cppflags_add_std_cxx11
+    cppflags="${cppflags} -I${Qt_inc}"
+
+    # if including as : #include <qobject.h>  # used in ourex/g4vis.
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtCore"
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtGui"
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtWidgets"
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtOpenGL"
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtPrintSupport"
+
+    libs="${libs} -L${Qt_home}/lib64 -lQt5OpenGL -lQt5Widgets -lQt5Gui -lQt5Core"
+
+    Qt_ld_library_path="${Qt_home}/lib64"
+
+    moc_exe="${Qt_home}/lib64/qt5/bin/moc"
+
+    # run time : may have to :
+    #    sh> export QT_XKB_CONFIG_ROOT=/usr/lib/kbd/keymaps/xkb
+    #   csh> setenv QT_XKB_CONFIG_ROOT /usr/lib/kbd/keymaps/xkb
+
+  elif [ -d /usr/include/x86_64-linux-gnu/qt5 ] ; then  #ostackess.
+    Qt_home=/usr
+
+    Qt_inc="${Qt_home}/include/x86_64-linux-gnu/qt5"
+    Qt_lib="${Qt_home}/lib/x86_64-linux-gnu"
+
+    . ${bush_home}/cppflags_add_std_cxx11
+    cppflags="${cppflags} -I${Qt_inc}"
+
+    # if including as : #include <qobject.h>  # used in ourex/g4vis.
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtCore"
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtGui"
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtWidgets"
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtOpenGL"
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtPrintSupport"
+
+    items="Qt3DCore Qt3DRenderer Qt3DExtras"
+    for item in ${items} ; do
+      if [ -d ${Qt_inc}/${item} ] ; then Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/${item}";fi
+    done
+    items="Qt53DCore Qt53DRenderer Qt53DExtras"
+    for item in ${items} ; do
+      if [ -f ${Qt_lib}/lib${item}.so ] ; then libs="${libs} ${Qt_lib}/lib${item}.so";fi
+    done
+
+    libs="${libs} ${Qt_lib}/libQt5OpenGL.so"
+    libs="${libs} ${Qt_lib}/libQt5Widgets.so"
+    libs="${libs} ${Qt_lib}/libQt5Gui.so"
+    libs="${libs} ${Qt_lib}/libQt5Core.so"
+
+    Qt_ld_library_path="${Qt_lib}"
+
+    moc_exe="${Qt_home}/lib/x86_64-linux-gnu/qt5/bin/moc"
+
+  elif [ -d /usr/include/qt4 ] ; then
+    Qt_home=/usr
+
+    cppflags="${cppflags} -I${Qt_home}/include/qt4"
+
+    libs="${libs} -L${Qt_home}/lib -lQtOpenGL -lQtGui -lQtCore"
+
+    Qt_ld_library_path="${Qt_home}/lib"
+
+    moc_exe="${Qt_home}/bin/moc-qt4"
+
+  elif [ -d /usr/include/Qt ] ; then
+    Qt_home=/usr
+
+    cppflags="${cppflags} -I${Qt_home}/include/Qt"
+
+    libs="${libs} -L${Qt_home}/lib -lQtOpenGL -lQtGui -lQtCore"
+
+    Qt_ld_library_path="${Qt_home}/lib"
+
+    moc_exe="${Qt_home}/bin/moc-qt4"
+
+  fi
+
+  if [ "${moc_exe}" = "" ] ; then
+    echo "bush/use/Qt : Qt not found."
+    exit
+  fi
+
+fi
+

@@ -1,0 +1,36 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_sys_sleep
+#define tools_sys_sleep
+
+#ifdef _WIN32
+//#include <windows.h>
+extern"C" {
+  __declspec(dllimport) void __stdcall Sleep(unsigned long);
+}
+#else
+#include <unistd.h>
+#endif
+
+namespace tools {
+
+inline void sleep_secs(unsigned int a_secs){
+#ifdef _WIN32
+  ::Sleep(a_secs*1000);
+#else
+  ::sleep(a_secs);
+#endif
+}
+
+inline void sleep_milli_secs(unsigned int a_milli_sec){
+#ifdef _WIN32
+  ::Sleep(a_milli_sec);
+#else
+  ::usleep(a_milli_sec*1000); //it is in micro seconds.
+#endif
+}
+
+}
+
+#endif

@@ -1,0 +1,12 @@
+use_status=1;(echo ${cppflags} | grep '\-std=c++11' > /dev/null  ) && use_status=0
+if [ $use_status != 0 ] ; then
+
+  if [ ${cpp_compiler} = "g++" -a "`uname | grep CYGWIN`" != "" ] ; then
+    # because of fileno which is not available in stdio.h with -std=c++11.
+    cppflags="${cppflags} -std=gnu++11"
+  else
+    cppflags="${cppflags} -std=c++11"
+  fi
+
+fi
+unset use_status

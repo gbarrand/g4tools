@@ -1,0 +1,89 @@
+// Copyright (C) 2010, Guy Barrand. All rights reserved.
+// See the file tools.license for terms.
+
+#ifndef tools_sys_atime
+#define tools_sys_atime
+
+#ifdef _MSC_VER
+#include <sys/timeb.h>
+#else
+#include <sys/time.h>
+#endif
+
+#include <tools/typedefs>
+#include <ostream>
+
+namespace tools {
+
+class atime {
+public:
+  typedef uint64 num_t;
+public:
+  static atime now() {
+#ifdef _MSC_VER
+    struct timeb tb;
+    ::ftime(&tb);
+    return atime((num_t)tb.time,(num_t)(tb.millitm * 1000));
+#else
+    struct timeval tval;
+    ::gettimeofday(&tval,0);
+    return atime((num_t)tval.tv_sec,(num_t)tval.tv_usec);
+#endif
+  }
+  static atime diff(const atime& a_to,const atime& a_from){
+    // it is assumed that a_to > a_from.
+
+    num_t f_all_mcs = a_from.m_secs * 1000000 + a_from.m_micro_secs;
+    num_t n_all_mcs = a_to.m_secs * 1000000 + a_to.m_micro_secs;
+
+    num_t d_all_mcs = n_all_mcs-f_all_mcs;
+
+    num_t d_s = d_all_mcs/1000000;
+    num_t d_mcs = d_all_mcs-d_s*1000000;
+
+    return atime(d_s,d_mcs);
+  }
+  static atime elapsed(const atime& a_from){return diff(now(),a_from);}
+public:
+  //atime():m_secs(0),m_micro_secs(0){} //for sf_atime.
+  atime(num_t a_secs,num_t a_micro_secs):m_secs(a_secs),m_micro_secs(a_micro_secs){}
+  virtual ~atime(){}
+public:
+  atime(const atime& a_from):m_secs(a_from.m_secs),m_micro_secs(a_from.m_micro_secs){}
+  atime& operator=(const atime& a_from){
+    m_secs = a_from.m_secs;
+    m_micro_secs = a_from.m_micro_secs;
+    return *this;
+  }
+public:
+  num_t seconds() const {return m_secs;}
+  num_t micro_seconds() const {return m_micro_secs;}
+  num_t milli_seconds() const {return m_secs*1000+m_micro_secs/1000;}
+
+  num_t value_micro_seconds() const {return m_secs*1000000+m_micro_secs;}
+
+  double value() const {return ((double)m_secs) + ((double)m_micro_secs)/1000000.0;}
+
+  bool operator==(const atime& a_from) const {
+    if(a_from.m_secs!=m_secs) return false;
+    if(a_from.m_micro_secs!=m_micro_secs) return false;
+    return true;
+  }
+  bool operator!=(const atime& a_from) const {return !operator==(a_from);}
+
+protected:
+  num_t m_secs;
+  num_t m_micro_secs;
+};
+
+inline std::ostream& operator<<(std::ostream& a_out,const atime& a_time){
+  a_out << a_time.seconds();
+  a_out << " secs ";
+  a_out << a_time.micro_seconds();
+  a_out << " micro_secs";
+  return a_out;
+}
+
+}
+
+#endif

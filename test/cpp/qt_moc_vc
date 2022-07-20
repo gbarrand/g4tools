@@ -1,0 +1,92 @@
+#!/bin/sh -f
+
+# Copyright (C) 2010, Guy Barrand. All rights reserved.
+# See the file bush.license for terms.
+
+verbose=no
+
+on_wsl=no
+if [ "`uname -r | grep Microsoft`" != "" ] ; then
+  on_wsl=yes
+  bush_home=`dirname $0`
+  path_u2w="${bush_home}/wslpath"
+else
+  path_u2w='cygpath -w -a'
+fi
+
+Is=
+Ds=
+
+inc_p=
+file_o=
+file_h=
+
+moc_flags=
+
+while test $# -ge 1 ; do
+  case $1 in
+    -verbose) verbose=yes;;
+    -o) if [ $# -ge 2 ] ; then file_o=$2;shift; fi;;
+    -p) if [ $# -ge 2 ] ; then inc_p=$2;shift; fi;;
+    -I*) path="`echo $1 | sed -e 's:-I::g'`";path="`${path_u2w} ${path}`";path="'${path}'";Is="${Is} -I${path}";;
+    -D*) Ds="${Ds} $1";;
+    
+    --output-dep-file) moc_flags="${moc_flags} $1";;
+    
+    -*) echo "bush/qt_moc_vc : unknown minus option $1";exit;;
+     *) suffix=`echo $1 | sed 's:.*\.::'`
+        if [ "`basename $1`" = "$1" ] ; then
+          path="$1"
+        else
+          path="`${path_u2w} $1`";path="'${path}'";
+        fi
+        if [ $# = 1 ] ; then
+          file_h=$1
+        else
+          echo "bush/qt_moc_vc : unknown option : $1"
+          exit
+        fi;;
+  esac
+  shift
+done
+
+moc_exe_cmd="moc.exe"
+
+moc_exe_cmd="${moc_exe_cmd} ${moc_flags}"
+
+if [ "${Is}" != "" ] ; then moc_exe_cmd="${moc_exe_cmd} ${Is}"; fi
+if [ "${Ds}" != "" ] ; then moc_exe_cmd="${moc_exe_cmd} ${Ds}"; fi
+
+if [ "${inc_p}" != "" ] ; then
+  inc_p="`${path_u2w} ${inc_p}`"
+  moc_exe_cmd="${moc_exe_cmd} -p '${inc_p}'"
+fi
+
+if [ "${file_o}" = "" ] ; then
+  echo "bush/qt_moc_vc : no .o given."
+  exit
+fi
+file_o="`${path_u2w} ${file_o}`"
+moc_exe_cmd="${moc_exe_cmd} -o '${file_o}'"
+
+if [ "${file_h}" = "" ] ; then
+  echo "bush/qt_moc_vc : no file to compile."
+  exit
+fi
+file_h="`${path_u2w} ${file_h}`"
+moc_exe_cmd="${moc_exe_cmd} '${file_h}'"
+
+if [ ${verbose} = yes ] ; then echo "${moc_exe_cmd}";fi
+
+/bin/rm -f ./moc_exe_tmp
+eval ${moc_exe_cmd} > ./moc_exe_tmp
+use_status=$?
+if [ ${use_status} != 0 ] ; then
+  cat ./moc_exe_tmp
+  /bin/rm -f ./moc_exe_tmp
+  exit ${use_status}
+else
+  /bin/rm -f ./moc_exe_tmp
+  exit 0
+fi
+

@@ -1,0 +1,43 @@
+# Copyright (C) 2010, Guy Barrand. All rights reserved.
+# See the file bush.license for terms.
+
+if [ "${use_Xm}" = "yes" ] ; then
+  if [ ${build_cl_exe} = "yes" ] ; then
+    echo "bush/use/Xm : cl.exe : Xm not supported."
+    exit
+  fi
+
+  # WARNING : it must be consitent with X11. Else you may have at app startup :
+  #             Error : Unresolved inheritance operation
+
+  #//////////////////////////////////////////////
+  #//////////////////////////////////////////////
+  #//////////////////////////////////////////////
+  if [ `uname` = Darwin ] ; then
+    inc_dirs="/opt/local/include"
+  else
+    inc_dirs="/usr/X11R6/include /usr/include"
+  fi
+  inc_to_find=Xm/Xm.h
+  bush_home=.
+  . ${bush_home}/find_inc
+  inc_to_find=X11/Intrinsic.h
+  . ${bush_home}/find_inc
+
+  #//////////////////////////////////////////////
+  #//////////////////////////////////////////////
+  #//////////////////////////////////////////////
+  if [ `uname` = Darwin ] ; then
+    libs="${libs} /opt/local/lib/libXm.dylib"
+  else
+    lib_dirs="/usr/X11R6/${lib} /usr/${lib} /usr/lib/x86_64-linux-gnu"
+    # WARNING : Xmu must be after Xm.
+    lib_to_find=Xm
+    . ${bush_home}/find_lib
+  fi
+
+  #//////////////////////////////////////////////
+  #//////////////////////////////////////////////
+  #//////////////////////////////////////////////
+
+fi

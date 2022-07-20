@@ -1,0 +1,54 @@
+
+if [ "${use_geant4}" = "yes" ] ; then
+
+  ./check_app geant4-config 'geant4-config program not found. You have to <source setup> geant4.'
+  use_status=$?;if [ ${use_status} != 0 ] ; then exit ${use_status};fi
+
+  cppflags="${cppflags} `geant4-config --cflags`"
+  
+  #. ${bush_home}/cppflags_add_std_cxx11
+
+  # check that we link apps with geant4 archive libs since our application
+  # distribution packing (bush/app_distrib) does not handle (yet) shared libs
+  # (.dylib on macOS, .so on Linux).
+  # Note that we must respect the library order coming from "geant4-config --libs".
+
+  #libs="${libs} `geant4-config --libs`"
+
+  geant4_lib_path=none
+  items="`geant4-config --libs`"
+  for item in ${items} ; do
+    is_path="`echo ${item} | sed -e 's:-L::g'`"
+    if [ ${is_path} != ${item} ] ; then
+      if [ -d ${is_path} ] ; then
+        geant4_lib_path="${is_path}"
+      fi
+    fi
+  done
+  if [ ${geant4_lib_path} = none ] ; then
+    echo "use_geant4 : geant4 lib path not found from 'geant4-config --libs'."
+    exit
+  fi
+
+  found_a=no
+  items="`geant4-config --libs`"
+  for item in ${items} ; do
+    is_lib="`echo ${item} | sed -e 's:-l::g'`"
+    if [ ${is_lib} != ${item} ] ; then
+      if [ -f ${geant4_lib_path}/lib${is_lib}.a ] ; then
+        libs="${libs} ${geant4_lib_path}/lib${is_lib}.a"
+        found_a=yes
+      fi
+    fi
+  done
+
+  if [ ${found_a} = no ] ; then
+    echo "use_geant4: no .a library found in ${geant4_lib_path} :"
+    echo 'use_geant4: you have to build geant4 with the cmake option -DBUILD_STATIC_LIBS=ON'
+    echo 'use_geant4: since our application distribution packing (bush/app_distrib) does not'
+    echo 'use_geant4: handle (yet) shared libs (.dylib on macOS, .so on Linux).'
+    exit
+  fi
+
+fi
+
