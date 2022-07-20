@@ -8,7 +8,11 @@
 #include <tools/viewplot>
 
 #ifdef TOOLS_USE_PNG
-#include <tools/png>
+#include <toolx/png>
+#endif
+
+#ifdef TOOLS_USE_JPEG
+#include <toolx/jpeg>
 #endif
 
 
@@ -61,11 +65,11 @@ void plot_file(tools::viewplot& a_viewer,
 }
 
 #ifdef TOOLS_USE_FREETYPE
-#include <tools/sg/text_freetype>
+#include <toolx/sg/text_freetype>
 #endif
 
 #ifdef TOOLS_USE_EXPAT
-#include <tools/xml/xml_style>
+#include <toolx/xml/xml_style>
 #include <tools/xml/wrap_viewplot_fonts_google_style> // xml/viewplot.style file embeded in an inline function.
 inline bool load_embeded_styles(tools::xml::styles& a_styles) {
   std::string ss;
@@ -77,7 +81,7 @@ inline bool load_embeded_styles(tools::xml::styles& a_styles) {
     tools::replace(s,"@@back_slash@@","\\");
     ss += s + "\n";
   }
-  return tools::xml::load_style_string(a_styles,ss);
+  return toolx::xml::load_style_string(a_styles,ss);
 }
 #endif
 
@@ -153,7 +157,10 @@ int main(int argc,char** argv) {
   viewer.write("out_one_page_two_regions_hershey_font.ps");
 
 #ifdef TOOLS_USE_PNG
-  viewer.write_inzb_png(tools::png::write,"out_one_page_two_regions_hershey_font.png");
+  viewer.write_inzb_png(toolx::png::write,"out_one_page_two_regions_hershey_font.png");
+#endif
+#ifdef TOOLS_USE_JPEG
+  viewer.write_inzb_jpeg(toolx::jpeg::write,"out_one_page_two_regions_hershey_font.jpeg");
 #endif
   //////////////////////////////////////////////////////////
   /// two pages with one plot per page : ///////////////////
@@ -200,14 +207,14 @@ int main(int argc,char** argv) {
   float A4 = 29.7f/21.0f;
   unsigned int wh = (unsigned int)(float(ww)*A4);
 
-  tools::sg::text_freetype ttf;
+  toolx::sg::text_freetype ttf;
   tools::viewplot viewer(std::cout,ttf,1,1,ww,wh); //cols=1,rows=2 then width and height
   viewer.set_current_plotter_style("xxx"/*,true*/); //to check that verbosity if off if xxx is not found.
 
   viewer.plots().view_border = false;
 
   //if(tools::file::exists("viewplot.style")) {
-  //  tools::xml::load_style_file(std::cout,"viewplot.style",viewer.styles());
+  //  toolx::xml::load_style_file(std::cout,"viewplot.style",viewer.styles());
   //} else {
   load_embeded_styles(viewer.styles());
   //}
@@ -273,7 +280,7 @@ int main(int argc,char** argv) {
   viewer.close_file();
 
 #ifdef TOOLS_USE_PNG
-  viewer.write_inzb_png(tools::png::write,"out_2x2.png");
+  viewer.write_inzb_png(toolx::png::write,"out_2x2.png");
 #endif
 
   //////////////////////////////////////////////////////////

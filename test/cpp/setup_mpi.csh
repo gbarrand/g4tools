@@ -12,11 +12,3 @@ else if ( `uname -n | grep ccage ` != "" ) then
     setenv LD_LIBRARY_PATH "${mpi_home}/lib:${LD_LIBRARY_PATH}"
   endif
 endif
-
-
-endif
-
-
-# exa of usage :
-# csh> mpirun -np 2 ./bin_sdk_mac/mpi -verbose
-

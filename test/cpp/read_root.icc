@@ -7,7 +7,7 @@
   tools::rroot::file rfile(std::cout,file,read_verbose);
 #ifdef TOOLS_DONT_HAVE_ZLIB
 #else
-  rfile.add_unziper('Z',tools::decompress_buffer);
+  rfile.add_unziper('Z',toolx::decompress_buffer);
 #endif
 
   tools::rroot::key* key = rfile.dir().find_key("rg_rbw");

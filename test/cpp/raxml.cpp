@@ -4,7 +4,7 @@
 // for example to read file produced by :
 //   inlib/example/cpp/waxml.cpp.
 
-#include <tools/raxml>
+#include <toolx/raxml>
 #include <tools/ntuple_binding>
 
 //#include <tools/gzip>
@@ -28,7 +28,7 @@ int main(int argc,char** argv) {
   bool verbose = false;
 
   tools::xml::default_factory fac;
-  tools::raxml ml(fac,std::cout,verbose);
+  toolx::raxml ml(fac,std::cout,verbose);
 
   std::vector<tools::raxml_out>& objs = ml.objects();
   objs.clear();

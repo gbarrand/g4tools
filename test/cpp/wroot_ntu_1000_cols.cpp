@@ -22,7 +22,7 @@
 
 #ifdef TOOLS_DONT_HAVE_ZLIB
 #else
-#include <tools/zlib>
+#include <toolx/zlib>
 #endif
 
 #include <tools/args>
@@ -46,7 +46,7 @@ int main(int argc,char** argv) {
 #else
   if(args.is_arg("-noz")){
   } else {
-    rfile.add_ziper('Z',tools::compress_buffer);
+    rfile.add_ziper('Z',toolx::compress_buffer);
     rfile.set_compression(1);
   }
 #endif

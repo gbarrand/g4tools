@@ -218,7 +218,7 @@ static bool write_axml(std::ostream& a_out,bool a_verbose,to_compare_axml& a_cmp
   return true;
 }
 
-#include <tools/raxml>
+#include <toolx/raxml>
 #include <tools/ntuple_binding>
 #include <tools/test>
 
@@ -228,9 +228,9 @@ static bool read_axml(std::ostream& a_out,bool a_verbose,const to_compare_axml& 
   double tolerance = 1e-5;
 
   tools::xml::default_factory fac;
-  tools::raxml ml(fac,a_out,false/*a_verbose*/);
+  toolx::raxml ml(fac,a_out,false/*a_verbose*/);
 
-  //ml.set_compressed_reader(new exlib::gzip_reader());
+  //ml.set_compressed_reader(new tools::gzip_reader());
 
   std::vector<tools::raxml_out>& objs = ml.objects();
   objs.clear();
@@ -371,8 +371,8 @@ static bool read_axml(std::ostream& a_out,bool a_verbose,const to_compare_axml& 
   return true;
 }
 
-#include "../sys/dir"
-#include "../sys/process"
+#include <tools/sys/dir>
+#include <tools/sys/process>
 #include <tools/file>
 
 bool test_axml(std::ostream& a_out,bool a_verbose) {

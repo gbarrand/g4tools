@@ -14,7 +14,7 @@
 #include <tools/sg/set_plotter_camera>
 #include <tools/sg/holder>
 
-#include <tools/sg/text_freetype>
+#include <toolx/sg/text_freetype>
 
 inline tools::sg::separator* lego_offscreen_sg(unsigned int a_width,unsigned int a_height) {
 
@@ -40,7 +40,7 @@ inline tools::sg::separator* lego_offscreen_sg(unsigned int a_width,unsigned int
   // camera set below.
   sep->add(camera);
 
-  tools::sg::text_freetype* ttf = new tools::sg::text_freetype;
+  toolx::sg::text_freetype* ttf = new toolx::sg::text_freetype;
   tools::sg::plotter* plotter = new tools::sg::plotter(*ttf);
 
   //WARNING : we give ownership of h1d2plot to the plotter,
@@ -63,7 +63,7 @@ inline tools::sg::separator* lego_offscreen_sg(unsigned int a_width,unsigned int
 
   sep->add(plotter);
 
-  sep->add(new tools::sg::holder<tools::sg::text_freetype>(ttf));
+  sep->add(new tools::sg::holder<toolx::sg::text_freetype>(ttf));
   sep->add(new tools::sg::holder<tools::histo::h2d>(h));
 
   tools::sg::set_plotter_camera(*plotter,*camera,a_width,a_height);

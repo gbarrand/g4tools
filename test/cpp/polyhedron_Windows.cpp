@@ -2,7 +2,7 @@
 // See the file tools.license for terms.
 
 
-#include <tools/Windows/sg_viewer>
+#include <toolx/Windows/sg_viewer>
 
 #define TOOLS_SCREEN_MGR Windows
 

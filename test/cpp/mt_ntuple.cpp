@@ -7,7 +7,7 @@
 #include <tools/mem>
 #endif //TOOLS_MEM
 
-#include "threads"
+#include <tools/threads>
 
 #include <tools/randd>
 #include <tools/randf>
@@ -255,7 +255,7 @@ protected:
 
 #ifdef TOOLS_DONT_HAVE_ZLIB
 #else
-#include <tools/zlib>
+#include <toolx/zlib>
 #endif
 
 #include <tools/args>
@@ -306,7 +306,7 @@ int main(int argc,char** argv) {
 #else
   if(args.is_arg("-noz")){
   } else {
-    rfile.add_ziper('Z',exlib::compress_buffer);
+    rfile.add_ziper('Z',toolx::compress_buffer);
     rfile.set_compression(9);
   }
 #endif

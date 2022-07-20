@@ -117,7 +117,7 @@ inline bool write_out_two_pages(std::ostream& a_out,bool a_verbose,const std::st
 
 #include "test_with_file"
 
-#include "../sys/dir"
+#include <tools/sys/dir>
 
 #include "wrap_utest_viewplot_1_ps"
 #include "wrap_utest_viewplot_2_ps"

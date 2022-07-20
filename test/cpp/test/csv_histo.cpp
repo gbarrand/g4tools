@@ -550,8 +550,8 @@ static bool read_test_csv(std::ostream& a_out,bool a_verbose,const to_compare_cs
   return true;
 }
 
-#include "../sys/dir"
-#include "../sys/process"
+#include <tools/sys/dir>
+#include <tools/sys/process>
 #include <tools/num2s>
 //#include <tools/args>
 //#include <tools/sargs>

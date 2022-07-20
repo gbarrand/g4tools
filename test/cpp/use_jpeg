@@ -1,17 +1,19 @@
 
 if [ "${use_jpeg}" = "yes" ] ; then
-  if [ ${build_cl_exe} = "yes" ] ; then
+  if [ "${build_use_our_jpeg}" = "yes" ] ; then
     use_sys_jpeg=no
     use_our_jpeg=yes
   else
-    if [ "${build_use_our_jpeg}" = "yes" ] ; then
-      use_sys_jpeg=no
-      use_our_jpeg=yes
-    else
-      use_sys_jpeg=yes
-      use_our_jpeg=no
-    fi
+    use_sys_jpeg=yes
+    use_our_jpeg=no
   fi
+    
+  if [ ${build_cl_exe} = "yes" ] ; then
+    use_sys_jpeg=no
+    use_our_jpeg=yes
+  fi
+
+  cppflags="${cppflags} -DTOOLS_USE_JPEG"
 fi
 
 if [ "${use_sys_jpeg}" = "yes" ] ; then
@@ -41,8 +43,8 @@ if [ "${use_our_jpeg}" = "yes" ] ; then
     exit
   fi
 
-  cflags="${cflags} -DTOOLS_USE_OUREX_JPEG -I${jpeg_home}/jpeg"
-  cppflags="${cppflags} -DTOOLS_USE_OUREX_JPEG -I${jpeg_home}/jpeg"
+  cflags="${cflags}     -I./ourex -I${jpeg_home}/jpeg"
+  cppflags="${cppflags} -I./ourex -I${jpeg_home}/jpeg"
   
   libs="${libs} ${jpeg_home}/${bin_dir}/libourex_jpeg.a"
 fi

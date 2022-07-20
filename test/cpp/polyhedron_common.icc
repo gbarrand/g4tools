@@ -81,10 +81,10 @@ int main(int argc,char** argv) {
   //////////////////////////////////////////////////////////
   /// create graphics system ///////////////////////////////
   //////////////////////////////////////////////////////////
-#ifdef TOOLS_SESSION_ARGGC
-  tools::TOOLS_SCREEN_MGR::session session(std::cout,argc,argv);
+#ifdef TOOLS_SESSION_ARGCV
+  toolx::TOOLS_SCREEN_MGR::session session(std::cout,argc,argv);
 #else
-  tools::TOOLS_SCREEN_MGR::session session(std::cout);
+  toolx::TOOLS_SCREEN_MGR::session session(std::cout);
 #endif
   if(!session.is_valid()) return EXIT_FAILURE;
 
@@ -92,7 +92,7 @@ int main(int argc,char** argv) {
   /// create the viewer, set the scene graph ///////////////
   //////////////////////////////////////////////////////////
   std::string title = std::string("polyhedron_")+TOOLS_CPP_TO_STRING(TOOLS_SCREEN_MGR);
-  tools::TOOLS_SCREEN_MGR::sg_viewer viewer(session,0,0,400,200,title);
+  toolx::TOOLS_SCREEN_MGR::sg_viewer viewer(session,0,0,400,200,title);
   if(!viewer.has_window()) return EXIT_FAILURE;
 
   viewer.sg().add(sep); //give sep ownership to the viewer.
@@ -105,7 +105,7 @@ int main(int argc,char** argv) {
   session.steer();
 
 #ifdef TOOLS_MEM
-  verbose = false;
+  (void)verbose;
   }tools::mem::balance(std::cout);
   std::cout << "polyhedron_<driver> : (mem) exit..." << std::endl;
 #else

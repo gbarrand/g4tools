@@ -2,7 +2,7 @@
 // See the file tools.license for terms.
 
 
-#include <tools/hdf5/ntuple>
+#include <toolx/hdf5/ntuple>
 
 #include <TH1D.h>
 #include <TCanvas.h>
@@ -33,16 +33,16 @@ int main(int argc,char** argv) {
     return EXIT_FAILURE;
   }
 
-  hid_t ntuples = tools_H5Gopen(file,"ntuples");
+  hid_t ntuples = toolx_H5Gopen(file,"ntuples");
   if(ntuples<0) {
     std::cout << "can't open group." << std::endl;
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
 
-  tools::hdf5::ntuple ntuple(std::cout,ntuples,"rg_rbw");
+  toolx::hdf5::ntuple ntuple(std::cout,ntuples,"rg_rbw");
 
-  tools::hdf5::ntuple::column<double>* col_rgauss = ntuple.find_column<double>("rgauss");
+  toolx::hdf5::ntuple::column<double>* col_rgauss = ntuple.find_column<double>("rgauss");
   if(!col_rgauss) {
     std::cout << "column rgauss not found." << std::endl;
     ::H5Gclose(ntuples);

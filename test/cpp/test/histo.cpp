@@ -3,7 +3,7 @@
 
 #include <tools/histo/h1d>
 #include <tools/histo/h2d>
-#include "../sys/atime"
+#include <tools/sys/atime>
 #include <tools/mathd>
 #include <tools/test>
 
@@ -153,7 +153,6 @@ static bool test_sh12d(std::ostream& a_out,bool a_verbose) {
 
 #include <tools/histo/p1d>
 #include <tools/histo/sliced>
-#include "../sys/atime"
 
 #include <tools/randd>
 

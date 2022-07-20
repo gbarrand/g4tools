@@ -5,6 +5,11 @@
 #define TOOLS_DONT_HAVE_ZLIB
 #endif //TOOLS_DONT_HAVE_ZLIB
 
+#ifdef TOOLS_DONT_HAVE_ZLIB
+#else
+#include <toolx/zlib>
+#endif
+
 #include <tools/wroot/file>
 #include <tools/wroot/ntuple>
 #include <tools/rroot/file>
@@ -17,8 +22,8 @@
 #include <tools/histo/h1d>
 
 #include <tools/test>
-#include "../sys/dir"
-#include "../sys/process"
+#include <tools/sys/dir>
+#include <tools/sys/process>
 #include <tools/file>
 #include <tools/num2s>
 
@@ -67,7 +72,7 @@ bool test_root_ntuple(std::ostream& a_out,bool a_verbose) {
   if(args.is_arg("-noz")){
   } else {
     if(a_verbose) a_out << "compression : " << compress << std::endl;
-    rfile.add_ziper('Z',exlib::compress_buffer);
+    rfile.add_ziper('Z',toolx::compress_buffer);
     rfile.set_compression(compress);
   }
 #endif
@@ -158,7 +163,7 @@ bool test_root_ntuple(std::ostream& a_out,bool a_verbose) {
  {tools::rroot::file rfile(a_out,file,rverbose);
 #ifdef TOOLS_DONT_HAVE_ZLIB
 #else
-  rfile.add_unziper('Z',tools::decompress_buffer);
+  rfile.add_unziper('Z',toolx::decompress_buffer);
 #endif
 
   tools::rroot::key* key = rfile.dir().find_key("rg_rbw");

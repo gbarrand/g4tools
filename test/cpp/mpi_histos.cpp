@@ -2,16 +2,17 @@
 // See the file tools.license for terms.
 
 // to run :
-//   Darwin> mpirun-openmpi-mp -np 3 ./bin_clang/mpi_histos -verbose
-//   Darwin> /usr/local/openmpi/3.1.2/bin/mpirun -np 3 ./bin_clang/mpi_histos -verbose
-//   centos> /usr/lib64/openmpi/bin/mpirun -np 3 ./bin_gnu/mpi_histos -verbose
+//   Darwin> /opt/local/bin/mpirun-openmpi-mp -np 3 ./tools_test_mpi_histos -verbose
+//   Darwin> /opt/local//libexec/openmpi-mp/mpirun -np 3 ./tools_test_mpi_histos -verbose
+//   Darwin> /usr/local/openmpi/3.1.2/bin/mpirun -np 3 ./tools_test_mpi_histos -verbose
+//   centos> /usr/lib64/openmpi/bin/mpirun -np 3 ./tools_test_mpi_histos -verbose
 
 #ifdef TOOLS_MEM
 #include <tools/mem>
 #endif //TOOLS_MEM
 
-#include <tools/mpi/world>
-#include <tools/mpi/hmpi>
+#include <toolx/mpi/world>
+#include <toolx/mpi/hmpi>
 
 #include <tools/wroot/file>
 #include <tools/wroot/to>
@@ -34,7 +35,7 @@ int main(int argc,char **argv) {
 
   bool verbose = args.is_arg("-verbose");
 
-  tools::mpi::world mpi_world;
+  toolx::mpi::world mpi_world;
   tools::impi_world& _mpi = mpi_world;
   // use the interface :
   if(!_mpi.init(&argc,&argv)) {
@@ -75,11 +76,10 @@ int main(int argc,char **argv) {
     /// wait histos from rank=1,2 : /////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////
     MPI_Comm comm = MPI_COMM_WORLD;
-    tools::mpi::hmpi hmpi(std::cout,rank,tag,comm,verbose);
+    toolx::mpi::hmpi hmpi(std::cout,rank,tag,comm,verbose);
     tools::histo::hmpi& _hmpi = hmpi;
 
     std::vector<class_pointer> hs;
-
    {int rank_src = 1;
     if(!_hmpi.wait_histos(rank_src,hs)) {
       std::cout << "rank " << rank << " : wait_histos from " << rank_src << " : failed." << std::endl;
@@ -102,7 +102,7 @@ int main(int argc,char **argv) {
     }
     tools::histo::delete_histos(hs);}
 
-    // wait another bunch of histos from rank=2 by using the same tools::mpi::hmpi object :
+    // wait another bunch of histos from rank=2 by using the same toolx::mpi::hmpi object :
    {int rank_src = 2;
     if(!_hmpi.wait_histos(rank_src,hs)) {
       std::cout << "rank " << rank << " : wait_histos from " << rank_src << " : failed." << std::endl;
@@ -148,7 +148,7 @@ int main(int argc,char **argv) {
     /// send histos to rank 0 : /////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////
     MPI_Comm comm = MPI_COMM_WORLD;
-    tools::mpi::hmpi hmpi(std::cout,rank,tag,comm,verbose);
+    toolx::mpi::hmpi hmpi(std::cout,rank,tag,comm,verbose);
     tools::histo::hmpi& _hmpi = hmpi;
 
    {_hmpi.beg_send(2); //IMPORTANT : give first the number of histos.
@@ -164,7 +164,8 @@ int main(int argc,char **argv) {
 
   if(rank==2) {
 
-    tools::histo::h3d h3("h3d",100,-5,5,100,-5,5,100,-2,2);
+    //note: avoid to have too much bins.
+    tools::histo::h3d h3("h3d",20,-5,5,20,-5,5,20,-2,2);
    {tools::rgaussd rg(1,2);
     tools::rgaussd rbw(0,1);
     unsigned int entries = 10000;
@@ -189,7 +190,7 @@ int main(int argc,char **argv) {
     /// send histos to rank 0 : /////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////
     MPI_Comm comm = MPI_COMM_WORLD;
-    tools::mpi::hmpi hmpi(std::cout,rank,tag,comm,verbose);
+    toolx::mpi::hmpi hmpi(std::cout,rank,tag,comm,verbose);
     tools::histo::hmpi& _hmpi = hmpi;
 
    {_hmpi.beg_send(3); //IMPORTANT : give first the number of histos.
@@ -202,7 +203,7 @@ int main(int argc,char **argv) {
       return EXIT_FAILURE;
     }}
 
-    // have another sending by using the same tools::mpi::hmpi object :
+    // have another sending by using the same toolx::mpi::hmpi object :
    {_hmpi.beg_send(2); //IMPORTANT : give first the number of histos.
     _hmpi.pack(p1);
     _hmpi.pack(p2);

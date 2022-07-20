@@ -5,9 +5,9 @@
 //   OS> ./build -sys_hdf5 -sys_zlib hdf5_histos.cpp
 // See bush/use/hdf5 for the access paths to the hdf5 installation.
 
-#include <tools/hdf5/header>
-#include <tools/hdf5/h2file>
-#include <tools/hdf5/group_exists>
+#include <toolx/hdf5/header>
+#include <toolx/hdf5/h2file>
+#include <toolx/hdf5/group_exists>
 
 #include <tools/histo/h1d>
 #include <tools/histo/h2d>
@@ -70,7 +70,7 @@ int main(int argc,char** argv) {
   }
 
   // create a header with general infos :
-  if(!tools::hdf5::write_header(file)) {
+  if(!toolx::hdf5::write_header(file)) {
     std::cout << "write_header() failed." << std::endl;
     ::H5Fclose(file);
     return EXIT_FAILURE;
@@ -79,13 +79,13 @@ int main(int argc,char** argv) {
   ///////////////////////////////////////////////////////////////////
   /// histos not in a directory : ///////////////////////////////////
   ///////////////////////////////////////////////////////////////////
-  if(!tools::hdf5::write_histo(std::cout,file,"h1_0",h1_0)) {
-    std::cout << "tools::hdf5::write(h1_0) failed." << std::endl;
+  if(!toolx::hdf5::write_histo(std::cout,file,"h1_0",h1_0)) {
+    std::cout << "toolx::hdf5::write(h1_0) failed." << std::endl;
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
-  if(!tools::hdf5::write_histo(std::cout,file,"h2_0",h2)) {
-    std::cout << "tools::hdf5::write(h2_0) failed." << std::endl;
+  if(!toolx::hdf5::write_histo(std::cout,file,"h2_0",h2)) {
+    std::cout << "toolx::hdf5::write(h2_0) failed." << std::endl;
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
@@ -93,42 +93,42 @@ int main(int argc,char** argv) {
   ///////////////////////////////////////////////////////////////////
   /// create a directory : //////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////
-  hid_t histos = tools_H5Gcreate(file,"histos",0);
+  hid_t histos = toolx_H5Gcreate(file,"histos",0);
   if(histos<0) {
     std::cout << "can't create group." << std::endl;
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
-  if(!tools::hdf5::write_atb(histos,"type","directory")) {
+  if(!toolx::hdf5::write_atb(histos,"type","directory")) {
     std::cout << "write_atb() class failed." << std::endl;
     ::H5Gclose(histos);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
 
-  if(!tools::hdf5::write_histo(std::cout,histos,"h1",h1)) {
-    std::cout << "tools::hdf5::write(h1) failed." << std::endl;
+  if(!toolx::hdf5::write_histo(std::cout,histos,"h1",h1)) {
+    std::cout << "toolx::hdf5::write(h1) failed." << std::endl;
     ::H5Gclose(histos);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
 
-  if(!tools::hdf5::write_histo(std::cout,histos,"h2",h2)) {
-    std::cout << "tools::hdf5::write(h2) failed." << std::endl;
+  if(!toolx::hdf5::write_histo(std::cout,histos,"h2",h2)) {
+    std::cout << "toolx::hdf5::write(h2) failed." << std::endl;
     ::H5Gclose(histos);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
 
-  if(!tools::hdf5::write_profile(std::cout,histos,"p1",p1)) {
-    std::cout << "tools::hdf5::write(p1) failed." << std::endl;
+  if(!toolx::hdf5::write_profile(std::cout,histos,"p1",p1)) {
+    std::cout << "toolx::hdf5::write(p1) failed." << std::endl;
     ::H5Gclose(histos);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
 
-  if(!tools::hdf5::write_profile(std::cout,histos,"p2",p2)) {
-    std::cout << "tools::hdf5::write(p2) failed." << std::endl;
+  if(!toolx::hdf5::write_profile(std::cout,histos,"p2",p2)) {
+    std::cout << "toolx::hdf5::write(p2) failed." << std::endl;
     ::H5Gclose(histos);
     ::H5Fclose(file);
     return EXIT_FAILURE;
@@ -137,14 +137,14 @@ int main(int argc,char** argv) {
   ///////////////////////////////////////////////////////////////////
   /// create a sub directory : //////////////////////////////////////
   ///////////////////////////////////////////////////////////////////
- {hid_t sub_histos = tools_H5Gcreate(histos,"sub_histos",0);
+ {hid_t sub_histos = toolx_H5Gcreate(histos,"sub_histos",0);
   if(sub_histos<0) {
     std::cout << "can't create group." << std::endl;
     ::H5Gclose(histos);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
-  if(!tools::hdf5::write_atb(sub_histos,"type","directory")) {
+  if(!toolx::hdf5::write_atb(sub_histos,"type","directory")) {
     std::cout << "write_atb() class failed." << std::endl;
     ::H5Gclose(sub_histos);
     ::H5Gclose(histos);
@@ -152,8 +152,8 @@ int main(int argc,char** argv) {
     return EXIT_FAILURE;
   }
 
-  if(!tools::hdf5::write_histo(std::cout,sub_histos,"h1_1",h1_1)) {
-    std::cout << "tools::hdf5::write(h1) failed." << std::endl;
+  if(!toolx::hdf5::write_histo(std::cout,sub_histos,"h1_1",h1_1)) {
+    std::cout << "toolx::hdf5::write(h1) failed." << std::endl;
     ::H5Gclose(sub_histos);
     ::H5Gclose(histos);
     ::H5Fclose(file);
@@ -177,18 +177,18 @@ int main(int argc,char** argv) {
     return EXIT_FAILURE;
   }
 
-  if(!tools::hdf5::group_exists(file,"histos")) {
+  if(!toolx::hdf5::group_exists(file,"histos")) {
     std::cout << "histos group does not exist." << std::endl;
     return EXIT_FAILURE;
   }
-  if(tools::hdf5::group_exists(file,"xxxx")) {
+  if(toolx::hdf5::group_exists(file,"xxxx")) {
     std::cout << "group xxxx found !" << std::endl;
     return EXIT_FAILURE;
   }
 
  {std::string swriter;
   int data_schema_version;
-  if(!tools::hdf5::read_header(file,swriter,data_schema_version)) {
+  if(!toolx::hdf5::read_header(file,swriter,data_schema_version)) {
     std::cout << "read_header() failed." << std::endl;
     ::H5Fclose(file);
     return EXIT_FAILURE;
@@ -196,7 +196,7 @@ int main(int argc,char** argv) {
   if(verbose) std::cout << "read : writer " << swriter << std::endl;
   if(verbose) std::cout << "read : data_schema_version " << data_schema_version << std::endl;}
 
-  hid_t histos = tools_H5Gopen(file,"histos");
+  hid_t histos = toolx_H5Gopen(file,"histos");
   if(histos<0) {
     std::cout << "can't open group." << std::endl;
     ::H5Fclose(file);
@@ -204,7 +204,7 @@ int main(int argc,char** argv) {
   }
 
  {tools::histo::h1d* rh1;
-  if(!tools::hdf5::read_histo(std::cout,histos,"h1",rh1)) {
+  if(!toolx::hdf5::read_histo(std::cout,histos,"h1",rh1)) {
     ::H5Gclose(histos);
     ::H5Fclose(file);
     return EXIT_FAILURE;
@@ -216,7 +216,7 @@ int main(int argc,char** argv) {
   delete rh1;}
 
  {tools::histo::h2d* rh2;
-  if(!tools::hdf5::read_histo(std::cout,histos,"h2",rh2)) {
+  if(!toolx::hdf5::read_histo(std::cout,histos,"h2",rh2)) {
     ::H5Gclose(histos);
     ::H5Fclose(file);
     return EXIT_FAILURE;
@@ -228,7 +228,7 @@ int main(int argc,char** argv) {
   delete rh2;}
 
  {tools::histo::p1d* rp1;
-  if(!tools::hdf5::read_profile(std::cout,histos,"p1",rp1)) {
+  if(!toolx::hdf5::read_profile(std::cout,histos,"p1",rp1)) {
     ::H5Gclose(histos);
     ::H5Fclose(file);
     return EXIT_FAILURE;
@@ -240,7 +240,7 @@ int main(int argc,char** argv) {
   delete rp1;}
 
  {tools::histo::p2d* rp2;
-  if(!tools::hdf5::read_profile(std::cout,histos,"p2",rp2)) {
+  if(!toolx::hdf5::read_profile(std::cout,histos,"p2",rp2)) {
     ::H5Gclose(histos);
     ::H5Fclose(file);
     return EXIT_FAILURE;
@@ -254,8 +254,8 @@ int main(int argc,char** argv) {
   //////////////////////////////////////////////////////////
   /// read sub directory : /////////////////////////////////
   //////////////////////////////////////////////////////////
-  //{hid_t sub_histos = tools_H5Gopen(histos,"sub_histos");
- {hid_t sub_histos = tools_H5Gopen(file,"histos/sub_histos");
+  //{hid_t sub_histos = toolx_H5Gopen(histos,"sub_histos");
+ {hid_t sub_histos = toolx_H5Gopen(file,"histos/sub_histos");
   if(sub_histos<0) {
     std::cout << "can't open group." << std::endl;
     ::H5Gclose(histos);
@@ -264,7 +264,7 @@ int main(int argc,char** argv) {
   }
 
  {tools::histo::h1d* rh1_1;
-  if(!tools::hdf5::read_histo(std::cout,sub_histos,"h1_1",rh1_1)) {
+  if(!toolx::hdf5::read_histo(std::cout,sub_histos,"h1_1",rh1_1)) {
     ::H5Gclose(sub_histos);
     ::H5Gclose(histos);
     ::H5Fclose(file);

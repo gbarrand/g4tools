@@ -45,7 +45,7 @@ inline bool lego_offscreen_zb(std::ostream& a_out,bool a_verbose,const std::stri
 
 #include "test_with_file"
 
-#include "../sys/dir"
+#include <tools/sys/dir>
 
 TOOLS_GLOBAL_STRING(TOOLS_FONT_PATH)
 

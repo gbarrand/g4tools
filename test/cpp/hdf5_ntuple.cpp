@@ -2,8 +2,8 @@
 // See the file tools.license for terms.
 
 
-#include <tools/hdf5/header>
-#include <tools/hdf5/ntuple>
+#include <toolx/hdf5/header>
+#include <toolx/hdf5/ntuple>
 
 #include <tools/randd>
 #include <tools/randf>
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
   }
 
   // create a header with general infos :
-  if(!tools::hdf5::write_header(file)) {
+  if(!toolx::hdf5::write_header(file)) {
     std::cout << "write_header() failed." << std::endl;
     ::H5Fclose(file);
     return EXIT_FAILURE;
@@ -70,13 +70,13 @@ int main(int argc, char* argv[]) {
     ntuples = file;
   } else {
     // create a directory :
-    ntuples = tools_H5Gcreate(file,"ntuples",0);
+    ntuples = toolx_H5Gcreate(file,"ntuples",0);
     if(ntuples<0) {
       std::cout << "can't create group." << std::endl;
       ::H5Fclose(file);
       return EXIT_FAILURE;
     }
-    if(!tools::hdf5::write_atb(ntuples,"type","directory")) {
+    if(!toolx::hdf5::write_atb(ntuples,"type","directory")) {
       std::cout << "write_atb() class failed." << std::endl;
       ::H5Gclose(ntuples);
       ::H5Fclose(file);
@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
   std::vector<double> user_vec_d;
   nbk.add_column<double>("vec_double",user_vec_d);wncols++;
 
-  tools::hdf5::ntuple ntuple(std::cout,ntuples,nbk,compress,basket_size);
+  toolx::hdf5::ntuple ntuple(std::cout,ntuples,nbk,compress,basket_size);
   if(ntuple.columns().size()!=wncols) {
     std::cout << "mismatch column numbers :"
 	      << " " << ntuple.columns().size() << ". " << wncols << " expected." << std::endl;
@@ -108,21 +108,21 @@ int main(int argc, char* argv[]) {
   }
 
   /*
-  tools::hdf5::ntuple::column<double>* col_rgauss = ntuple.find_column<double>("rgauss");
+  toolx::hdf5::ntuple::column<double>* col_rgauss = ntuple.find_column<double>("rgauss");
   if(!col_rgauss) {
     std::cout << "column rgauss not found." << std::endl;
     if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
     }*/
-  tools::hdf5::ntuple::column<float>* col_rbw = ntuple.find_column<float>("rbw");
+  toolx::hdf5::ntuple::column<float>* col_rbw = ntuple.find_column<float>("rbw");
   if(!col_rbw) {
     std::cout << "column rbw not found." << std::endl;
     if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
-  tools::hdf5::ntuple::column_string* col_str = ntuple.find_column_string("string");
+  toolx::hdf5::ntuple::column_string* col_str = ntuple.find_column_string("string");
   if(!col_str) {
     std::cout << "column strings not found." << std::endl;
     if(!no_dir) ::H5Gclose(ntuples);
@@ -184,12 +184,12 @@ int main(int argc, char* argv[]) {
     if(count==entries_2_3) ntuple.set_basket_size(827);
   }}
 
- {tools::hdf5::ntuple ntuple(std::cout,ntuples,"empty_ntuple",compress,basket_size);}
+ {toolx::hdf5::ntuple ntuple(std::cout,ntuples,"empty_ntuple",compress,basket_size);}
 
  {tools::ntuple_booking nbk("same_booking","Randoms");
   nbk.add_column<double>("rgauss");
   nbk.add_column<float>("rbw");
-  tools::hdf5::ntuple ntuple(std::cout,ntuples,nbk,compress,basket_size);}
+  toolx::hdf5::ntuple ntuple(std::cout,ntuples,nbk,compress,basket_size);}
 
   if(!no_dir) ::H5Gclose(ntuples);
   ::H5Fclose(file);
@@ -211,7 +211,7 @@ int main(int argc, char* argv[]) {
 
  {std::string swriter;
   int data_schema_version;
-  if(!tools::hdf5::read_header(file,swriter,data_schema_version)) {
+  if(!toolx::hdf5::read_header(file,swriter,data_schema_version)) {
     std::cout << "read_header() failed." << std::endl;
     ::H5Fclose(file);
     return EXIT_FAILURE;
@@ -223,7 +223,7 @@ int main(int argc, char* argv[]) {
   if(no_dir) {
     ntuples = file;
   } else {
-    ntuples = tools_H5Gopen(file,"ntuples");
+    ntuples = toolx_H5Gopen(file,"ntuples");
     if(ntuples<0) {
       std::cout << "can't open group." << std::endl;
       ::H5Fclose(file);
@@ -231,7 +231,7 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  tools::hdf5::ntuple ntuple(std::cout,ntuples,"rg_rbw");
+  toolx::hdf5::ntuple ntuple(std::cout,ntuples,"rg_rbw");
 
   if(ntuple.columns().size()!=wncols) {
     std::cout << "mismatch column numbers :"
@@ -241,21 +241,21 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 
-  tools::hdf5::ntuple::column<double>* col_rgauss = ntuple.find_column<double>("rgauss");
+  toolx::hdf5::ntuple::column<double>* col_rgauss = ntuple.find_column<double>("rgauss");
   if(!col_rgauss) {
     std::cout << "column rgauss not found." << std::endl;
     if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
-  tools::hdf5::ntuple::column<float>* col_rbw = ntuple.find_column<float>("rbw");
+  toolx::hdf5::ntuple::column<float>* col_rbw = ntuple.find_column<float>("rbw");
   if(!col_rbw) {
     std::cout << "column rbw not found." << std::endl;
     if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
-  tools::hdf5::ntuple::column_string* col_str = ntuple.find_column_string("string");
+  toolx::hdf5::ntuple::column_string* col_str = ntuple.find_column_string("string");
   if(!col_str) {
     std::cout << "column strings not found." << std::endl;
     if(!no_dir) ::H5Gclose(ntuples);
@@ -263,14 +263,14 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 
-  tools::hdf5::ntuple::std_vector_column<float>* col_vec_float = ntuple.find_std_vector_column<float>("vec_float");
+  toolx::hdf5::ntuple::std_vector_column<float>* col_vec_float = ntuple.find_std_vector_column<float>("vec_float");
   if(!col_vec_float) {
     std::cout << "column vec_float not found." << std::endl;
     if(!no_dir) ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return EXIT_FAILURE;
   }
-  tools::hdf5::ntuple::std_vector_column<double>* col_vec_double = ntuple.find_std_vector_column<double>("vec_double");
+  toolx::hdf5::ntuple::std_vector_column<double>* col_vec_double = ntuple.find_std_vector_column<double>("vec_double");
   if(!col_vec_double) {
     std::cout << "column vec_double not found." << std::endl;
     if(!no_dir) ::H5Gclose(ntuples);
@@ -413,7 +413,7 @@ int main(int argc, char* argv[]) {
   if(no_dir) {
     ntuples = file;
   } else {
-    ntuples = tools_H5Gopen(file,"ntuples");
+    ntuples = toolx_H5Gopen(file,"ntuples");
     if(ntuples<0) {
       std::cout << "can't open group." << std::endl;
       ::H5Fclose(file);
@@ -433,8 +433,8 @@ int main(int argc, char* argv[]) {
   std::vector<double> user_vec_double;
   bd.add_column("vec_double",user_vec_double);
 
-//tools::hdf5::ntuple ntuple(std::cout,ntuples,"rg_rbw",bd);
-  tools::hdf5::ntuple ntuple(std::cout,ntuples,"rg_rbw");
+//toolx::hdf5::ntuple ntuple(std::cout,ntuples,"rg_rbw",bd);
+  toolx::hdf5::ntuple ntuple(std::cout,ntuples,"rg_rbw");
   if(!ntuple.initialize(std::cout,bd)) {
     std::cout << "ntuple.initialize(binding) failed." << std::endl;
     if(!no_dir) ::H5Gclose(ntuples);

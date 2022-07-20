@@ -108,6 +108,19 @@ public:
 	  }
       }
 
+    /*G.Barrand : quiet g++-11 warnings : begin :*/
+    ET.scanlines.next = (ScanLineList*)NULL;
+    ET.ymax = SMALL_COORDINATE;
+    ET.ymin = LARGE_COORDINATE;
+    
+    AET.next = (EdgeTableEntry*)NULL;
+    AET.back = (EdgeTableEntry*)NULL;
+    AET.nextWETE = (EdgeTableEntry*)NULL;
+    AET.bres.minor_axis = SMALL_COORDINATE;
+    
+    SLLBlock.next = (ScanLineListBlock*)NULL;
+    /*G.Barrand : end.*/
+    
     CreateETandAET (Count,(point*)Pts, &ET, &AET, m_pETEs, &SLLBlock);
 
     pSLL           = ET.scanlines.next;

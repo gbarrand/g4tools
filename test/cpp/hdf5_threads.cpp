@@ -4,7 +4,7 @@
 //  This program show how to use tools::threads.
 
 
-#include <tools/hdf5/ntuple>
+#include <toolx/hdf5/ntuple>
 
 #include <tools/randd>
 #include <tools/randf>
@@ -14,7 +14,7 @@
 #include <tools/mem>
 #endif //TOOLS_MEM
 
-#include "threads"
+#include <tools/threads>
 #include <tools/num2s>
 
 namespace app {
@@ -41,13 +41,13 @@ inline bool write_ntuple(std::ostream& a_out,size_t a_thread) {
   }
 
   // create a directory :
-  hid_t ntuples = tools_H5Gcreate(file,"ntuples",0);
+  hid_t ntuples = toolx_H5Gcreate(file,"ntuples",0);
   if(ntuples<0) {
     a_out << "thread " << a_thread << " : can't create groupd ntuples." << std::endl;
     ::H5Fclose(file);
     return false;
   }
-  if(!tools::hdf5::write_atb(ntuples,"type","directory")) {
+  if(!toolx::hdf5::write_atb(ntuples,"type","directory")) {
     a_out << "thread " << a_thread << " : write_atb() class failed." << std::endl;
     ::H5Gclose(ntuples);
     ::H5Fclose(file);
@@ -68,7 +68,7 @@ inline bool write_ntuple(std::ostream& a_out,size_t a_thread) {
   std::vector<double> user_vec_d;
   nbk.add_column<double>("vec_double",user_vec_d);wncols++;
 
-  tools::hdf5::ntuple ntuple(a_out,ntuples,nbk,compress,basket_size);
+  toolx::hdf5::ntuple ntuple(a_out,ntuples,nbk,compress,basket_size);
   if(ntuple.columns().size()!=wncols) {
     a_out << "thread " << a_thread << " :"
           << " mismatch column numbers :"
@@ -78,14 +78,14 @@ inline bool write_ntuple(std::ostream& a_out,size_t a_thread) {
     return false;
   }
 
-  tools::hdf5::ntuple::column<float>* col_rbw = ntuple.find_column<float>("rbw");
+  toolx::hdf5::ntuple::column<float>* col_rbw = ntuple.find_column<float>("rbw");
   if(!col_rbw) {
     a_out << "thread " << a_thread << " : column rbw not found." << std::endl;
     ::H5Gclose(ntuples);
     ::H5Fclose(file);
     return false;
   }
-  tools::hdf5::ntuple::column_string* col_str = ntuple.find_column_string("string");
+  toolx::hdf5::ntuple::column_string* col_str = ntuple.find_column_string("string");
   if(!col_str) {
     a_out << "thread " << a_thread << " : column strings not found." << std::endl;
     ::H5Gclose(ntuples);

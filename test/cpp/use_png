@@ -2,18 +2,20 @@
 # NOTE : png uses zlib.
 
 if [ "${use_png}" = "yes" ] ; then
-  if [ ${build_cl_exe} = "yes" ] ; then
+  if [ "${build_use_our_png}" = "yes" ] ; then
     use_sys_png=no
     use_our_png=yes
   else
-    if [ "${build_use_our_png}" = "yes" ] ; then
-      use_sys_png=no
-      use_our_png=yes
-    else
-      use_sys_png=yes
-      use_our_png=no
-    fi
+    use_sys_png=yes
+    use_our_png=no
   fi
+    
+  if [ ${build_cl_exe} = "yes" ] ; then
+    use_sys_png=no
+    use_our_png=yes
+  fi
+
+  cppflags="${cppflags} -DTOOLS_USE_PNG"
 fi
 
 
@@ -56,8 +58,8 @@ if [ "${use_our_png}" = "yes" ] ; then
     exit
   fi
 
-  cflags="${cflags} -DTOOLS_USE_OUREX_PNG -I${png_home}/png"
-  cppflags="${cppflags} -DTOOLS_USE_OUREX_PNG -I${png_home}/png"
+  cflags="${cflags}     -I./ourex -I${png_home}/png"
+  cppflags="${cppflags} -I./ourex -I${png_home}/png"
   
   libs="${libs} ${png_home}/${bin_dir}/libourex_png.a"
   

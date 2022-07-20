@@ -16,7 +16,7 @@
 
 #ifdef TOOLS_DONT_HAVE_ZLIB
 #else
-#include <tools/zlib>
+#include <toolx/zlib>
 #endif
 
 #include <iostream>
@@ -50,7 +50,7 @@ int main(int argc,char** argv) {
   tools::rroot::file rfile(std::cout,file,verbose);
 #ifdef TOOLS_DONT_HAVE_ZLIB
 #else
-  rfile.add_unziper('Z',tools::decompress_buffer);
+  rfile.add_unziper('Z',toolx::decompress_buffer);
 #endif
 
   if(ls) {

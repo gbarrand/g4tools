@@ -1,8 +1,8 @@
 // Copyright (C) 2010, Guy Barrand. All rights reserved.
 // See the file tools.license for terms.
 
-#include <tools/hdf5/T_tools>
-#include <tools/hdf5/tools>
+#include <toolx/hdf5/T_tools>
+#include <toolx/hdf5/tools>
 
 // Compound datatype :
 #define LDS 10
@@ -37,7 +37,7 @@ bool build_S_B_file_type(hid_t& aDataType){
   }
 
   hsize_t ds_dim[] = {LDS};
-  hid_t ds_type = tools_H5Tarray_create(H5T_IEEE_F64LE,1,ds_dim,NULL);
+  hid_t ds_type = toolx_H5Tarray_create(H5T_IEEE_F64LE,1,ds_dim,NULL);
   if(ds_type<0) {
     H5Tclose(S_A_type);
     return false;
@@ -49,7 +49,7 @@ bool build_S_B_file_type(hid_t& aDataType){
     return false;
   }
 
-  hid_t s_type = tools::hdf5::string_datatype(LSTRING+1);
+  hid_t s_type = toolx::hdf5::string_datatype(LSTRING+1);
   if(s_type<0) {
     H5Tclose(ds_type);
     H5Tclose(S_A_type);
@@ -109,7 +109,7 @@ bool build_S_B_mem_type(hid_t& aDataType){
   }
 
   hsize_t ds_dim[] = {LDS};
-  hid_t ds_type = tools_H5Tarray_create(H5T_NATIVE_DOUBLE,1,ds_dim,NULL);
+  hid_t ds_type = toolx_H5Tarray_create(H5T_NATIVE_DOUBLE,1,ds_dim,NULL);
   if(ds_type<0) {
     H5Tclose(S_A_type);
     return false;
@@ -121,7 +121,7 @@ bool build_S_B_mem_type(hid_t& aDataType){
     return false;
   }
 
-  hid_t s_type = tools::hdf5::string_datatype(LSTRING+1);
+  hid_t s_type = toolx::hdf5::string_datatype(LSTRING+1);
   if(s_type<0) {
     H5Tclose(ds_type);
     H5Tclose(S_A_type);
@@ -197,7 +197,7 @@ bool build_C_A_file_type(hid_t& aDataType){
   offset += sizeof(unsigned int);
 
   hsize_t ds_dim[] = {LDS};
-  hid_t ds_type = tools_H5Tarray_create(H5T_IEEE_F64LE,1,ds_dim,NULL);
+  hid_t ds_type = toolx_H5Tarray_create(H5T_IEEE_F64LE,1,ds_dim,NULL);
   if(ds_type<0) {
     H5Tclose(C_A_type);
     return false;
@@ -267,33 +267,33 @@ static bool write_hdf5(std::ostream& a_out,bool a_verbose,to_compare_hdf5& a_cmp
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,file,0)) return false;
 
   // Create directories (HDF5 groups) in the file :
-  hid_t stat = tools_H5Gcreate(file,"stat",0);
+  hid_t stat = toolx_H5Gcreate(file,"stat",0);
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,stat,0)) return false;
 
-  hid_t histos = tools_H5Gcreate(stat,"histograms",0);
+  hid_t histos = toolx_H5Gcreate(stat,"histograms",0);
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,histos,0)) return false;
 
-  TOOLS_TEST_FUNC(tools::hdf5::write_atb(histos,"type","Directory"))
+  TOOLS_TEST_FUNC(toolx::hdf5::write_atb(histos,"type","Directory"))
   int v = 314;
-  TOOLS_TEST_FUNC(tools::hdf5::write_scalar_atb(histos,"version",v))
+  TOOLS_TEST_FUNC(toolx::hdf5::write_scalar_atb(histos,"version",v))
 
-  hid_t shistos = tools_H5Gcreate(histos,"sub_histograms",0);
+  hid_t shistos = toolx_H5Gcreate(histos,"sub_histograms",0);
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,shistos,0)) return false;
 
-  hid_t tuples = tools_H5Gcreate(stat,"tuples",0);
+  hid_t tuples = toolx_H5Gcreate(stat,"tuples",0);
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,tuples,0)) return false;
 
   // Write data in directories :
-  TOOLS_TEST_FUNC(tools::hdf5::write_array<int>(histos,"my_histo",n,array))
-  TOOLS_TEST_FUNC(tools::hdf5::write_string(histos,"my_title",a_cmp.title))
-  TOOLS_TEST_FUNC(tools::hdf5::write_array<int>(tuples,"my_tuple",n,array))
+  TOOLS_TEST_FUNC(toolx::hdf5::write_array<int>(histos,"my_histo",n,array))
+  TOOLS_TEST_FUNC(toolx::hdf5::write_string(histos,"my_title",a_cmp.title))
+  TOOLS_TEST_FUNC(toolx::hdf5::write_array<int>(tuples,"my_tuple",n,array))
 
   std::vector<std::string> vs;
   vs.push_back("Line 1");
   vs.push_back("Line 2");
   vs.push_back("Line 3");
   vs.push_back("Line 4");
-  TOOLS_TEST_FUNC(tools::hdf5::write_array_string(histos,"my_strings",vs))
+  TOOLS_TEST_FUNC(toolx::hdf5::write_array_string(histos,"my_strings",vs))
 
   hid_t S_B_file_type;
   TOOLS_TEST_FUNC(build_S_B_file_type(S_B_file_type))
@@ -301,7 +301,7 @@ static bool write_hdf5(std::ostream& a_out,bool a_verbose,to_compare_hdf5& a_cmp
   hid_t S_B_mem_type;
   TOOLS_TEST_FUNC(build_S_B_mem_type(S_B_mem_type))
 
-  TOOLS_TEST_FUNC(tools::hdf5::write_struct<S_B>(histos,"my_struct",S_B_file_type,S_B_mem_type,my_struct))
+  TOOLS_TEST_FUNC(toolx::hdf5::write_struct<S_B>(histos,"my_struct",S_B_file_type,S_B_mem_type,my_struct))
   H5Tclose(S_B_file_type);
   H5Tclose(S_B_mem_type);
 
@@ -335,7 +335,7 @@ static bool write_hdf5(std::ostream& a_out,bool a_verbose,to_compare_hdf5& a_cmp
   ::memcpy(p,&my_object.i,sizeof(int));
   p += sizeof(int);
 
-  TOOLS_TEST_FUNC(tools::hdf5::write_object(histos,"my_object",C_A_file_type,buffer))
+  TOOLS_TEST_FUNC(toolx::hdf5::write_object(histos,"my_object",C_A_file_type,buffer))
   delete [] buffer;
   H5Tclose(C_A_file_type);}
 
@@ -362,32 +362,32 @@ static bool read_hdf5(std::ostream& a_out,bool a_verbose,const to_compare_hdf5& 
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,file,0)) return false;
 
   // Open a directory (group) :
-  hid_t histos = tools_H5Gopen(file,"/stat/histograms");
+  hid_t histos = toolx_H5Gopen(file,"/stat/histograms");
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,histos,0)) return false;
 
   std::string stype;
-  TOOLS_TEST_FUNC(tools::hdf5::read_atb(histos,"type",stype))
+  TOOLS_TEST_FUNC(toolx::hdf5::read_atb(histos,"type",stype))
   if(!tools::equal(a_out,__FILE__,__LINE__,stype,"Directory")) return false;
  {int v;
-  TOOLS_TEST_FUNC(tools::hdf5::read_atb(histos,"version",v))
+  TOOLS_TEST_FUNC(toolx::hdf5::read_atb(histos,"version",v))
   if(!tools::equal(a_out,__FILE__,__LINE__,v,314)) return false;}
 
   // Get a data in the directory :
   unsigned int n = 0;
   int* array = 0;
-  TOOLS_TEST_FUNC(tools::hdf5::read_array<int>(histos,"my_histo",n,array))
+  TOOLS_TEST_FUNC(toolx::hdf5::read_array<int>(histos,"my_histo",n,array))
 
   std::vector<std::string> vs;
-  TOOLS_TEST_FUNC(tools::hdf5::read_array_string(histos,"my_strings",vs))
+  TOOLS_TEST_FUNC(toolx::hdf5::read_array_string(histos,"my_strings",vs))
 
   std::string rtitle;
-  TOOLS_TEST_FUNC(tools::hdf5::read_string(histos,"my_title",rtitle))
+  TOOLS_TEST_FUNC(toolx::hdf5::read_string(histos,"my_title",rtitle))
 
   S_B s;
   hid_t S_B_mem_type;
   TOOLS_TEST_FUNC(build_S_B_mem_type(S_B_mem_type))
 
-  TOOLS_TEST_FUNC(tools::hdf5::read_struct<S_B>(histos,"my_struct",S_B_mem_type,s))
+  TOOLS_TEST_FUNC(toolx::hdf5::read_struct<S_B>(histos,"my_struct",S_B_mem_type,s))
   H5Tclose(S_B_mem_type);
 
   C_A my_object;
@@ -396,7 +396,7 @@ static bool read_hdf5(std::ostream& a_out,bool a_verbose,const to_compare_hdf5& 
 
   size_t sz = 0;
   char* buffer = 0;
-  TOOLS_TEST_FUNC(tools::hdf5::read_object(histos,"my_object",sz,buffer))
+  TOOLS_TEST_FUNC(toolx::hdf5::read_object(histos,"my_object",sz,buffer))
 
   char* p = buffer;
 
@@ -468,8 +468,8 @@ static bool read_hdf5(std::ostream& a_out,bool a_verbose,const to_compare_hdf5& 
 }
 
 #include <tools/test>
-#include "../sys/dir"
-#include "../sys/process"
+#include <tools/sys/dir>
+#include <tools/sys/process>
 #include <tools/file>
 #include <tools/num2s>
 #include <tools/serrno>

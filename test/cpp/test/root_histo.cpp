@@ -12,7 +12,7 @@
 #include <tools/randf>
 #include <tools/mathd>
 
-//#include <tools/zlib>
+//#include <toolx/zlib>
 
 class to_compare_cern_root {
 public:
@@ -74,7 +74,7 @@ static bool write_test_root(std::ostream& a_out,bool a_verbose,to_compare_cern_r
 
   tools::wroot::file rfile(a_out,a_file);
 
-  //rfile.add_ziper('Z',exlib::compress_buffer);
+  //rfile.add_ziper('Z',toolx::compress_buffer);
   //rfile.set_compression(9);
 
   tools::wroot::directory* dir = rfile.dir().mkdir("histo");
@@ -260,7 +260,7 @@ static bool read_test_root(std::ostream& a_out,bool a_verbose,const to_compare_c
   }}
 
   tools::rroot::file rfile(a_out,a_file,a_verbose);
-  //rfile.add_unziper('Z',tools::decompress_buffer);
+  //rfile.add_unziper('Z',toolx::decompress_buffer);
   if(!rfile.is_open()) {
     a_out << "file " << a_file << " not open." << std::endl;
     return false;
@@ -456,8 +456,8 @@ static bool read_test_root(std::ostream& a_out,bool a_verbose,const to_compare_c
 }
 
 #include <tools/file>
-#include "../sys/dir"
-#include "../sys/process"
+#include <tools/sys/dir>
+#include <tools/sys/process>
 //#include <tools/args>
 //#include <tools/sargs>
 

@@ -2,15 +2,21 @@
 // See the file tools.license for terms.
 
 // to run :
-//   Darwin> mpirun-openmpi-mp -np 3 ./bin_clang/mpi_ntuple -verbose
-//   centos> /usr/lib64/openmpi/bin/mpirun -np 3 ./bin_gnu/mpi_ntuple -verbose
+//   Darwin> /opt/local/bin/mpirun-openmpi-mp -np 3 ./tools_test_mpi_ntuple -verbose
+//   Darwin> /opt/local//libexec/openmpi-mp/mpirun -np 3 ./tools_test_mpi_ntuple -verbose
+//   centos> /usr/lib64/openmpi/bin/mpirun -np 3 ./tools_test_mpi_ntuple -verbose
 
 #ifdef TOOLS_MEM
 #include <tools/mem>
 #endif //TOOLS_MEM
 
-#include <tools/mpi/world>
-#include <tools/mpi/wrmpi>
+#include <toolx/mpi/world>
+#include <toolx/mpi/wrmpi>
+
+#ifdef TOOLS_DONT_HAVE_ZLIB
+#else
+#include <toolx/zlib>
+#endif
 
 #include <tools/wroot/file>
 #include <tools/wroot/ntuple>
@@ -28,11 +34,6 @@
 #include <tools/eqT>
 
 #include <tools/args>
-
-#ifdef TOOLS_DONT_HAVE_ZLIB
-#else
-#include <tools/zlib>
-#endif
 
 #include <iostream>
 #include <cstdlib>
@@ -53,7 +54,7 @@ int main(int argc,char **argv) {
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
 
-  tools::mpi::world mpi_world;
+  toolx::mpi::world mpi_world;
   tools::impi_world& _mpi = mpi_world;
   // use the interface :
   if(!_mpi.init(&argc,&argv)) {
@@ -157,7 +158,7 @@ int main(int argc,char **argv) {
     MPI_Comm comm = MPI_COMM_WORLD;
 
    {int rank_dest = 1;
-    tools::mpi::wrmpi _wrmpi(std::cout,comm);
+    toolx::mpi::wrmpi _wrmpi(std::cout,comm);
     tools::impi& _impi = _wrmpi; //in the below, we use only the tools::impi interface.
     if(!_impi.bpack(verbose)) {std::cout << "bpack(verbose) failed."<< std::endl;return EXIT_FAILURE;}
     if(!_impi.pack(main_ntuple_id)) {std::cout << "pack(ntuple_id) failed."<< std::endl;return EXIT_FAILURE;}
@@ -179,7 +180,7 @@ int main(int argc,char **argv) {
     }}
 
    {int rank_dest = 2;
-    tools::mpi::wrmpi _wrmpi(std::cout,comm);
+    toolx::mpi::wrmpi _wrmpi(std::cout,comm);
     tools::impi& _impi = _wrmpi; //in the below, we use only the tools::impi interface.
     if(!_impi.bpack(verbose)) {std::cout << "bpack(verbose) failed."<< std::endl;return EXIT_FAILURE;}
     if(!_impi.pack(main_ntuple_id)) {std::cout << "pack(ntuple_id) failed."<< std::endl;return EXIT_FAILURE;}
@@ -204,7 +205,7 @@ int main(int argc,char **argv) {
     unsigned int num_end_fill = 0;
     while(true) {
 
-      tools::mpi::wrmpi _wrmpi(std::cout,comm);
+      toolx::mpi::wrmpi _wrmpi(std::cout,comm);
       tools::impi& _impi = _wrmpi; //in the below, we use only the tools::impi interface.
 	
       int probe_src;
@@ -310,7 +311,7 @@ int main(int argc,char **argv) {
     unsigned int num_megas;
     unsigned int nev;
 
-   {tools::mpi::wrmpi _wrmpi(std::cout,comm);
+   {toolx::mpi::wrmpi _wrmpi(std::cout,comm);
     tools::impi& _impi = _wrmpi; //in the below, we use only the tools::impi interface.
 
     int probe_src;
@@ -370,7 +371,7 @@ int main(int argc,char **argv) {
   //tools::wroot::base_pntuple::column_string* col_str = _ntuple->find_column_string("string");
   //if(!col_str) {std::cout << "column string not found." << std::endl;return EXIT_FAILURE;}
 
-    tools::mpi::wrmpi _wrmpi(std::cout,comm);
+    toolx::mpi::wrmpi _wrmpi(std::cout,comm);
     tools::impi& _impi = _wrmpi; //in the below, we use only the tools::impi interface.
 
     bool read_check_row_wise = row_wise||(!row_wise&&row_mode);

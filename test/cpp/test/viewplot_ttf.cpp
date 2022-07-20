@@ -63,8 +63,8 @@ void plot_file(tools::viewplot& a_viewer,
   a_viewer.close_file();
 }
 
-#include <tools/sg/text_freetype>
-#include <tools/xml/xml_style>
+#include <toolx/sg/text_freetype>
+#include <toolx/xml/xml_style>
 #include <tools/xml/wrap_viewplot_fonts_google_style> // xml/viewplot.style file embeded in an inline function.
 inline bool load_embedded_styles(tools::xml::styles& a_styles) {
   std::string ss;
@@ -76,7 +76,7 @@ inline bool load_embedded_styles(tools::xml::styles& a_styles) {
     tools::replace(s,"@@back_slash@@","\\");
     ss += s + "\n";
   }
-  return tools::xml::load_style_string(a_styles,ss);
+  return toolx::xml::load_style_string(a_styles,ss);
 }
 
 #include <tools/random>
@@ -97,7 +97,7 @@ inline bool test_write_file(std::ostream& a_out,bool a_verbose,const std::string
   float A4 = 29.7f/21.0f;
   unsigned int wh = (unsigned int)(float(ww)*A4);
 
-  tools::sg::text_freetype ttf;
+  toolx::sg::text_freetype ttf;
   tools::viewplot viewer(a_out,ttf,1,1,ww,wh); //cols=1,rows=2 then width and height
 
   viewer.plots().view_border = false;
@@ -116,7 +116,7 @@ inline bool test_write_file(std::ostream& a_out,bool a_verbose,const std::string
 
 #include "test_with_file"
 
-#include "../sys/dir"
+#include <tools/sys/dir>
 
 #include "wrap_utest_viewplot_out_1x2_r_ps"
 #include "wrap_utest_viewplot_out_1x2_h_ps"

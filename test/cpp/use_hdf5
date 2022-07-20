@@ -1,22 +1,22 @@
 
 if [ "${use_hdf5}" = "yes" ] ; then
-  if [ ${build_cl_exe} = "yes" ] ; then
+  if [ "${build_use_our_hdf5}" = "yes" ] ; then
     use_sys_hdf5=no
     use_our_hdf5=yes
   else
-    if [ "${build_use_our_hdf5}" = "yes" ] ; then
-      use_sys_hdf5=no
-      use_our_hdf5=yes
-    else
-      use_sys_hdf5=yes
-      use_our_hdf5=no
-    fi
+    use_sys_hdf5=yes
+    use_our_hdf5=no
   fi
+    
+  if [ ${build_cl_exe} = "yes" ] ; then
+    use_sys_hdf5=no
+    use_our_hdf5=yes
+  fi
+
+  cppflags="${cppflags} -DTOOLS_USE_HDF5"
 fi
 
 if [ "${use_sys_hdf5}" = "yes" ] ; then
-  cppflags="${cppflags} -DTOOLS_USE_HDF5"
-  
   hdf5_sys_home=/usr/local/hdf5/1.6.6
   hdf5_sys_home=/usr/local/hdf5/1.8.15
   hdf5_sys_home=/usr/local/hdf5/1.12.0
@@ -45,23 +45,16 @@ fi
 
 if [ "${use_our_hdf5}" = "yes" ] ; then
 
-  cppflags="${cppflags} -DTOOLS_USE_HDF5"
-
-  ccflags="${ccflags} -DTOOLS_USE_OUREX_HDF5"
-  cppflags="${cppflags} -DTOOLS_USE_OUREX_HDF5"
-
   hdf5_home=../../../../inexlib/ourex/hdf5
   if [ ! -d "${hdf5_home}" ] ; then
     echo "use_hdf5 : can't build the program, hdf5 not found at ${hdf5_home}."
     exit
   fi
   
-  cflags="${cflags} -DTOOLS_USE_OUREX_HDF5 -I${hdf5_home}/include"
-  cppflags="${cppflags} -DTOOLS_USE_OUREX_HDF5 -I${hdf5_home}/include"
+  cflags="${cflags}     -I./ourex -I${hdf5_home}/include"
+  cppflags="${cppflags} -I./ourex -I${hdf5_home}/include"
 
   libs="${libs} ${hdf5_home}/${bin_dir}/libourex_hdf5.a"
-
-  use_our_zlib=yes
 
 fi
 

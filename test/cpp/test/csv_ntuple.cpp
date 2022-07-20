@@ -10,8 +10,8 @@
 #include <tools/histo/h1d>
 
 #include <tools/test>
-#include "../sys/dir"
-#include "../sys/process"
+#include <tools/sys/dir>
+#include <tools/sys/process>
 #include <tools/file>
 #include <tools/num2s>
 

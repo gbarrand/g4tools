@@ -4,7 +4,7 @@
 // Write/read inlib histos in a hdf5 file.
 
 
-#include <tools/hdf5/ntuple>
+#include <toolx/hdf5/ntuple>
 
 #include <tools/randd>
 #include <tools/randf>
@@ -12,8 +12,8 @@
 #include <tools/histo/h1d>
 
 #include <tools/test>
-#include "../sys/dir"
-#include "../sys/process"
+#include <tools/sys/dir>
+#include <tools/sys/process>
 #include <tools/file>
 #include <tools/num2s>
 #include <tools/strip>
@@ -57,12 +57,12 @@ bool test_hdf5_ntuple(std::ostream& a_out,bool a_verbose) {
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,_file,0)) return false;
 
   // create a directory :
-  hid_t ntuples = tools_H5Gcreate(_file,"ntuples",0);
+  hid_t ntuples = toolx_H5Gcreate(_file,"ntuples",0);
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,ntuples,0)) {
     ::H5Fclose(_file);
     return false;
   }
-  if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::write_atb(ntuples,"type","directory"),true)) {
+  if(!tools::equal(a_out,__FILE__,__LINE__,toolx::hdf5::write_atb(ntuples,"type","directory"),true)) {
     ::H5Gclose(ntuples);
     ::H5Fclose(_file);
     return false;
@@ -81,26 +81,26 @@ bool test_hdf5_ntuple(std::ostream& a_out,bool a_verbose) {
   std::vector<double> user_vec_d;
   nbk.add_column<double>("vec_double",user_vec_d);wncols++;
 
-  tools::hdf5::ntuple ntuple(a_out,ntuples,nbk,compress,basket_size);
+  toolx::hdf5::ntuple ntuple(a_out,ntuples,nbk,compress,basket_size);
   if(!tools::equal<unsigned int>(a_out,__FILE__,__LINE__,ntuple.columns().size(),wncols)) {
     ::H5Gclose(ntuples);
     ::H5Fclose(_file);
     return false;
   }
 
-  tools::hdf5::ntuple::column<double>* col_rgauss = ntuple.find_column<double>("rgauss");
+  toolx::hdf5::ntuple::column<double>* col_rgauss = ntuple.find_column<double>("rgauss");
   if(!tools::valid_pointer(a_out,__FILE__,__LINE__,col_rgauss)) {
     ::H5Gclose(ntuples);
     ::H5Fclose(_file);
     return false;
   }
-  tools::hdf5::ntuple::column<float>* col_rbw = ntuple.find_column<float>("rbw");
+  toolx::hdf5::ntuple::column<float>* col_rbw = ntuple.find_column<float>("rbw");
   if(!tools::valid_pointer(a_out,__FILE__,__LINE__,col_rbw)) {
     ::H5Gclose(ntuples);
     ::H5Fclose(_file);
     return false;
   }
-  tools::hdf5::ntuple::column_string* col_str = ntuple.find_column_string("string");
+  toolx::hdf5::ntuple::column_string* col_str = ntuple.find_column_string("string");
   if(!tools::valid_pointer(a_out,__FILE__,__LINE__,col_str)) {
     ::H5Gclose(ntuples);
     ::H5Fclose(_file);
@@ -167,12 +167,12 @@ bool test_hdf5_ntuple(std::ostream& a_out,bool a_verbose) {
     if(count==entries_2_3) ntuple.set_basket_size(827);
   }}
 
- {tools::hdf5::ntuple ntuple(a_out,ntuples,"empty_ntuple",compress,basket_size);}
+ {toolx::hdf5::ntuple ntuple(a_out,ntuples,"empty_ntuple",compress,basket_size);}
 
  {tools::ntuple_booking nbk("same_booking","Randoms");
   nbk.add_column<double>("rgauss");
   nbk.add_column<float>("rbw");
-  tools::hdf5::ntuple ntuple(a_out,ntuples,nbk,compress,basket_size);}
+  toolx::hdf5::ntuple ntuple(a_out,ntuples,nbk,compress,basket_size);}
 
   ::H5Gclose(ntuples);
   ::H5Fclose(_file);
@@ -187,13 +187,13 @@ bool test_hdf5_ntuple(std::ostream& a_out,bool a_verbose) {
  {hid_t _file = H5Fopen(file.c_str(),H5F_ACC_RDONLY, H5P_DEFAULT);
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,_file,0)) return false;
 
-  hid_t ntuples = tools_H5Gopen(_file,"ntuples");
+  hid_t ntuples = toolx_H5Gopen(_file,"ntuples");
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,ntuples,0)) {
     ::H5Fclose(_file);
     return false;
   }
 
-  tools::hdf5::ntuple ntuple(a_out,ntuples,"rg_rbw"); //false = read.
+  toolx::hdf5::ntuple ntuple(a_out,ntuples,"rg_rbw"); //false = read.
 
   if(!tools::equal<unsigned int>(a_out,__FILE__,__LINE__,ntuple.columns().size(),wncols)) {
     ::H5Gclose(ntuples);
@@ -201,33 +201,33 @@ bool test_hdf5_ntuple(std::ostream& a_out,bool a_verbose) {
     return false;
   }
 
-  tools::hdf5::ntuple::column<double>* col_rgauss = ntuple.find_column<double>("rgauss");
+  toolx::hdf5::ntuple::column<double>* col_rgauss = ntuple.find_column<double>("rgauss");
   if(!tools::valid_pointer(a_out,__FILE__,__LINE__,col_rgauss)) {
     ::H5Gclose(ntuples);
     ::H5Fclose(_file);
     return false;
   }
-  tools::hdf5::ntuple::column<float>* col_rbw = ntuple.find_column<float>("rbw");
+  toolx::hdf5::ntuple::column<float>* col_rbw = ntuple.find_column<float>("rbw");
   if(!tools::valid_pointer(a_out,__FILE__,__LINE__,col_rbw)) {
     ::H5Gclose(ntuples);
     ::H5Fclose(_file);
     return false;
   }
 
-  tools::hdf5::ntuple::column_string* col_str = ntuple.find_column_string("string");
+  toolx::hdf5::ntuple::column_string* col_str = ntuple.find_column_string("string");
   if(!tools::valid_pointer(a_out,__FILE__,__LINE__,col_str)) {
     ::H5Gclose(ntuples);
     ::H5Fclose(_file);
     return false;
   }
-  tools::hdf5::ntuple::std_vector_column<float>* col_vec_float =
+  toolx::hdf5::ntuple::std_vector_column<float>* col_vec_float =
     ntuple.find_std_vector_column<float>("vec_float");
   if(!tools::valid_pointer(a_out,__FILE__,__LINE__,col_vec_float)) {
     ::H5Gclose(ntuples);
     ::H5Fclose(_file);
     return false;
   }
-  tools::hdf5::ntuple::std_vector_column<double>* col_vec_double =
+  toolx::hdf5::ntuple::std_vector_column<double>* col_vec_double =
     ntuple.find_std_vector_column<double>("vec_double");
   if(!tools::valid_pointer(a_out,__FILE__,__LINE__,col_vec_double)) {
     ::H5Gclose(ntuples);
@@ -375,7 +375,7 @@ bool test_hdf5_ntuple(std::ostream& a_out,bool a_verbose) {
  {hid_t _file = H5Fopen(file.c_str(),H5F_ACC_RDONLY, H5P_DEFAULT);
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,_file,0)) return false;
 
-  hid_t ntuples = tools_H5Gopen(_file,"ntuples");
+  hid_t ntuples = toolx_H5Gopen(_file,"ntuples");
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,ntuples,0)) {
     ::H5Fclose(_file);
     return false;
@@ -393,8 +393,8 @@ bool test_hdf5_ntuple(std::ostream& a_out,bool a_verbose) {
   std::vector<double> user_vec_double;
   bd.add_column("vec_double",user_vec_double);
 
-//tools::hdf5::ntuple ntuple(a_out,ntuples,"rg_rbw",bd);
-  tools::hdf5::ntuple ntuple(a_out,ntuples,"rg_rbw");
+//toolx::hdf5::ntuple ntuple(a_out,ntuples,"rg_rbw",bd);
+  toolx::hdf5::ntuple ntuple(a_out,ntuples,"rg_rbw");
   if(!tools::equal(a_out,__FILE__,__LINE__,ntuple.initialize(a_out,bd),true)) {
     ::H5Gclose(ntuples);
     ::H5Fclose(_file);

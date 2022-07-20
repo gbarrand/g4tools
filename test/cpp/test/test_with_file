@@ -4,7 +4,7 @@
 #ifndef tools_test_with_file
 #define tools_test_with_file
 
-#include "../sys/process"
+#include <tools/sys/process>
 #include <tools/file>
 #include <tools/srep>
 #include <tools/num2s>

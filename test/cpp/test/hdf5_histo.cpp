@@ -4,7 +4,7 @@
 // Write/read inlib histos in a hdf5 file.
 
 
-#include <tools/hdf5/h2file>
+#include <toolx/hdf5/h2file>
 #include <tools/random>
 #include <tools/histo/h1d>
 #include <tools/histo/h2d>
@@ -12,8 +12,8 @@
 #include <tools/histo/p2d>
 
 #include <tools/test>
-#include "../sys/dir"
-#include "../sys/process"
+#include <tools/sys/dir>
+#include <tools/sys/process>
 #include <tools/file>
 #include <tools/num2s>
 #include <tools/strip>
@@ -58,32 +58,32 @@ bool test_hdf5_histo(std::ostream& a_out,bool a_verbose) {
    if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,_file,0)) return false;
 
   // create a directory :
-  hid_t histos = tools_H5Gcreate(_file,"histos",0);
+  hid_t histos = toolx_H5Gcreate(_file,"histos",0);
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,histos,0)) {
     ::H5Fclose(_file);
     return false;
   }
-  if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::write_atb(histos,"type","directory"),true)) {
+  if(!tools::equal(a_out,__FILE__,__LINE__,toolx::hdf5::write_atb(histos,"type","directory"),true)) {
     ::H5Fclose(_file);
     return false;
   }
 
-  if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::write_histo(a_out,histos,"h1",h1),true)) {
+  if(!tools::equal(a_out,__FILE__,__LINE__,toolx::hdf5::write_histo(a_out,histos,"h1",h1),true)) {
     ::H5Gclose(histos);
     ::H5Fclose(_file);
     return false;
   }
-  if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::write_histo(a_out,histos,"h2",h2),true)) {
+  if(!tools::equal(a_out,__FILE__,__LINE__,toolx::hdf5::write_histo(a_out,histos,"h2",h2),true)) {
     ::H5Gclose(histos);
     ::H5Fclose(_file);
     return false;
   }
-  if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::write_profile(a_out,histos,"p1",p1),true)) {
+  if(!tools::equal(a_out,__FILE__,__LINE__,toolx::hdf5::write_profile(a_out,histos,"p1",p1),true)) {
     ::H5Gclose(histos);
     ::H5Fclose(_file);
     return false;
   }
-  if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::write_profile(a_out,histos,"p2",p2),true)) {
+  if(!tools::equal(a_out,__FILE__,__LINE__,toolx::hdf5::write_profile(a_out,histos,"p2",p2),true)) {
     ::H5Gclose(histos);
     ::H5Fclose(_file);
     return false;
@@ -101,14 +101,14 @@ bool test_hdf5_histo(std::ostream& a_out,bool a_verbose) {
  {hid_t _file = H5Fopen(file.c_str(),H5F_ACC_RDONLY, H5P_DEFAULT);
    if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,_file,0)) return false;
 
-  hid_t histos = tools_H5Gopen(_file,"histos");
+  hid_t histos = toolx_H5Gopen(_file,"histos");
   if(!tools::ge<hid_t>(a_out,__FILE__,__LINE__,histos,0)) {
     ::H5Fclose(_file);
     return false;
   }
 
  {tools::histo::h1d* rh1;
-  if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::read_histo(a_out,histos,"h1",rh1),true)) {
+  if(!tools::equal(a_out,__FILE__,__LINE__,toolx::hdf5::read_histo(a_out,histos,"h1",rh1),true)) {
     ::H5Gclose(histos);
     ::H5Fclose(_file);
     return EXIT_FAILURE;
@@ -118,7 +118,7 @@ bool test_hdf5_histo(std::ostream& a_out,bool a_verbose) {
   delete rh1;}
 
  {tools::histo::h2d* rh2;
-  if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::read_histo(a_out,histos,"h2",rh2),true)) {
+  if(!tools::equal(a_out,__FILE__,__LINE__,toolx::hdf5::read_histo(a_out,histos,"h2",rh2),true)) {
     ::H5Gclose(histos);
     ::H5Fclose(_file);
     return false;
@@ -128,7 +128,7 @@ bool test_hdf5_histo(std::ostream& a_out,bool a_verbose) {
   delete rh2;}
 
  {tools::histo::p1d* rp1;
-  if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::read_profile(a_out,histos,"p1",rp1),true)) {
+  if(!tools::equal(a_out,__FILE__,__LINE__,toolx::hdf5::read_profile(a_out,histos,"p1",rp1),true)) {
     ::H5Gclose(histos);
     ::H5Fclose(_file);
     return EXIT_FAILURE;
@@ -138,7 +138,7 @@ bool test_hdf5_histo(std::ostream& a_out,bool a_verbose) {
   delete rp1;}
 
  {tools::histo::p2d* rp2;
-  if(!tools::equal(a_out,__FILE__,__LINE__,tools::hdf5::read_profile(a_out,histos,"p2",rp2),true)) {
+  if(!tools::equal(a_out,__FILE__,__LINE__,toolx::hdf5::read_profile(a_out,histos,"p2",rp2),true)) {
     ::H5Gclose(histos);
     ::H5Fclose(_file);
     return EXIT_FAILURE;

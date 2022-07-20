@@ -6,10 +6,9 @@ build_debug=no
 build_verbose=no
 
 build_mem=no
-build_expat=no
-build_freetype=no
-build_hdf5=no
-build_use_our=   # reverse of the bush -sys_ logic.
+
+build_use_our=no
+
 build_parallel=no
 
 build_gnu=no
@@ -33,13 +32,9 @@ while test $# -ge 1 ; do
 
     -mem) build_mem=yes;      args="${args} $1";;
 
-    -expat)    build_expat=yes;    args="${args} $1";;
-    -ttf)      build_freetype=yes; args="${args} $1";;
-    -freetype) build_freetype=yes; args="${args} $1";;
-    -hdf5)     build_hdf5=yes;     args="${args} $1";;
     -parallel) build_parallel=yes; args="${args} $1";;
     
-    -our_*)    build_use_our="${build_use_our} $1"; args="${args} $1";;
+    -our)    build_use_our=yes;;
 
     -*) echo "unknown option : $1" ; exit ;;
      *) if [ $# = 1 ] ; then
@@ -80,19 +75,6 @@ echo "build ${exa}..."
 use_archive=yes
 
 #//////////////////////////////////////////////////////
-#/// -our_<pack> : ////////////////////////////////////
-#//////////////////////////////////////////////////////
-for item in ${build_use_our} ; do
-  item="`echo ${item} | sed -e 's:\-our_::g'`"
-  var="build_use_our_${item}"
-  eval ${var}=yes
-done
-
-if [ ${build_expat}    = yes ] ; then use_expat=yes;fi
-if [ ${build_freetype} = yes ] ; then use_freetype=yes;fi
-if [ ${build_hdf5}     = yes ] ; then use_hdf5=yes;fi
-
-#//////////////////////////////////////////////////////
 #//////////////////////////////////////////////////////
 #//////////////////////////////////////////////////////
 #if [ ${build_cl_exe} = "yes" ] ; then
@@ -103,8 +85,15 @@ if [ ${build_hdf5}     = yes ] ; then use_hdf5=yes;fi
 #fi
 
 cppflags="${cppflags} -I../.."
-cppflags="${cppflags} -I../include"          # if g4tools within G4 source/externals.
-#cppflags="${cppflags} -I../g4tools/include" # if g4tools within G4 source/analysis.
+
+# to include the g4tools/test/cpp/tools files:
+cppflags="${cppflags} -I."
+
+# so that g4tools/test/cpp/tools files can include the g4tools/tools ones:
+test_cppflags="${test_cppflags} -I../../tools"
+test_cppflags="${test_cppflags} -I../../tools/histo"
+test_cppflags="${test_cppflags} -I../../tools/sg"
+test_cppflags="${test_cppflags} -I../../tools/lina"
 
 cppflags="${cppflags} -DNDEBUG"
 
@@ -116,8 +105,16 @@ if [ ${exa} = "wroot" ] ; then use_zlib=yes; fi
 if [ ${exa} = "wroot_ntu_1000_cols" ] ; then use_zlib=yes; fi
 if [ ${exa} = "mt_ntuple" ] ; then use_thread=yes; fi
 if [ ${exa} = "mt_ntuple_ref" ] ; then use_thread=yes; fi
-if [ ${exa} = "mpi_histos" ] ; then use_mpi=yes; fi
+if [ ${exa} = "mpi_histos" ] ; then
+  if [ ${build_cl_exe} = "yes" ] ; then
+    build_use_our=yes
+  fi      
+  use_mpi=yes
+fi
 if [ ${exa} = "mpi_ntuple" ] ; then
+  if [ ${build_cl_exe} = "yes" ] ; then
+    build_use_our=yes
+  fi      
   use_zlib=yes
   use_mpi=yes
 fi
@@ -135,6 +132,12 @@ fi
 if [ ${exa} = "viewplot" ] ; then
   use_expat=yes
   use_freetype=yes
+  use_png=yes
+  use_jpeg=yes
+  if [ ${build_cl_exe} = "yes" ] ; then
+    # ourex/jpeg uses MessageBox for errors:
+    use_Windows=yes
+  fi
 fi
 
 if [ ${exa} = "hdf5_histos" ] ; then
@@ -155,15 +158,46 @@ if [ ${exa} = "hdf5_threads" ] ; then
   use_thread=yes
   use_dl=yes
 fi
+
 if [ ${exa} = "cern_root_hdf5_ntuple" ] ; then
   use_cern_root=yes    
   use_hdf5=yes
   use_zlib=yes    
   use_thread=yes    
   use_dl=yes
-fi
-if [ ${exa} = "cern_root_read_rg_rbw" ] ; then
+elif [ ${exa} = "cern_root_read_rg_rbw" ] ; then
   use_cern_root=yes    
+else
+  cppflags="${cppflags} ${test_cppflags}"
+fi
+
+if [ ${exa} = "update" ] ; then
+  use_expat=yes
+  use_geant4=yes    
+fi
+
+if [ ${exa} = "all" ] ; then
+  if [ ${build_cl_exe} = "yes" ] ; then
+    build_use_our=yes
+  fi      
+    
+  use_expat=yes
+  use_zlib=yes
+  use_freetype=yes
+  use_hdf5=yes
+#  use_geant4=yes    
+  if [ ${build_cl_exe} = "yes" ] ; then
+    use_WGL=yes
+    use_Windows=yes
+    use_Qt=yes
+  else
+    #use_Qt=yes
+    use_Xm=yes
+    use_Xt=yes
+    use_mpi=yes
+    use_GLX=yes
+    use_X11=yes
+  fi      
 fi
 
 if [ ${exa} = "polyhedron_X11" ] ; then
@@ -172,13 +206,24 @@ if [ ${exa} = "polyhedron_X11" ] ; then
 fi
 
 if [ ${exa} = "polyhedron_Windows" ] ; then
-  cppflags="${cppflags} -I../../tools/Windows"
+  #cppflags="${cppflags} -I../../toolx/Windows"
   use_WGL=yes
   use_Windows=yes
 fi
 
 if [ ${exa} = "polyhedron_metal" ] ; then
   use_metal=yes
+fi
+
+if [ ${exa} = "polyhedron_Qt" ] ; then
+  use_Qt=yes    
+  if [ ${build_cl_exe} = "yes" ] ; then
+    use_WGL=yes
+    use_Windows=yes
+  else      
+    use_GLX=yes
+    use_X11=yes
+  fi
 fi
 
 if [ ${exa} = "gui_polyhedron_X11" ] ; then
@@ -190,7 +235,13 @@ if [ ${exa} = "gui_polyhedron_X11" ] ; then
   use_zlib=yes
 fi
 
-if [ ${exa} = "utest" ] ; then    
+if [ ${exa} = "utest" ] ; then
+  build_use_our=yes
+
+  do_expat=yes    
+  do_hdf5=yes    
+  do_freetype=yes
+    
   if [ ${build_cl_exe} = "yes" ] ; then
     cppflags="${cppflags} -bigobj"
     ccflags0="${ccflags0} -bigobj"
@@ -204,37 +255,56 @@ if [ ${exa} = "utest" ] ; then
   cppfiles="${cppfiles} ./test/columns.cpp"
   cppfiles="${cppfiles} ./test/viewplot.cpp"
 
-  #use_expat=yes
-  if [ "${use_expat}" = yes ] ; then    
+  if [ ${do_expat} = "yes" ] ; then
     cppfiles="${cppfiles} ./test/axml.cpp"
+    use_expat=yes    
   fi
   
-  #use_hdf5=yes
-  if [ "${use_hdf5}" = yes ] ; then    
+  if [ ${do_hdf5} = "yes" ] ; then
     cppfiles="${cppfiles} ./test/hdf5.cpp"
     cppfiles="${cppfiles} ./test/hdf5_histo.cpp"
     cppfiles="${cppfiles} ./test/hdf5_ntuple.cpp"
+    use_hdf5=yes
     use_zlib=yes    
     use_thread=yes    
     use_freetype=yes
     use_dl=yes
   fi
-
-  if [ "${use_freetype}" = yes ] ; then
+  
+  if [ ${do_freetype} = "yes" ] ; then
     # WARNING : below tests do not pass on my Mac with a freetype/2.7.0 (whilst ok with a 2.8.0).  
     cppfiles="${cppfiles} ./test/lego_offscreen_zb.cpp"
-    if [ "${use_expat}" = yes ] ; then    
+    use_freetype=yes    
+    if [ ${do_expat} = "yes" ] ; then
       cppfiles="${cppfiles} ./test/viewplot_ttf.cpp"
-    fi    
-  fi    
-    
+      use_expat=yes    
+    fi  
+  fi  
+
 fi
+
+if [ ${build_use_our} = yes ] ; then
+  build_use_our_expat=yes
+  build_use_our_hdf5=yes
+  build_use_our_mpi=yes
+  build_use_our_freetype=yes
+  build_use_our_png=yes
+  build_use_our_jpeg=yes
+  build_use_our_zlib=yes
+fi
+
+. ./use_geant4
 
 . ./use_cern_root
 
 #////////////////////////////////////////////////////////
 #////////////////////////////////////////////////////////
 #////////////////////////////////////////////////////////
+. ./use_Qt
+
+. ./use_Xm
+. ./use_Xt
+
 . ./use_GLX
 . ./use_X11
 

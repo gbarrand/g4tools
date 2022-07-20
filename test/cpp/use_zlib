@@ -1,13 +1,16 @@
 
 if [ "${use_zlib}" = "yes" ] ; then
-  if [ ${build_cl_exe} = "yes" ] ; then
+  if [ "${build_use_our_zlib}" = "yes" ] ; then
     use_sys_zlib=no
     use_our_zlib=yes
   else
-    if [ "${use_sys_zlib}" = "" -a "${use_our_zlib}" = "" ] ; then  #use_hdf5 may enforce use_our_zlib.
-      use_sys_zlib=yes
-      use_our_zlib=no
-    fi
+    use_sys_zlib=yes
+    use_our_zlib=no
+  fi
+  
+  if [ ${build_cl_exe} = "yes" ] ; then
+    use_sys_zlib=no
+    use_our_zlib=yes
   fi
 fi
 
@@ -32,11 +35,11 @@ if [ "${use_our_zlib}" = "yes" ] ; then
     exit
   fi
 
-  ccflags="${ccflags} -DTOOLS_DONT_HAVE_ZLIB"  
+  ccflags="${ccflags}   -DTOOLS_DONT_HAVE_ZLIB"  
   cppflags="${cppflags} -DTOOLS_DONT_HAVE_ZLIB"
   
-  cflags="${cflags} -DTOOLS_USE_OUREX_ZLIB -I${zlib_home}/include"
-  cppflags="${cppflags} -DTOOLS_USE_OUREX_ZLIB -I${zlib_home}/include"
+  cflags="${cflags}     -I./ourex -I${zlib_home}/include"
+  cppflags="${cppflags} -I./ourex -I${zlib_home}/include"
   
   libs="${libs} ${zlib_home}/${bin_dir}/libourex_zlib.a"
 

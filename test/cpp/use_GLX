@@ -9,7 +9,7 @@ if [ "${use_GLX}" = "yes" ] ; then
     # sudo /opt/local/bin/port install mesa (or glxinfo).
     cppflags="${cppflags} -I/opt/local/include"
     ccflags="${ccflags} -I/opt/local/include"
-    cppflags="${cppflags} -DTOOLS_USE_GL_GL_H"
+    cppflags="${cppflags} -DTOOLX_USE_GL_GL_H"
     libs="${libs} /opt/local/lib/libGL.dylib"
   else
     inc_dirs="/usr/include"
