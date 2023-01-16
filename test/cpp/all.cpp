@@ -464,7 +464,7 @@
 #include <toolx/mpi/hmpi>
 #include <toolx/mpi/wrmpi>
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW32__)
 #include <toolx/Windows/window>
 #include <toolx/Windows/sg_viewer>
 #include <toolx/Windows/glarea>
