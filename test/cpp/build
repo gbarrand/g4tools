@@ -14,6 +14,7 @@ build_parallel=no
 build_gnu=no
 build_icc=no
 build_clang=no
+build_mingw_gnu=no
 
 build_cl_exe=no
 if [ "`uname | grep CYGWIN`" != "" ] ; then build_cl_exe=yes; fi
@@ -26,9 +27,11 @@ while test $# -ge 1 ; do
     -v) build_verbose=yes;    args="${args} $1";;
     -x) build_verbose=yes;    args="${args} $1";;
     
-    -gnu)   build_gnu=yes;build_icc=no;build_clang=no;build_cl_exe=no;  args="${args} $1";;
-    -icc)   build_icc=yes;build_gnu=no;build_clang=no;build_cl_exe=no;  args="${args} $1";;
-    -clang) build_clang=yes;build_gnu=no;build_icc=no;build_cl_exe=no;  args="${args} $1";;
+    -gnu)   build_gnu=yes;build_icc=no;build_clang=no;build_cl_exe=no;build_mingw_gnu=no; args="${args} $1";;
+    -icc)   build_icc=yes;build_gnu=no;build_clang=no;build_cl_exe=no;build_mingw_gnu=no; args="${args} $1";;
+    -clang) build_clang=yes;build_gnu=no;build_icc=no;build_cl_exe=no;build_mingw_gnu=no; args="${args} $1";;
+    -mingw_gnu) build_clang=no;build_gnu=no;build_icc=no;build_cl_exe=no;build_mingw_gnu=yes; args="${args} $1";;
+    -mingw_gcc) build_clang=no;build_gnu=no;build_icc=no;build_cl_exe=no;build_mingw_gnu=yes; args="${args} $1";;
 
     -mem) build_mem=yes;      args="${args} $1";;
 
@@ -102,17 +105,22 @@ cppflags="${cppflags} -DNDEBUG"
 #////////////////////////////////////////////////////////
 if [ ${exa} = "raxml" ] ; then use_expat=yes; fi
 if [ ${exa} = "wroot" ] ; then use_zlib=yes; fi
+if [ ${exa} = "wroot_cycle" ] ; then use_zlib=yes; fi
 if [ ${exa} = "wroot_ntu_1000_cols" ] ; then use_zlib=yes; fi
 if [ ${exa} = "mt_ntuple" ] ; then use_thread=yes; fi
 if [ ${exa} = "mt_ntuple_ref" ] ; then use_thread=yes; fi
 if [ ${exa} = "mpi_histos" ] ; then
   if [ ${build_cl_exe} = "yes" ] ; then
     build_use_our=yes
+  elif [ ${build_mingw_gnu} = "yes" ] ; then
+    build_use_our=yes
   fi      
   use_mpi=yes
 fi
 if [ ${exa} = "mpi_ntuple" ] ; then
   if [ ${build_cl_exe} = "yes" ] ; then
+    build_use_our=yes
+  elif [ ${build_mingw_gnu} = "yes" ] ; then
     build_use_our=yes
   fi      
   use_zlib=yes
@@ -136,6 +144,8 @@ if [ ${exa} = "viewplot" ] ; then
   use_jpeg=yes
   if [ ${build_cl_exe} = "yes" ] ; then
     # ourex/jpeg uses MessageBox for errors:
+    use_Windows=yes
+  elif [ ${build_mingw_gnu} = "yes" ] ; then
     use_Windows=yes
   fi
 fi
@@ -167,6 +177,9 @@ if [ ${exa} = "cern_root_hdf5_ntuple" ] ; then
   use_dl=yes
 elif [ ${exa} = "cern_root_read_rg_rbw" ] ; then
   use_cern_root=yes    
+elif [ ${exa} = "polyhedron_Qt" ] ; then
+  cppflags="${cppflags} -I../../tools/sg"
+  cppflags="${cppflags} -I../../tools/lina"
 else
   cppflags="${cppflags} ${test_cppflags}"
 fi
@@ -179,6 +192,8 @@ fi
 if [ ${exa} = "all" ] ; then
   if [ ${build_cl_exe} = "yes" ] ; then
     build_use_our=yes
+  elif [ ${build_mingw_gnu} = "yes" ] ; then
+    build_use_our=yes
   fi      
     
   use_expat=yes
@@ -187,6 +202,10 @@ if [ ${exa} = "all" ] ; then
   use_hdf5=yes
 #  use_geant4=yes    
   if [ ${build_cl_exe} = "yes" ] ; then
+    use_WGL=yes
+    use_Windows=yes
+    use_Qt=yes
+  elif [ ${build_mingw_gnu} = "yes" ] ; then
     use_WGL=yes
     use_Windows=yes
     use_Qt=yes
@@ -220,9 +239,16 @@ if [ ${exa} = "polyhedron_Qt" ] ; then
   if [ ${build_cl_exe} = "yes" ] ; then
     use_WGL=yes
     use_Windows=yes
+  elif [ ${build_mingw_gnu} = "yes" ] ; then
+    use_WGL=yes
+    use_Windows=yes
   else      
-    use_GLX=yes
-    use_X11=yes
+    if [ `uname` = Darwin ] ; then
+      use_AGL=yes
+    else      
+      use_GLX=yes
+      use_X11=yes
+    fi
   fi
 fi
 
@@ -245,6 +271,9 @@ if [ ${exa} = "utest" ] ; then
   if [ ${build_cl_exe} = "yes" ] ; then
     cppflags="${cppflags} -bigobj"
     ccflags0="${ccflags0} -bigobj"
+  elif [ ${build_mingw_gnu} = "yes" ] ; then
+    cppflags="${cppflags} -Wa,-mbig-obj"
+    ccflags0="${ccflags0} -Wa,-mbig-obj"
   fi
   
   cppfiles="${cppfiles} ./test/histo.cpp"
@@ -283,6 +312,11 @@ if [ ${exa} = "utest" ] ; then
 
 fi
 
+if [ ${build_mingw_gnu} = "yes" -a "${use_X11}" = yes ] ; then
+  echo "mingw: skip ${exa} X11 apps."
+  exit
+fi
+
 if [ ${build_use_our} = yes ] ; then
   build_use_our_expat=yes
   build_use_our_hdf5=yes
@@ -310,6 +344,8 @@ fi
 
 . ./use_WGL
 . ./use_Windows
+
+. ./use_AGL
 
 . ./use_metal
 
