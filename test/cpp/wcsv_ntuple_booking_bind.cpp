@@ -62,7 +62,6 @@ int main(int,char**) {
     //::printf("debug : %lu\n",ntu.find_column_ref<unsigned int>("index"));
 
     // fill :
-    char snum[128];
     for(unsigned int count=0;count<entries;count++) {
       user_index = count;
       user_rgauss = rg.shoot();
@@ -85,8 +84,13 @@ int main(int,char**) {
 
       user_vec_string.clear();
      {for(int i=0;i<number;i++) {
-        ::sprintf(snum,"s_%d",i); //WARNING : strings must not contain the "sep vec" character which is ';' by default.
-        user_vec_string.push_back(snum);
+	 //WARNING : strings must not contain the "sep vec" character which is ';' by default.
+	 //WARNING : strings must not contain the "sep vec" character which is ';' by default.
+         //char snum[128];
+         //::sprintf(snum,"s_%d",i);
+         std::string snum("s_");
+         if(!tools::numas(i,snum)){}
+         user_vec_string.push_back(snum);
       }}
 
       ntu.add_row(); // it will write columns data as a row in the file.

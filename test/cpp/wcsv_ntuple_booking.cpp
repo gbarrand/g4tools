@@ -62,7 +62,6 @@ int main(int,char**) {
     tools::wcsv::ntuple::column<std::string>* col_str = ntu.find_column<std::string>("string");
 
     // fill :
-    char snum[128];
     std::string stmp;
     for(unsigned int count=0;count<entries;count++) {
       col_index->fill(count);
@@ -90,7 +89,11 @@ int main(int,char**) {
 
       user_vec_string.clear();
      {for(int i=0;i<number;i++) {
-        ::sprintf(snum,"s_%d",i); //WARNING : strings must not contain the "sep vec" character which is ';' by default.
+	//WARNING : strings must not contain the "sep vec" character which is ';' by default.
+        //char snum[128];
+        //::sprintf(snum,"s_%d",i);
+         std::string snum("s_");
+         if(!tools::numas(i,snum)){}
         user_vec_string.push_back(snum);
       }}
 
