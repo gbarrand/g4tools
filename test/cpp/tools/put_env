@@ -27,7 +27,7 @@ inline bool put_env(const std::string& a_env,const std::string& a_value){
 }
 
 inline bool rm_env(const std::string& a_env){
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW32__)
   std::string value = a_env+"=";
 #ifdef TOOLS_MEM
   if(::putenv(str_dup(value.c_str(),false))) return false;
