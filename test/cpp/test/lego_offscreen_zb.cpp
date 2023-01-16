@@ -25,10 +25,8 @@ inline bool lego_offscreen_zb(std::ostream& a_out,bool a_verbose,const std::stri
   unsigned int _width = factor*width;
   unsigned int _height = factor*height;
   tools::sg::zb_action action(mgr,a_out,_width,_height);
-  tools::colorf clear_color = tools::colorf_white();
-  action.zbuffer().clear_color_buffer(0);
-  action.add_color(clear_color.r(),clear_color.g(),clear_color.b());
-  action.zbuffer().clear_depth_buffer();
+  action.clear_color_buffer(tools::colorf_white());
+  action.clear_depth_buffer();
   sep->render(action);
   tools::wps wps(a_out);
   TOOLS_TEST_FUNC(wps.open_file(a_file,true))
