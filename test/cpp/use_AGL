@@ -1,0 +1,12 @@
+# Copyright (C) 2010, Guy Barrand. All rights reserved.
+# See the file bush.license for terms.
+
+if [ "${use_AGL}" = "yes" ] ; then
+
+  ccflags="${ccflags} -DGL_SILENCE_DEPRECATION"    # since 10.14 (Mojave). Sigh.
+  cppflags="${cppflags} -DGL_SILENCE_DEPRECATION"  # since 10.14 (Mojave). Sigh.
+
+  libs="${libs} -framework OpenGL"
+  libs="${libs} -framework CoreFoundation" # CF functions.
+
+fi

@@ -1,0 +1,19 @@
+
+mingw_home=
+mingw_lib=
+mingw_suffix=
+  
+if [ -x /usr/bin/x86_64-w64-mingw32-ranlib.exe ] ; then
+  mingw_home=/usr
+  mingw_lib=${mingw_home}/x86_64-w64-mingw32/sys-root/mingw/lib
+  mingw_suffix=.exe
+
+elif [ -x /opt/local/bin/x86_64-w64-mingw32-ranlib ] ; then
+  mingw_home=/opt/local
+  mingw_lib=${mingw_home}/x86_64-w64-mingw32/lib
+
+else    
+  echo 'x86_64-w64-mingw32 not found.'
+  exit
+fi
+
