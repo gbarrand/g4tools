@@ -11,6 +11,9 @@ if [ "${use_freetype}" = "yes" ] ; then
   if [ ${build_cl_exe} = "yes" ] ; then
     use_sys_freetype=no
     use_our_freetype=yes
+  elif [ ${build_mingw_gnu} = "yes" ] ; then
+    use_sys_freetype=no
+    use_our_freetype=yes
   fi
   
   cppflags="${cppflags} -DTOOLS_USE_FREETYPE"

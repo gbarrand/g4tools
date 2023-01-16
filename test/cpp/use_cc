@@ -13,6 +13,10 @@ elif [ ${build_clang} = "yes" ] ; then
 elif [ ${build_cl_exe} = "yes" ] ; then
   cc_compiler=./vc++
   cc_linker=./vc++
+elif [ ${build_mingw_gnu} = "yes" ] ; then
+  . ./use_mingw
+  cc_compiler=${mingw_home}/bin/x86_64-w64-mingw32-gcc${mingw_suffix}
+  cc_linker=${mingw_home}/bin/x86_64-w64-mingw32-gcc${mingw_suffix}
 else
   cc_compiler=cc
   cc_linker=cc

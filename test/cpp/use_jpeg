@@ -11,6 +11,9 @@ if [ "${use_jpeg}" = "yes" ] ; then
   if [ ${build_cl_exe} = "yes" ] ; then
     use_sys_jpeg=no
     use_our_jpeg=yes
+  elif [ ${build_mingw_gnu} = "yes" ] ; then
+    use_sys_jpeg=no
+    use_our_jpeg=yes
   fi
 
   cppflags="${cppflags} -DTOOLS_USE_JPEG"

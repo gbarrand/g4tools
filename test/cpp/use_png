@@ -13,6 +13,9 @@ if [ "${use_png}" = "yes" ] ; then
   if [ ${build_cl_exe} = "yes" ] ; then
     use_sys_png=no
     use_our_png=yes
+  elif [ ${build_mingw_gnu} = "yes" ] ; then
+    use_sys_png=no
+    use_our_png=yes
   fi
 
   cppflags="${cppflags} -DTOOLS_USE_PNG"

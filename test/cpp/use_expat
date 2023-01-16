@@ -11,6 +11,9 @@ if [ "${use_expat}" = "yes" ] ; then
   if [ ${build_cl_exe} = "yes" ] ; then
     use_sys_expat=no
     use_our_expat=yes
+  elif [ ${build_mingw_gnu} = "yes" ] ; then
+    use_sys_expat=no
+    use_our_expat=yes
   fi
   
   cppflags="${cppflags} -DTOOLS_USE_EXPAT"

@@ -11,6 +11,9 @@ if [ "${use_zlib}" = "yes" ] ; then
   if [ ${build_cl_exe} = "yes" ] ; then
     use_sys_zlib=no
     use_our_zlib=yes
+  elif [ ${build_mingw_gnu} = "yes" ] ; then
+    use_sys_zlib=no
+    use_our_zlib=yes
   fi
 fi
 

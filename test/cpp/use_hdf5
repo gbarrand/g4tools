@@ -11,6 +11,9 @@ if [ "${use_hdf5}" = "yes" ] ; then
   if [ ${build_cl_exe} = "yes" ] ; then
     use_sys_hdf5=no
     use_our_hdf5=yes
+  elif [ ${build_mingw_gnu} = "yes" ] ; then
+    use_sys_hdf5=no
+    use_our_hdf5=yes
   fi
 
   cppflags="${cppflags} -DTOOLS_USE_HDF5"

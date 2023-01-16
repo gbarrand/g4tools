@@ -4,8 +4,10 @@
 if [ "${use_WGL}" = "yes" ] ; then
   if [ ${build_cl_exe} = "yes" ] ; then
     libs="${libs} opengl32.lib"
+  elif [ ${build_mingw_gnu} = "yes" ] ; then
+    libs="${libs} ${mingw_lib}/libopengl32.a"
   else    
-    echo 'use_Windows : not available on this platform.'
+    echo 'use_WGL : not available on this platform.'
     exit
   fi
 fi

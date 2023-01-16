@@ -5,6 +5,10 @@ if [ "${use_Windows}" = "yes" ] ; then
   if [ ${build_cl_exe} = "yes" ] ; then
     libs="${libs} gdi32.lib user32.lib wsock32.lib"
     #libs="${libs} shell32.lib"
+  elif [ ${build_mingw_gnu} = "yes" ] ; then
+    libs="${libs} ${mingw_lib}/libgdi32.a"
+    libs="${libs} ${mingw_lib}/libuser32.a"
+    libs="${libs} ${mingw_lib}/libwsock32.a"
   else    
     echo 'use_Windows : not available on this platform.'
     exit

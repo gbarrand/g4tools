@@ -8,7 +8,46 @@ if [ "${use_Qt}" = "yes" ] ; then
   Qt_ld_library_path=
   moc_exe=
 
-  if [ "`uname | grep CYGWIN`" != "" ] ; then
+  if [ ${build_mingw_gnu} = "yes" ] ; then
+    
+    Qt_home="/usr/x86_64-w64-mingw32/sys-root/mingw"
+    if [ ! -d ${Qt_home} ] ; then
+      echo "use_Qt : Qt not found under ${Qt_home}."
+      exit
+    fi
+
+    Qt_inc="${Qt_home}/include/qt5"
+
+    . ./cppflags_add_std_cxx11
+    cppflags="${cppflags} -I${Qt_inc}"
+
+    Qt_lib="${Qt_home}/lib"
+
+    # if including as : #include <qobject.h>  # used in ourex/g4vis.
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtCore"
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtGui"
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtWidgets"
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtOpenGL"
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/QtPrintSupport"
+
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/Qt3DCore"
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/Qt3DExtras"
+    Qt_incs_no_guard="${Qt_incs_no_guard} -I${Qt_inc}/Qt3DRender"
+
+    libs="${libs} ${Qt_lib}/libQt53DRender.dll.a"
+    libs="${libs} ${Qt_lib}/libQt53DExtras.dll.a"
+    libs="${libs} ${Qt_lib}/libQt53DCore.dll.a"
+
+    libs="${libs} ${Qt_lib}/libQt5OpenGL.dll.a"
+    libs="${libs} ${Qt_lib}/libQt5Widgets.dll.a"
+    libs="${libs} ${Qt_lib}/libQt5Gui.dll.a"
+    libs="${libs} ${Qt_lib}/libQt5Core.dll.a"
+
+    Qt_ld_library_path="${Qt_lib}"
+
+    moc_exe="/usr/lib/qt5/x86_64-w64-mingw32/bin/moc.exe"
+    
+  elif [ "`uname | grep CYGWIN`" != "" ] ; then
 
     if [ ${build_cl_exe} = "yes" ] ; then
      #Qt_home="${c_drive}/Qt/5.12.3/msvc2017_64"

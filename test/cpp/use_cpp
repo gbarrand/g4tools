@@ -13,6 +13,10 @@ elif [ ${build_clang} = "yes" ] ; then
 elif [ ${build_cl_exe} = "yes" ] ; then
   cpp_compiler=./vc++
   cpp_linker=./vc++
+elif [ ${build_mingw_gnu} = "yes" ] ; then
+  . ./use_mingw
+  cpp_compiler=${mingw_home}/bin/x86_64-w64-mingw32-g++${mingw_suffix}
+  cpp_linker=${mingw_home}/bin/x86_64-w64-mingw32-g++${mingw_suffix}
 else
   cpp_compiler=c++
   cpp_linker=c++
@@ -35,6 +39,8 @@ if [ ${build_cl_exe} = "yes" ] ; then
 
   cppflags="${cppflags} -I.."
 
+elif [ ${build_mingw_gnu} = "yes" ] ; then
+  cppflags="${cppflags} -Wno-unknown-pragmas"
 else
 
   if [ ${build_debug} = "yes" ] ; then
@@ -62,6 +68,10 @@ else
       fi
       G4_cppflags="${G4_cppflags} -Wshadow"
     fi
+  fi
+
+  if [ `uname` = "Linux" ] ; then  # needed to build polyhedron_Qt.
+    cppflags="${cppflags} -fPIC"
   fi
 
 fi
