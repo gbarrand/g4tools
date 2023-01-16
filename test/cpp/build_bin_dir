@@ -1,8 +1,10 @@
 
-if [ `uname` = Darwin ] ; then
-  bin_dir=bin_clang  
-elif [ ${build_cl_exe} = "yes" ] ; then
+if [ ${build_cl_exe} = "yes" ] ; then
   bin_dir=bin_visual    
+elif [ ${build_mingw_gnu} = "yes" ] ; then
+  bin_dir=bin_mingw_gnu
+elif [ `uname` = Darwin ] ; then
+  bin_dir=bin_clang
 else    
   bin_dir=bin_gnu
 fi
