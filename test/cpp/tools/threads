@@ -86,7 +86,7 @@ public:
 
       while(!exit_set(*_args)) {sleep_milli_secs(100);}
 
-#ifdef _WIN32
+#ifdef _MSC_VER
       (*it).first->close();
 #endif
       delete (*it).first;
