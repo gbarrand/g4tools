@@ -317,6 +317,16 @@ if [ ${build_mingw_gnu} = "yes" -a "${use_X11}" = yes ] ; then
   exit
 fi
 
+
+if [ ${build_use_our} = yes ] ; then
+  ourex_home=../../../../inexlib/ourex
+  if [ ! -d "${ourex_home}" ] ; then
+    echo "warning: build_use_our set to yes, but ourex directory not found."
+    echo "warning: Continue by using external packages taken from the system."
+    build_use_our=no
+  fi
+fi
+
 if [ ${build_use_our} = yes ] ; then
   build_use_our_expat=yes
   build_use_our_hdf5=yes
