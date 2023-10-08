@@ -321,8 +321,8 @@ fi
 if [ ${build_use_our} = yes ] ; then
   ourex_home=../../../../inexlib/ourex
   if [ ! -d "${ourex_home}" ] ; then
-    echo "warning: build_use_our set to yes, but ourex directory not found."
-    echo "warning: Continue by using external packages taken from the system."
+    echo 'warning: build_use_our set to yes, but ourex directory not found.'
+    echo 'warning: Continue by using external packages taken from the system.'
     build_use_our=no
   fi
 fi
