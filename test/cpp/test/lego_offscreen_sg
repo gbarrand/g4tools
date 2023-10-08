@@ -11,12 +11,11 @@
 
 #include <tools/sg/ortho>
 #include <tools/sg/plotter>
-#include <tools/sg/set_plotter_camera>
 #include <tools/sg/holder>
 
 #include <toolx/sg/text_freetype>
 
-inline tools::sg::separator* lego_offscreen_sg(unsigned int a_width,unsigned int a_height) {
+inline tools::sg::separator* lego_offscreen_sg(unsigned int /*a_width*/,unsigned int /*a_height*/) {
 
   //////////////////////////////////////////////////////////
   /// create and fill histogram : //////////////////////////
@@ -66,7 +65,14 @@ inline tools::sg::separator* lego_offscreen_sg(unsigned int a_width,unsigned int
   sep->add(new tools::sg::holder<toolx::sg::text_freetype>(ttf));
   sep->add(new tools::sg::holder<tools::histo::h2d>(h));
 
-  tools::sg::set_plotter_camera(*plotter,*camera,a_width,a_height);
+//tools::sg::set_plotter_camera(*plotter,*camera,a_width,a_height);
+  camera->height = 1;
+  float z = 10*1;
+  camera->znear = 0.1f*z;
+  camera->zfar = 10*z; //avoid 100*z for lego.
+  camera->position = tools::vec3f(0,0,z);
+  camera->orientation = tools::rotf(tools::vec3f(0,0,1),0);
+  camera->focal = z;
 
   return sep;
 }
