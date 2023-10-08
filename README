@@ -1,17 +1,23 @@
 
-  g4tools is part of the softinex inlib/exlib code used as the
- technical backend of the Geant4 analysis category. (The namespaces
- "inlib" and "exlib" had been automatically changed to "tools"
- to keep some naming consistency within Geant4 and avoid clashes
- when building our Geant4 apps (g4exa, g4view, MEMPHYS_vis) that
- uses too inlib/exlib).
+  g4tools is the technical backend of the Geant4 analysis category along of the Geant4
+ visualisation ToolsSG drivers.
 
-  For web pages, see the section g4tools under the softinex portal at :
+  The files under the g4tools/tools,toolx directories are copies of the ones found under
+ the source/externals/g4tools/include/tools,toolx directories of the Geant4 repository.
+
+  The programs found under tests/cpp are not distributed within Geant4 and are local to
+ this repository. (They are still used for some regular nightlies on Linux at IJCLab).
+
+  Historically the g4tools code were part of the softinex inlib/exlib pure header libraries
+ where the namespaces "inlib" and "exlib" were changed automatically to "tools" and "toolx",
+ but now it follows a life of its own within Geant4 and then in this repository.
+
+  For some web pages related to this repository, see the section g4tools under the softinex portal at :
     https://gbarrand.github.io
 
   See also the license file for terms.
 
-   May 2018
+   Updated in October 2023
 
     Guy Barrand   
 
