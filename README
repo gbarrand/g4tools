@@ -9,7 +9,7 @@
   The programs found under tests/cpp are not distributed within Geant4 and are local to
  this repository. (They are still used for some regular nightlies on Linux at IJCLab).
 
-  Historically the g4tools code were part of the softinex inlib/exlib pure header libraries
+  Historically, the g4tools code were part of the softinex inlib/exlib pure header libraries
  where the namespaces "inlib" and "exlib" were changed automatically to "tools" and "toolx",
  but now (since 2021) it follows a life of its own within Geant4 and then in this repository.
 
