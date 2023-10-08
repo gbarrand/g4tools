@@ -1,6 +1,7 @@
 
   g4tools is the technical backend of the Geant4 analysis category along of the Geant4
- visualisation ToolsSG drivers.
+ visualization ToolsSG drivers. (The overall philosophy for us was/is to continue attempting
+ to have as much as possible an "academic way" for doing data analysis and visualization).
 
   The files under the g4tools/tools,toolx directories are copies of the ones found under
  the source/externals/g4tools/include/tools,toolx directories of the Geant4 repository.
