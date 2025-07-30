@@ -167,7 +167,7 @@ public: //ifile
   }
   virtual uint32 compression() const {return m_compress;}
   virtual void compress_buffer(const buffer& a_buffer,char*& a_kbuf,uint32& a_klen,bool& a_kdel) {
-    //NOTE : if(kdelete) delete [] kbuf;
+    //NOTE: if(kdelete) delete [] kbuf;
 
     a_kbuf = 0;
     a_klen = 0;
@@ -178,7 +178,7 @@ public: //ifile
     if(cxlevel && (nbytes>256)) {
       compress_func func;
       if(!ziper('Z',func)) {
-        //m_out << "tools::wroot::directory::write_object :"
+        //m_out << "tools::wroot::file::compress_buffer :"
         //      << " zlib ziper not found."
         //      << std::endl;
         a_kbuf = (char*)a_buffer.buf();
@@ -188,7 +188,8 @@ public: //ifile
         const uint32 kMAXBUF = 0xffffff;
         const uint32 HDRSIZE = 9;
         uint32 nbuffers = nbytes/kMAXBUF;
-        uint32 buflen = nbytes+HDRSIZE*(nbuffers+1);
+        uint32 buf_out_size = kMAXBUF+HDRSIZE+kMAXBUF/2;
+        uint32 buflen = (nbuffers+1)*buf_out_size;
         a_kbuf = new char[buflen];
         a_kdel = true;
         char* src = (char*)a_buffer.buf();
@@ -197,19 +198,30 @@ public: //ifile
         for(uint32 i=0;i<=nbuffers;i++) {
           uint32 bufmax = ((i == nbuffers) ? nbytes - nzip : kMAXBUF);
           uint32 nout;
-          if(!zip(m_out,func,cxlevel,bufmax,src,bufmax,tgt,nout)) {
+          if(!zip(m_out,func,cxlevel,bufmax,src,buf_out_size,tgt,nout)) {
             delete [] a_kbuf;
             a_kbuf = (char*)a_buffer.buf();
             a_klen = a_buffer.length();
             a_kdel = false;
-            break;
+            return;
           }
           tgt += nout; //nout includes HDRSIZE
           a_klen += nout;
           src += kMAXBUF;
           nzip += kMAXBUF;
         }
-        //::printf("debug : compress : end : %u %u\n",nbytes,klen);
+        if(a_klen>=a_buffer.length()) {
+          //NOTE: It is in the ROOT/IO specification (see ROOT/TKey.cxx/TKey::ReadObj() code) that some data compressions
+          //      are detected at read time by checking that "fObjlen > fNbytes-fKeylen", that is to say that
+          //      the overall output size (fNbytes-fKeylen) is stricly lower than the input size (fObjlen).
+          //      By using the zlib-ng compression library, we saw that we may fall on cases where the overall
+          //      output size (a_klen here at this point) may be equal to the input size (a_buffer.lengt()) which
+          //      induces problem when reading back the data with ROOT. Then the upper test checks and protects against that.
+          delete [] a_kbuf;
+          a_kbuf = (char*)a_buffer.buf();
+          a_klen = a_buffer.length();
+          a_kdel = false;
+        }
       }
     } else {
       a_kbuf = (char*)a_buffer.buf();
@@ -278,6 +290,12 @@ public:
       key::std_string_record_size(m_path) +
       key::std_string_record_size(m_title);
     uint32 nbytes = namelen + m_root_directory.record_size();
+
+    //TUUID version 1:
+    nbytes += sizeof(unsigned int);
+    nbytes += 2*sizeof(unsigned short);
+    nbytes += 8*sizeof(unsigned char);
+
     wroot::key key(m_out,*this,0,m_path,m_title,"TFile",nbytes); // It does a (*this).set_END().
 
     // m_nbytes_name = start point of directory info from key head.
@@ -297,7 +315,12 @@ public:
     wbuf wb(m_out,byte_swap(),key.eob(),pos);
     if(!wb.write(m_path)) return;
     if(!wb.write(m_title)) return;
-    if(!m_root_directory.to_buffer(wb)) return;}
+    if(!m_root_directory.to_buffer(wb)) return;
+    //TUUID version 1:
+    if(!wb.write((unsigned int)0)) return;
+    if(!wb.write((unsigned short)0)) return;
+    if(!wb.write((unsigned short)0)) return;
+   {for(size_t count=0;count<8;count++) if(!wb.write((unsigned char)0)) return;}}
 
     if(m_verbose) {
       m_out << "tools::wroot::file::file :"
@@ -703,14 +726,14 @@ protected:
     const uint32 HDRSIZE = 9;
 
     if(a_tgtsize<HDRSIZE) {
-      a_out << "tools::wroot::directory::zip :"
+      a_out << "tools::wroot::file::zip :"
             << " target buffer too small."
             << std::endl;
       a_irep = 0;
       return false;
     }
     if(a_srcsize>0xffffff) {
-      a_out << "tools::wroot::directory::zip :"
+      a_out << "tools::wroot::file::zip :"
             << " source buffer too big."
             << std::endl;
       a_irep = 0;
@@ -722,14 +745,15 @@ protected:
                a_srcsize,a_src,
                a_tgtsize,a_tgt+HDRSIZE,
                out_size)) {
-      a_out << "tools::wroot::directory::zip :"
+      a_out << "tools::wroot::file::zip :"
             << " zipper failed."
             << std::endl;
       a_irep = 0;
       return false;
     }
+
     if((HDRSIZE+out_size)>a_tgtsize) {
-      a_out << "tools::wroot::directory::zip :"
+      a_out << "tools::wroot::file::zip :"
             << " target buffer overflow."
             << std::endl;
       a_irep = 0;
